@@ -6,9 +6,11 @@
   "forwardPorts": [3000, 4000, 5432],
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
+      "version": "23"
     },
-    "ghcr.io/devcontainers/features/ruby:1": {}
+    "ghcr.io/devcontainers/features/ruby:1": {
+      "version": "3.2.8"
+    }
   },
   "customizations": {
     "vscode": {
