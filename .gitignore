@@ -64,6 +64,7 @@ backend/!/tmp/.keep
 # TODO Comment out this rule if you are OK with secrets being uploaded to the repo
 backend/config/initializers/secret_token.rb
 backend/config/master.key
+backend/config/*.key
 
 # Only include if you have production secrets in this file, which is no longer a Rails default
 # config/secrets.yml
