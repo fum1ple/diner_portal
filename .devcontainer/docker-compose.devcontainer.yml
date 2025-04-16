@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspaces/diner_portal
+      - /var/run/docker.sock:/var/run/docker.sock
+      - front_node_modules:/workspaces/diner_portal/frontend/node_modules
+      - bundle_cache:/usr/local/bundle
+    environment:
+      - TZ=Asia/Tokyo
+    command: sleep infinity
+    depends_on:
+      - backend
+    network_mode: service:backend
+
+volumes:
+  front_node_modules:
+  bundle_cache:

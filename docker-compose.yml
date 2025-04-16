@@ -1,23 +1,39 @@
+version: '3.9'
+
 services:
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: development
     environment:
       TZ: Asia/Tokyo
+      # バックエンドのAPIエンドポイントを設定
+      NEXT_PUBLIC_API_BASE_URL: http://backend:3000
     volumes:
       - ./frontend:/app:cached
       - front_node_modules:/app/node_modules
     command: yarn dev -p 4000
     ports:
       - "4000:4000"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
+      target: development
     environment:
       RAILS_ENV: development
       TZ: Asia/Tokyo
+      DATABASE_HOST: db
+      DATABASE_USER: root
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: app_development
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
     volumes:
       - ./backend:/app:cached
@@ -28,17 +44,36 @@ services:
       - "3000:3000"
     tty: true
     stdin_open: true
+    networks:
+      - app-network
+    restart: unless-stopped
+
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
       POSTGRES_DB: app_development
+      TZ: Asia/Tokyo
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    restart: unless-stopped
+    command: postgres -c 'max_connections=100' -c 'shared_buffers=128MB'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d app_development"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   front_node_modules:
   bundle_cache:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
