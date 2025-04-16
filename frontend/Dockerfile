@@ -1,11 +1,11 @@
-FROM node:22
+FROM node:23
 
-ENV TZ=Asia/Tokyo
+ENV TZ Asia/Tokyo
 
 WORKDIR /app
 
 COPY package.json yarn.lock /app/
-RUN yarn install 
+RUN yarn install
 
 COPY . /app
 
