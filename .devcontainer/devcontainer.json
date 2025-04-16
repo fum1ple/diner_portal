@@ -27,7 +27,5 @@
       }
     }
   },
-  "postCreateCommand": "bash ./.devcontainer/postCreateCommand.sh",
-  "remoteUser": "vscode",
-  "overrideCommand": true
+  "postCreateCommand": "bash ./.devcontainer/postCreateCommand.sh"
 }
