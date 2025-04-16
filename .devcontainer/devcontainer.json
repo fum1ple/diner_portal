@@ -1,17 +1,12 @@
 {
   "name": "Diner Portal Development",
-  "dockerComposeFile": "../docker-compose.yml",
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "./docker-compose.extend.yml"
+  ],
   "service": "backend",
-  "workspaceFolder": "/workspaces/diner_portal",
+  "workspaceFolder": "/app",
   "forwardPorts": [3000, 4000, 5432],
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "23"
-    },
-    "ghcr.io/devcontainers/features/ruby:1": {
-      "version": "3.2.8"
-    }
-  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -32,6 +27,7 @@
       }
     }
   },
-  "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
-  "remoteUser": "root"
+  "postCreateCommand": "bash ./.devcontainer/postCreateCommand.sh",
+  "remoteUser": "vscode",
+  "overrideCommand": true
 }
