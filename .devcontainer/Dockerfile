@@ -3,26 +3,23 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu
 # 必要なツールのインストール
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
-        build-essential \
-        curl \
-        git \
-        gnupg2 \
-        ca-certificates \
-        lsb-release
+    build-essential \
+    curl \
+    git \
+    gnupg2 \
+    ca-certificates \
+    lsb-release \
+    libpq-dev \
+    postgresql-client
 
-# Docker CLIのインストール
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list \
+# Ruby 3.2.8のインストール
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    && apt-add-repository -y ppa:rael-gc/rvm \
     && apt-get update \
-    && apt-get -y install --no-install-recommends docker-ce-cli
-
-# Node.jsとYarnのインストール（フロントエンド開発用）
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g yarn
-
-# Rubyのインストール（バックエンド開発用）
-RUN apt-get -y install --no-install-recommends ruby ruby-dev
+    && apt-get -y install rvm \
+    && /usr/share/rvm/bin/rvm install 3.2.8 \
+    && /usr/share/rvm/bin/rvm use 3.2.8 --default
 
 # タイムゾーンの設定
 ENV TZ=Asia/Tokyo

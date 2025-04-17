@@ -1,10 +1,16 @@
 {
   "name": "Diner Portal Development",
-  "dockerComposeFile": [
-    "../docker-compose.yml"
-  ],
-  "service": "backend",
-  "workspaceFolder": "/workspaces/diner_portal",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/ruby:1": {
+      "version": "3.2"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -13,19 +19,12 @@
         "esbenp.prettier-vscode",
         "rebornix.ruby",
         "castwide.solargraph"
-      ]
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
     }
   },
-  "remoteUser": "root",
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": true,
-      "username": "vscode",
-      "upgradePackages": true
-    },
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
-    },
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  }
+  "remoteUser": "vscode",
+  "postCreateCommand": "echo '🚀 DevContainer initialized!'"
 }

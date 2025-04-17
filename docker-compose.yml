@@ -8,11 +8,11 @@ services:
       target: development
     environment:
       TZ: Asia/Tokyo
-      # バックエンドのAPIエンドポイントを設定
       NEXT_PUBLIC_API_BASE_URL: http://backend:3000
+      NODE_ENV: development
     volumes:
       - ./frontend:/app:cached
-      - front_node_modules:/app/node_modules
+      - node-modules:/app/node_modules
     command: yarn dev -p 4000
     ports:
       - "4000:4000"
@@ -37,7 +37,7 @@ services:
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
     volumes:
       - ./backend:/app:cached
-      - bundle_cache:/usr/local/bundle
+      - bundle-cache:/usr/local/bundle
     depends_on:
       - db
     ports:
@@ -58,7 +58,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - app-network
     restart: unless-stopped
@@ -70,9 +70,9 @@ services:
       retries: 5
 
 volumes:
-  front_node_modules:
-  bundle_cache:
-  postgres_data:
+  node-modules:
+  bundle-cache:
+  postgres-data:
 
 networks:
   app-network:

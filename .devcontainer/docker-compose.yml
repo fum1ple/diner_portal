@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/base:ubuntu
+    volumes:
+      - ..:/workspaces/diner_portal:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Asia/Tokyo
+    command: sleep infinity
+    
+    # Codespacesとの互換性のために追加
+    user: vscode
+    
+    # 基本的なツールを最初から用意
+    init: true
+    
+    # ホストのネットワークを使用
+    network_mode: host
