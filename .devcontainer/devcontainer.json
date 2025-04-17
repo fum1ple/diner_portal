@@ -25,6 +25,19 @@
       }
     }
   },
+  // ポートフォワーディングの設定を追加
+  "forwardPorts": [3000, 4000],
+  // 自動的にポートを転送する設定
+  "portsAttributes": {
+    "3000": {
+      "label": "Backend Rails Server",
+      "onAutoForward": "notify"
+    },
+    "4000": {
+      "label": "Frontend Server",
+      "onAutoForward": "notify"
+    }
+  },
   "remoteUser": "vscode",
   "postCreateCommand": "echo '🚀 DevContainer initialized!'"
 }
