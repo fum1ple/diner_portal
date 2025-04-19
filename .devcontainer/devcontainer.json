@@ -38,6 +38,8 @@
       "onAutoForward": "notify"
     }
   },
+  // ホスト名許可リストの設定を追加
+  "allowedHosts": ["legendary-meme-x5x47wprqw4q3vqq6-3000.app.github.dev"],
   "remoteUser": "vscode",
   "postCreateCommand": "echo '🚀 DevContainer initialized!'"
 }
