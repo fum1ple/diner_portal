@@ -70,5 +70,5 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   # tokium eats用。このホスト名を追加しないと、railsの初期画面が表示されない
-  config.hosts << "legendary-meme-x5x47wprqw4q3vqq6-3000.app.github.dev"
+  config.hosts << /.*\.github\.dev/
 end
