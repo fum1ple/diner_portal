@@ -8,3 +8,4 @@
 5. 終わったら、localhost:3000にrailsの初期画面、localhost:4000にNextjsの初期画面が表示されることを確認する
 
 木村陸人
+阿野庸太郎
