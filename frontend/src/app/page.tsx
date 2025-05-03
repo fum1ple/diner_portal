@@ -45,6 +45,9 @@ export default function Home() {
             Read our docs
           </a>
         </div>
+        <div className="btn btn-primary">
+          Push!
+        </div>
       </main>
       <footer className={styles.footer}>
         <a
