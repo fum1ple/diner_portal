@@ -1,15 +1,13 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting development servers..."
+echo "🚀 Starting Docker Compose..."
 
-# Backend: Rails サーバーをバックグラウンドで起動
-echo "💎 Starting Rails backend on port 3000..."
-(cd backend && bin/rails server -b 0.0.0.0 -p 3000) &
+# コンテナが実行中でない場合にだけ起動
+if ! docker compose ps -q | grep -q .; then
+  docker compose up -d
+else
+  echo "✅ コンテナはすでに起動しています。"
+fi
 
-# Frontend: 開発サーバーをバックグラウンドで起動
-echo "🌐 Starting frontend dev server on port 4000..."
-(cd frontend && yarn dev -p 4000) &
-
-# すべてのプロセスが生きている間待機
-wait
+echo "✅ 開発環境の起動完了！"
