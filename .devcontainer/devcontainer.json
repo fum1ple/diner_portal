@@ -1,15 +1,17 @@
 {
-  "name": "Diner Portal Development",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "name": "Diner Portal Dev",
   "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {},
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
-    },
     "ghcr.io/devcontainers/features/ruby:1": {
       "version": "3.2"
     },
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "upgradePackages": true
+    }
   },
   "customizations": {
     "vscode": {
@@ -25,19 +27,18 @@
       }
     }
   },
-  // ポートフォワーディングの設定を追加
+  "postCreateCommand": "./.devcontainer/setup.sh",
   "forwardPorts": [3000, 4000],
-  // 自動的にポートを転送する設定
   "portsAttributes": {
     "3000": {
       "label": "Backend Rails Server",
       "onAutoForward": "notify"
     },
     "4000": {
-      "label": "Frontend Server",
+      "label": "Frontend Dev Server",
       "onAutoForward": "notify"
     }
   },
-  "remoteUser": "vscode",
-  "postCreateCommand": "echo '🚀 DevContainer initialized!'"
+  "remoteUser": "root",
+  "postStartCommand":  "./.devcontainer/start.sh && git config --global --add safe.directory /workspaces/diner_portal && chown -R root:root /workspaces/diner_portal"
 }
