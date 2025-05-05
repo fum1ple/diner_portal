@@ -1,0 +1,143 @@
+/* リセット + 全体設定 */
+.body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: #f9feff;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ─── ヘッダー ─── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ロゴ */
+.logoArea {
+  display: flex;
+  align-items: center;
+}
+.logoText {
+  margin-left: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #00796b;
+}
+
+/* ナビゲーション */
+.nav {
+  display: flex;
+  gap: 3rem;
+}
+.navItem {
+  position: relative;
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.25rem 0;
+  transition: color 0.2s;
+}
+.navItem:hover {
+  color: #005a48;
+}
+
+/* アクション群 */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 検索ボックス */
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  background-color: #fff;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+.searchIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #888;
+  flex-shrink: 0;
+}
+.searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.9rem;
+  color: #333;
+  width: 140px;
+}
+
+/* ログインボックス */
+.loginBox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  background-color: #fff;
+  color: #00796b;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+.loginBox:hover {
+  background-color: #f5f5f5;
+}
+.loginIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #00796b;
+  flex-shrink: 0;
+}
+
+/* ─── メインコンテンツ ─── */
+.main {
+  flex: 1;
+}
+
+/* ─── フッター ─── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 3rem;
+  background: #fff;
+  border-top: 1px solid #eee;
+}
+.footerLeft {
+  display: flex;
+  align-items: center;
+}
+.footerLogoText {
+  margin-left: 0.5rem;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #00796b;
+}
+.footerRight {
+  color: #888;
+  font-size: 0.875rem;
+}
