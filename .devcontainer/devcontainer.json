@@ -39,5 +39,6 @@
       "onAutoForward": "notify"
     }
   },
-  "remoteUser": "vscode"
+  "remoteUser": "vscode",
+  "postStartCommand": "./.devcontainer/start.sh"
 }
