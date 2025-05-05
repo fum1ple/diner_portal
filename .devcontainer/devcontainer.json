@@ -39,6 +39,6 @@
       "onAutoForward": "notify"
     }
   },
-  "remoteUser": "vscode",
-  "postStartCommand": "./.devcontainer/start.sh"
+  "remoteUser": "root",
+  "postStartCommand":  "./.devcontainer/start.sh && git config --global --add safe.directory /workspaces/diner_portal && chown -R root:root /workspaces/diner_portal"
 }
