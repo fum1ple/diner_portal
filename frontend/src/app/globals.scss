@@ -95,3 +95,21 @@ a {
     border-color: var(--bs-secondary);
   }
 }
+
+// 太字テキストのスタイル修正
+.fw-bold, 
+.fw-semibold, 
+.fw-medium, 
+strong, 
+b, 
+h1, h2, h3, h4, h5, h6, 
+.h1, .h2, .h3, .h4, .h5, .h6, 
+.display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+  color: var(--foreground) !important;
+}
+
+// ラベルやバッジの中のテキストは例外として扱う
+.badge *, 
+.btn * {
+  color: inherit !important;
+}

@@ -5,6 +5,16 @@ import { AuthProvider } from './providers'
 import Link from 'next/link'
 import AuthButtonWrapper from './components/AuthButtonWrapper'
 
+// インラインスタイルを追加
+const customStyles = `
+  .fw-bold, .fw-semibold, .fw-medium, 
+  h1, h2, h3, h4, h5, h6, 
+  .h1, .h2, .h3, .h4, .h5, .h6, 
+  .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+    color: #000 !important;
+  }
+`
+
 export const metadata = {
   title: 'TOKIEATS',
   description: '社内限定レストラン共有プラットフォーム',
@@ -13,6 +23,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: customStyles }} />
+      </head>
       <body className="bg-light">
         <AuthProvider>
           <div className="d-flex flex-column min-vh-100">
