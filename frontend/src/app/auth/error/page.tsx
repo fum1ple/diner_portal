@@ -52,7 +52,7 @@ export default function AuthError() {
 
         <div className={styles.help}>
           <p>問題が解決しない場合は、管理者にお問い合わせください。</p>
-          <p>許可されているドメイン: <code>tokyoelectron.com</code></p>
+          <p>許可されているドメイン: <code>tokium.jp</code></p>
         </div>
       </div>
     </div>

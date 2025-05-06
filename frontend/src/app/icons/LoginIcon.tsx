@@ -1,11 +1,19 @@
 // src/app/icons/LoginIcon.tsx
-export default function LoginIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <polyline points="10 17 15 12 10 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <line x1="15" y1="12" x2="3" y2="12" strokeWidth="2" strokeLinecap="round"/>
-      </svg>
-    )
-  }
-  
+'use client';
+
+import React from 'react';
+
+export default function LoginIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      width="24"
+      height="24"
+    >
+      <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 14h-2v-4H8l4-4 4 4h-3v4z" />
+    </svg>
+  );
+}

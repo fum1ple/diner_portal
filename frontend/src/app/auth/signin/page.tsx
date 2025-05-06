@@ -1,6 +1,5 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import styles from './page.module.css';
 import Image from 'next/image';
@@ -12,10 +11,10 @@ export default function SignIn() {
   const handleSignIn = async () => {
     setIsLoading(true);
     try {
-      await signIn('google', { callbackUrl: '/' });
+      // 直接GoogleOAuthのURLにリダイレクト
+      window.location.href = '/api/auth/signin/google';
     } catch (error) {
       console.error('ログインエラー:', error);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -36,7 +35,7 @@ export default function SignIn() {
         
         <div className={styles.description}>
           <p>社内メールアドレスを使用してログインしてください。</p>
-          <p>許可されているドメイン: <code>tokyoelectron.com</code></p>
+          <p>許可されているドメイン: <code>tokium.jp</code></p>
         </div>
 
         <button 
