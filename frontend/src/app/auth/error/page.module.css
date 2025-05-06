@@ -1,0 +1,93 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 160px);
+  padding: 2rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.errorIcon {
+  margin: 0 auto 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 1rem;
+}
+
+.message {
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+.message p {
+  margin: 0.5rem 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.primaryButton, 
+.secondaryButton {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.primaryButton {
+  background: #0070f3;
+  color: white;
+  border: none;
+}
+
+.primaryButton:hover {
+  background: #0060df;
+}
+
+.secondaryButton {
+  background: white;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.secondaryButton:hover {
+  background: #f8f8f8;
+}
+
+.help {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.help p {
+  margin: 0.5rem 0;
+}
+
+.help code {
+  background: #f1f1f1;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
