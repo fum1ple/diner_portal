@@ -1,6 +1,5 @@
-import './globals.css'
+import './globals.scss'
 import Image from 'next/image'
-import styles from './layout.module.css'
 import SearchIcon from './icons/SearchIcon'
 import { AuthProvider } from './providers'
 import Link from 'next/link'
@@ -14,55 +13,74 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body className={styles.body}>
+      <body className="bg-light">
         <AuthProvider>
-          <div className={styles.wrapper}>
+          <div className="d-flex flex-column min-vh-100">
 
             {/* HEADER */}
-            <header className={styles.header}>
-              {/* 左：ロゴ */}
-              <div className={styles.logoArea}>
-                <Image
-                  src="/TOKIEATS-logo.png"
-                  alt="TOKIEATS ロゴ"
-                  width={32}
-                  height={32}
-                  priority
-                />
-                <span className={styles.logoText}>TOKIEATS</span>
-              </div>
+            <header className="sticky-top bg-white shadow-sm py-3">
+              <div className="container">
+                <div className="row align-items-center">
+                  {/* 左：ロゴ */}
+                  <div className="col-auto d-flex align-items-center">
+                    <Image
+                      src="/TOKIEATS-logo.png"
+                      alt="TOKIEATS ロゴ"
+                      width={32}
+                      height={32}
+                      priority
+                      className="me-2"
+                    />
+                    <span className="fw-bold fs-5">TOKIEATS</span>
+                  </div>
 
-              {/* 中央：ナビゲーション */}
-              <Link href="/" className={styles.navItem}>ホーム</Link>
-              <a href="/restaurants" className={styles.navItem}>レストラン一覧</a>
-              <a href="/mypage" className={styles.navItem}>マイレビュー</a>
-  
-              {/* 右：検索＆ログイン */}
-              <div className={styles.actions}>
-                <div className={styles.searchBox}>
-                  <SearchIcon className={styles.searchIcon} />
-                  <input
-                    type="search"
-                    placeholder="検索"
-                    className={styles.searchInput}
-                  />
+                  {/* 中央：ナビゲーション */}
+                  <div className="col">
+                    <nav className="d-flex justify-content-center gap-4">
+                      <Link href="/" className="text-decoration-none text-secondary fw-medium">ホーム</Link>
+                      <a href="/restaurants" className="text-decoration-none text-secondary fw-medium">レストラン一覧</a>
+                      <a href="/mypage" className="text-decoration-none text-secondary fw-medium">マイレビュー</a>
+                    </nav>
+                  </div>
+    
+                  {/* 右：検索＆ログイン */}
+                  <div className="col-auto d-flex align-items-center gap-3">
+                    <div className="position-relative d-flex align-items-center bg-light rounded-pill px-3 py-2" style={{ width: '200px' }}>
+                      <SearchIcon className="text-muted me-2" />
+                      <input
+                        type="search"
+                        placeholder="検索"
+                        className="form-control form-control-sm border-0 bg-transparent shadow-none p-0"
+                      />
+                    </div>
+                    <AuthButtonWrapper />
+                  </div>
                 </div>
-                {/* AuthButtonをAuthButtonWrapperに置き換え */}
-                <AuthButtonWrapper />
               </div>
             </header>
 
             {/* MAIN CONTENT */}
-            <main className={styles.main}>{children}</main>
+            <main className="flex-grow-1 container py-4">{children}</main>
 
             {/* FOOTER */}
-            <footer className={styles.footer}>
-              <div className={styles.footerLeft}>
-                <Image src="/TOKIEATS-logo.png" alt="TOKIEATS ロゴ" width={24} height={24} priority/>
-                <span className={styles.footerLogoText}>TOKIEATS</span>
-              </div>
-              <div className={styles.footerRight}>
-                © 2025 TOKIEATS. 社内利用限定.
+            <footer className="bg-dark text-white py-4">
+              <div className="container">
+                <div className="row align-items-center">
+                  <div className="col-auto d-flex align-items-center">
+                    <Image 
+                      src="/TOKIEATS-logo.png" 
+                      alt="TOKIEATS ロゴ" 
+                      width={24} 
+                      height={24} 
+                      priority
+                      className="me-2"
+                    />
+                    <span className="fw-bold">TOKIEATS</span>
+                  </div>
+                  <div className="col text-end text-muted">
+                    © 2025 TOKIEATS. 社内利用限定.
+                  </div>
+                </div>
               </div>
             </footer>
           </div>

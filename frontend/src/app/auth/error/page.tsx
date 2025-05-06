@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import styles from './page.module.css';
 
 export default function AuthError() {
   const searchParams = useSearchParams();
@@ -24,35 +23,37 @@ export default function AuthError() {
   }, [searchParams]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.errorIcon}>
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#FF5252" strokeWidth="2" />
-            <path d="M12 8V12" stroke="#FF5252" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="12" cy="16" r="1" fill="#FF5252" />
-          </svg>
-        </div>
-        
-        <h1 className={styles.title}>認証エラー</h1>
-        
-        <div className={styles.message}>
-          <p>{errorMessage}</p>
-        </div>
-        
-        <div className={styles.actions}>
-          <Link href="/auth/signin" className={styles.primaryButton}>
-            ログインページに戻る
-          </Link>
+    <div className="d-flex justify-content-center align-items-center min-vh-100 py-5">
+      <div className="card shadow-sm border-0 rounded-4 p-4 text-center" style={{ maxWidth: '480px' }}>
+        <div className="card-body">
+          <div className="text-danger mb-3">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" />
+              <path d="M12 8V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="12" cy="16" r="1" fill="currentColor" />
+            </svg>
+          </div>
           
-          <Link href="/" className={styles.secondaryButton}>
-            ホームに戻る
-          </Link>
-        </div>
+          <h1 className="h4 fw-semibold mb-3">認証エラー</h1>
+          
+          <div className="alert alert-danger mb-4">
+            <p className="mb-0">{errorMessage}</p>
+          </div>
+          
+          <div className="d-grid gap-3 mb-4">
+            <Link href="/auth/signin" className="btn btn-primary">
+              ログインページに戻る
+            </Link>
+            
+            <Link href="/" className="btn btn-outline-secondary">
+              ホームに戻る
+            </Link>
+          </div>
 
-        <div className={styles.help}>
-          <p>問題が解決しない場合は、管理者にお問い合わせください。</p>
-          <p>許可されているドメイン: <code>tokium.jp</code></p>
+          <div className="text-muted small">
+            <p className="mb-1">問題が解決しない場合は、管理者にお問い合わせください。</p>
+            <p className="mb-0">許可されているドメイン: <code className="bg-light px-2 py-1 rounded">tokium.jp</code></p>
+          </div>
         </div>
       </div>
     </div>
