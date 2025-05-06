@@ -1,11 +1,21 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session, User, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { JWT } from "next-auth/jwt";
 
-const handler = NextAuth({
+// NextAuth の型拡張
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user?: {
+      id?: string;
+    } & DefaultSession["user"];
+  }
+}
+
+export const authOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   pages: {
@@ -13,16 +23,21 @@ const handler = NextAuth({
     error: '/auth/error',
   },
   callbacks: {
-    async session({ session }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (token.id && session.user) {
+        session.user.id = token.id as string;
+      }
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: User }) {
       if (user) {
         token.id = user.id;
       }
       return token;
     },
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

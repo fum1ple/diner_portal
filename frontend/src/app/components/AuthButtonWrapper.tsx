@@ -3,8 +3,10 @@
 
 import dynamic from 'next/dynamic';
 
-// クライアントコンポーネント内ではdynamic importとssr: falseが使用可能
-const AuthButton = dynamic(() => import('./AuthButton'), { ssr: false });
+// クライアントコンポーネント内でのみdynamic importを使用
+const AuthButton = dynamic(() => import('./AuthButton'), { 
+  loading: () => <div>ロード中...</div> 
+});
 
 export default function AuthButtonWrapper() {
   return <AuthButton />;

@@ -1,5 +1,6 @@
 'use client';
 
+import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import styles from './page.module.css';
 import Image from 'next/image';
@@ -11,8 +12,7 @@ export default function SignIn() {
   const handleSignIn = async () => {
     setIsLoading(true);
     try {
-      // 直接GoogleOAuthのURLにリダイレクト
-      window.location.href = '/api/auth/signin/google';
+      await signIn('google', { callbackUrl: '/' });
     } catch (error) {
       console.error('ログインエラー:', error);
       setIsLoading(false);

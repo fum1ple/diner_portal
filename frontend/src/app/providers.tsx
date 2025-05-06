@@ -1,6 +1,7 @@
 'use client';
 
-// next-auth/reactのSessionProviderを使用しない代替実装
+import { SessionProvider } from "next-auth/react";
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <SessionProvider>{children}</SessionProvider>;
 }
