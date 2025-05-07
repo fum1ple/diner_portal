@@ -1,12 +1,14 @@
 'use client';
 
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import LoginIcon from '../icons/LoginIcon';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function AuthButton() {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
+  const router = useRouter();
 
   if (loading) {
     return (
@@ -67,7 +69,7 @@ export default function AuthButton() {
   return (
     <button
       className="btn btn-primary rounded-pill d-flex align-items-center"
-      onClick={() => signIn('google')}
+      onClick={() => router.push('/auth/signin')}
     >
       <LoginIcon className="me-2" />
       ログイン
