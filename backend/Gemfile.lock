@@ -79,6 +79,7 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0)
     base64 (0.2.0)
+    bcrypt (3.1.20)
     benchmark (0.4.0)
     bigdecimal (3.1.9)
     bootsnap (1.18.4)
@@ -102,6 +103,8 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    jwt (2.10.1)
+      base64
     logger (1.7.0)
     loofah (2.24.0)
       crass (~> 1.0.2)
@@ -141,6 +144,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.13)
+    rack-cors (2.0.2)
+      rack (>= 2.0.0)
     rack-session (2.1.0)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -199,10 +204,13 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  bcrypt (~> 3.1.7)
   bootsnap
   debug
+  jwt
   pg (~> 1.1)
   puma (>= 5.0)
+  rack-cors
   rails (~> 7.1.5, >= 7.1.5.1)
   tzinfo-data
 
