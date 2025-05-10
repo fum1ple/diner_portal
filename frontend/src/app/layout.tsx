@@ -16,6 +16,9 @@ const customStyles = `
   .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
     color: #000 !important;
   }
+
+  /* Bootstrap Icons の読み込み */
+  @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 `
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
