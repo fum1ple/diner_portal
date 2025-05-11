@@ -1,60 +1,52 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useMyRestaurants, Restaurant } from '../hooks/useMyPageData';
 
 const RestaurantCard = ({ restaurant }: { restaurant: Restaurant }) => {
-
   return (
-    <div className="card border-0 rounded-3 mb-3">
-      <div className="row g-0">
-        <div className="col-md-6">
-          <div className="position-relative" style={{ height: '220px' }}>
-            <Image 
-              src={restaurant.image_url || '/TOKIEATS-logo.png'} 
-              alt={restaurant.name}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-fit-cover rounded-start"
-            />
-          </div>
-        </div>
-        <div className="col-md-6 d-flex flex-column">
-          <div className="card-body h-100 d-flex flex-column">
-            <div className="d-flex justify-content-between mb-2">
-              <h5 className="card-title fw-bold">{restaurant.name}</h5>
-              <Link href={`/restaurants/${restaurant.id}`} className="text-decoration-none">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-arrow-up-right-square" viewBox="0 0 16 16">
-                  <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm5.854 8.803a.5.5 0 1 1-.708-.707L9.243 6H6.475a.5.5 0 1 1 0-1h3.975a.5.5 0 0 1 .5.5v3.975a.5.5 0 1 1-1 0V6.707l-4.096 4.096z"/>
-                </svg>
-              </Link>
-            </div>
-            
-            <p className="text-muted small mb-3">
-              <span className="d-block">ジャンル・エリア</span>
-              <div className="d-flex align-items-center mt-1">
-                {Array(5).fill(0).map((_, i) => (
-                  <svg key={i} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill={i < Math.round(restaurant.average_rating) ? "gold" : "lightgray"} className="bi bi-star-fill" viewBox="0 0 16 16">
-                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                  </svg>
-                ))}
-                <span className="ms-1">{restaurant.average_rating.toFixed(1)}</span>
-                <span className="ms-2 text-muted">({restaurant.review_count}件)</span>
-              </div>
-            </p>
-            
-            <p className="card-text small mb-3 flex-grow-1">
-              あなたが2024年3月15日に追加したレストランです。美味しい料理と素晴らしいサービスが魅力です。
-            </p>
-            
-            <Link href={`/restaurants/${restaurant.id}/edit`} className="align-self-start btn btn-outline-primary btn-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil me-1" viewBox="0 0 16 16">
-                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-              </svg>
-              編集
+    <div className="card border-0 bg-white rounded shadow-sm h-100">
+      <div className="position-relative" style={{ height: '150px' }}>
+        <Image 
+          src={restaurant.image_url || '/TOKIEATS-logo.png'} 
+          alt={restaurant.name}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="card-img-top object-fit-cover"
+          style={{ backgroundColor: '#f8f9fa' }}
+        />
+      </div>
+      <div className="card-body p-3">
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <h5 className="fw-bold mb-0">
+            <Link href={`/restaurants/${restaurant.id}`} className="text-decoration-none text-dark">
+              {restaurant.name}
             </Link>
-          </div>
+          </h5>
+          <Link href={`/restaurants/${restaurant.id}`} className="ms-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#6c757d" className="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+              <path fillRule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+              <path fillRule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+            </svg>
+          </Link>
         </div>
+        <div className="mb-2 small text-muted">
+          {restaurant.address ? `${restaurant.address}` : 'ジャンル・エリア'}
+        </div>
+        <div className="d-flex align-items-center mb-3">
+          {[...Array(5)].map((_, i) => (
+            <svg key={i} xmlns="http://www.w3.org/2000/svg" width="16" height="16" 
+              fill={i < Math.round(restaurant.average_rating) ? "#ffc107" : "#e0e0e0"} 
+              className="bi bi-star-fill me-1" viewBox="0 0 16 16">
+              <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+            </svg>
+          ))}
+          <span className="ms-1 text-muted">{restaurant.average_rating.toFixed(1)}</span>
+          <span className="ms-1 text-muted">({restaurant.review_count}件)</span>
+        </div>
+        <p className="text-muted small mb-0">
+          あなたが2024年3月15日に追加したレストランです。
+        </p>
       </div>
     </div>
   );
@@ -133,7 +125,10 @@ export default function MyRestaurants() {
     );
   }
 
-  if (error) {
+  // 実際のデータがある場合はそれを使用し、なければサンプルデータを使用
+  const displayRestaurants = restaurants.length > 0 ? restaurants : sampleRestaurants;
+
+  if (error && displayRestaurants.length === 0) {
     return (
       <div className="alert alert-danger" role="alert">
         <i className="bi bi-exclamation-triangle-fill me-2"></i>
@@ -141,9 +136,6 @@ export default function MyRestaurants() {
       </div>
     );
   }
-
-  // 実際のデータがある場合はそれを使用し、なければサンプルデータを使用
-  const displayRestaurants = restaurants.length > 0 ? restaurants : sampleRestaurants;
 
   return (
     <div>
@@ -158,7 +150,7 @@ export default function MyRestaurants() {
           </Link>
         </div>
       ) : (
-        <div className="row row-cols-1 g-4">
+        <div className="row row-cols-1 row-cols-md-2 g-4">
           {displayRestaurants.map(restaurant => (
             <div className="col" key={restaurant.id}>
               <RestaurantCard restaurant={restaurant} />
