@@ -36,9 +36,6 @@ RUN apt-get update -qq && \
 
 WORKDIR /app
 
-# bundlerをインストール
-RUN gem install bundler
-
 # ビルダーからgemをコピー
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 
