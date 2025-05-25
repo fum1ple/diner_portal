@@ -21,8 +21,8 @@ class Api::AuthController < ApplicationController
 
       if payload && payload['email'] == email
         # ドメインチェック
-        domain = email.split('@').last
-        if domain != ALLOWED_DOMAIN
+        domain = email.split('@').last.downcase
+        if domain != ALLOWED_DOMAIN.downcase
           render json: { error: 'Unauthorized domain' }, status: :unauthorized and return
         end
         # ここで独自のセッション管理やユーザー作成/取得処理を行う
