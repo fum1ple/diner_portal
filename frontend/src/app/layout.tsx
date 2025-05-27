@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="row align-items-center">
                   {/* 左：ロゴ */}
                   <div className="col-auto d-flex align-items-center">
-                    <Link href="/" className="d-flex align-items-center text-decoration-none"></Link>
+                    <Link href="/" className="d-flex align-items-center text-decoration-none">
                       <Image
                         src="/TOKIEATS-logo.png"
                         alt="TOKIEATS ロゴ"
@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       />
                       <span className="fw-bold fs-4">TOKIEATS</span>
                     </Link>
-                  </div>
+                  </div>    
 
                   {/* 中央：ナビゲーション */}
                   <div className="col">
