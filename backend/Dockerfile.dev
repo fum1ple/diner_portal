@@ -17,7 +17,6 @@ WORKDIR /app
 # GemfileとGemfile.lockのみをコピーしてbundle installを実行
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler && \
-    bundle config set --local without 'development test' && \
     bundle install
 
 # 開発環境用のイメージ
@@ -30,7 +29,8 @@ RUN apt-get update -qq && \
     libpq-dev \
     git \
     nodejs \
-    postgresql-client && \
+    postgresql-client \
+    libyaml-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -38,6 +38,12 @@ WORKDIR /app
 
 # ビルダーからgemをコピー
 COPY --from=builder /usr/local/bundle /usr/local/bundle
+
+# GemfileとGemfile.lockをコピー（bundle checkのため）
+COPY Gemfile Gemfile.lock ./
+
+# gemの整合性チェックと不足分のインストール
+RUN bundle check || bundle install
 
 # アプリケーションコードをコピー
 COPY . /app

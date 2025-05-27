@@ -1,14 +1,13 @@
-version: '3.9'
-
 services:
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
       target: development
+    env_file:
+      - .env.local
     environment:
       TZ: Asia/Tokyo
-      NEXT_PUBLIC_API_BASE_URL: http://backend:3000
       NODE_ENV: development
     volumes:
       - ./frontend:/app:cached
@@ -27,14 +26,12 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
       target: development
+    env_file:
+      - .env.local
     environment:
       RAILS_ENV: development
       TZ: Asia/Tokyo
-      DATABASE_HOST: db
-      DATABASE_USER: root
-      DATABASE_PASSWORD: password
-      DATABASE_NAME: app_development
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+    command: bash -c "bundle check || bundle install && rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
     volumes:
       - ./backend:/app:cached
       - bundle-cache:/usr/local/bundle
