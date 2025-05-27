@@ -15,7 +15,7 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
       <div className="container">
-        <Link href="/top" className="navbar-brand d-flex align-items-center gap-2">
+        <Link href="/" className="navbar-brand d-flex align-items-center gap-2">
           <Image 
             src="/TOKIEATS-logo.png" 
             alt="TOKIEATS" 
