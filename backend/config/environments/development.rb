@@ -71,4 +71,8 @@ Rails.application.configure do
 
   # tokium eats用。このホスト名を追加しないと、railsの初期画面が表示されない
   config.hosts << /.*\.github\.dev/
+
+  # Docker コンテナ間通信を許可
+  config.hosts << "backend"
+  config.hosts << "backend:3000"
 end
