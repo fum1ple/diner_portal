@@ -4,7 +4,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Image from 'next/image';
-import Navbar from '../components/Navbar';
 
 export default function MyPage() {
   const { data: session, status } = useSession();
@@ -41,8 +40,7 @@ export default function MyPage() {
 
   return (
     <>
-      <Navbar />
-      <div className="container py-4">
+      <div className="py-4">
         <div className="row">
           {/* サイドバー */}
           <div className="col-md-4 mb-4">
