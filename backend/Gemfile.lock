@@ -239,6 +239,7 @@ DEPENDENCIES
   bootsnap
   debug
   googleauth
+  jwt
   pg (~> 1.1)
   puma (>= 5.0)
   rack-cors
