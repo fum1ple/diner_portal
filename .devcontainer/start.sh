@@ -11,3 +11,4 @@ else
 fi
 
 echo "✅ 開発環境の起動完了！"
+echo "📋 VS Code will automatically start log monitoring..."

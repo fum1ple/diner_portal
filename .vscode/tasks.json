@@ -1,0 +1,88 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Frontend Log Monitor",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["logs", "-f", "--timestamps", "frontend"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "new",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "isBackground": true,
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "options": {
+                "cwd": "/workspaces/diner_portal"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start Backend Log Monitor",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["logs", "-f", "--timestamps", "backend"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "new",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "isBackground": true,
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "options": {
+                "cwd": "/workspaces/diner_portal"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start All Services",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["up", "-d"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "options": {
+                "cwd": "/workspaces/diner_portal"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start Development Environment",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Start All Services",
+                "Start Frontend Log Monitor",
+                "Start Backend Log Monitor"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        }
+    ]
+}
