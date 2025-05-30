@@ -47,18 +47,17 @@ export default function AuthButton() {
         </button>
         <ul className="dropdown-menu dropdown-menu-end shadow-sm">
           <li>
-            <a className="dropdown-item" href="/profile">プロフィール</a>
-          </li>
-          <li>
-            <a className="dropdown-item" href="/myreviews">マイレビュー</a>
+            <a className="dropdown-item" href="/mypage">
+              <i className="bi bi-person-circle me-2"></i>マイページ
+            </a>
           </li>
           <li><hr className="dropdown-divider" /></li>
           <li>
             <button
-              className="dropdown-item text-danger"
+              className="dropdown-item text-danger d-flex align-items-center"
               onClick={() => signOut()}
             >
-              ログアウト
+              <i className="bi bi-box-arrow-right me-2"></i>ログアウト
             </button>
           </li>
         </ul>

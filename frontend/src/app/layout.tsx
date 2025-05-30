@@ -34,12 +34,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="description" content="社内限定レストラン共有プラットフォーム" />
         <style dangerouslySetInnerHTML={{ __html: customStyles }} />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" async></script>
       </head>
       <body className="bg-light">
         <AuthProvider>
           <div className="d-flex flex-column min-vh-100">
             {/* HEADER */}
-            <header className="sticky-top bg-white shadow-sm py-3">
+            <header className="sticky-top bg-white shadow-sm py-2">
               <div className="container">
                 <div className="row align-items-center">
                   {/* 左：ロゴ */}
@@ -47,12 +48,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <Image
                       src="/TOKIEATS-logo.png"
                       alt="TOKIEATS ロゴ"
-                      width={32}
-                      height={32}
+                      width={40}
+                      height={40}
                       priority
-                      className="me-2"
+                      className="me-3"
                     />
-                    <span className="fw-bold fs-5">TOKIEATS</span>
+                    <span className="fw-bold fs-4">TOKIEATS</span>
                   </div>
 
                   {/* 中央：ナビゲーション */}
@@ -66,13 +67,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     
                   {/* 右：検索＆ログイン */}
                   <div className="col-auto d-flex align-items-center gap-3">
-                    <div className="position-relative d-flex align-items-center bg-light rounded-pill px-3 py-2" style={{ width: '200px' }}>
-                      <SearchIcon className="text-muted me-2" />
-                      <input
-                        type="search"
-                        placeholder="検索"
-                        className="form-control form-control-sm border-0 bg-transparent shadow-none p-0"
-                      />
+                    <div className="dropdown">
+                      <button 
+                        className="btn btn-light rounded-circle p-2" 
+                        type="button" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false"
+                        style={{ width: '40px', height: '40px' }}
+                      >
+                        <SearchIcon className="text-muted" style={{ width: '16px', height: '16px' }} />
+                      </button>
+                      <div className="dropdown-menu dropdown-menu-end p-3 shadow" style={{ minWidth: '300px' }}>
+                        <div className="position-relative">
+                          <SearchIcon className="position-absolute text-muted" style={{ left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px' }} />
+                          <input
+                            type="search"
+                            placeholder="レストランを検索..."
+                            className="form-control ps-5"
+                            autoFocus
+                          />
+                        </div>
+                      </div>
                     </div>
                     <AuthButtonWrapper />
                   </div>
