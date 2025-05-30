@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 ENV TZ Asia/Tokyo
 
@@ -13,7 +13,7 @@ COPY . .
 # RUN yarn build
 
 # 開発環境用のイメージ
-FROM node:20-alpine AS development
+FROM node:22-alpine AS development
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ EXPOSE 4000
 CMD ["yarn", "dev", "-p", "4000"]
 
 # 本番環境用のイメージを作成する場合の例
-# FROM node:20-alpine AS production
+# FROM node:22-alpine AS production
 # WORKDIR /app
 # COPY --from=builder /app/.next /app/.next
 # COPY --from=builder /app/public /app/public

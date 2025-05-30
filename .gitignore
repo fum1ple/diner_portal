@@ -112,3 +112,4 @@ backend/.yarn-integrity
 backend/storage/*
 backend!/storage/.keep
 backend/public/uploads
+.env.local
