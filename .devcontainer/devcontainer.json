@@ -40,5 +40,5 @@
     }
   },
   "remoteUser": "root",
-  "postStartCommand":  "./.devcontainer/start.sh && git config --global --add safe.directory /workspaces/diner_portal && chown -R root:root /workspaces/diner_portal"
+  "postStartCommand":  "./.devcontainer/start.sh && git config --global --add safe.directory /workspaces/diner_portal"
 }
