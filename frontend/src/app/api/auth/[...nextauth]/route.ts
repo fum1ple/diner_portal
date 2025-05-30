@@ -99,8 +99,8 @@ export const authOptions: NextAuthOptions = {
       // 初回サインイン時のGoogleアカウント情報を保存
       if (user && account && account.provider === 'google') {
         token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
+        token.email = user.email ?? undefined;
+        token.name = user.name ?? undefined;
         if (account.id_token) {
           token.idToken = account.id_token;
         }
