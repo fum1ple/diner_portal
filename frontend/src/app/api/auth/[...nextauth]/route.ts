@@ -9,9 +9,33 @@ declare module "next-auth" {
     user?: {
       id?: string;
       email?: string;
+      name?: string;
+      google_id?: string;
     } & DefaultSession["user"];
     idToken?: string;
     accessToken?: string;
+    jwtToken?: string; // Rails APIからのJWTトークン
+  }
+
+  interface User {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    railsJwtToken?: string; // Rails APIから受信したJWTトークン（一時保存用）
+    railsUser?: any; // Rails APIから受信したユーザー情報（一時保存用）
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    email?: string;
+    name?: string;
+    google_id?: string;
+    idToken?: string;
+    accessToken?: string;
+    jwtToken?: string; // Rails APIからのJWTトークン
   }
 }
 
@@ -29,7 +53,7 @@ const getRailsApiUrl = () => {
   return 'http://backend:3000'
 }
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -48,42 +72,69 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
-        // ID情報を設定
+        // Rails APIから取得したユーザー情報をセッションに設定
         if (token.id) {
           session.user.id = token.id as string;
         }
-        // メール情報を設定
         if (token.email) {
           session.user.email = token.email as string;
         }
-        // GoogleのidToken, accessTokenをセッションに追加（string型のみ）
+        if (token.name) {
+          session.user.name = token.name as string;
+        }
+        if (token.google_id) {
+          session.user.google_id = token.google_id as string;
+        }
+        
+        // Googleのトークン情報
         session.idToken = typeof token.idToken === 'string' ? token.idToken : undefined;
         session.accessToken = typeof token.accessToken === 'string' ? token.accessToken : undefined;
+        
+        // Rails APIからのJWTトークン
+        session.jwtToken = typeof token.jwtToken === 'string' ? token.jwtToken : undefined;
       }
       return session;
     },
     async jwt({ token, user, account }: { token: JWT; user?: User; account?: Account | null }) {
+      // 初回サインイン時のGoogleアカウント情報を保存
       if (user && account && account.provider === 'google') {
         token.id = user.id;
         token.email = user.email;
-        if (typeof account.id_token === 'string') {
+        token.name = user.name;
+        if (account.id_token) {
           token.idToken = account.id_token;
         }
-        if (typeof account.access_token === 'string') {
+        if (account.access_token) {
           token.accessToken = account.access_token;
+        }
+        
+        // Rails APIから受信したJWTトークンとユーザー情報を保存
+        if (user.railsJwtToken) {
+          token.jwtToken = user.railsJwtToken;
+          console.log('JWT token saved to token:', user.railsJwtToken);
+        }
+        if (user.railsUser) {
+          // Rails APIから受信したユーザー情報でトークンを更新
+          token.id = user.railsUser.id.toString();
+          token.email = user.railsUser.email;
+          token.name = user.railsUser.name;
+          token.google_id = user.railsUser.google_id;
+          console.log('Rails user info saved to token:', user.railsUser);
         }
       }
       return token;
     },
-    // Rails API連携用: サインイン時にAPIへトークン送信
+    // Rails API連携用: サインイン時にAPIへトークン送信してJWTを受信
     async signIn({ user, account }: { user: User; account?: Account | null }) {
-      if (account?.provider === 'google' && typeof account.id_token === 'string') {
-        // Rails APIへid_tokenを送信
+      if (account?.provider === 'google' && account.id_token) {
+        // Rails APIへid_tokenを送信してJWTを受信
         try {
           const requestBody = {
             id_token: account.id_token,
             email: user.email
           };
+
+          console.log('Sending request to Rails API:', requestBody);
 
           const res = await fetch(`${getRailsApiUrl()}/api/auth/google`, {
             method: 'POST',
@@ -93,11 +144,25 @@ const authOptions: NextAuthOptions = {
           
           if (!res.ok) {
             const errorText = await res.text();
-            console.error('API Response error:', errorText);
+            console.error('API Response error:', res.status, errorText);
             return false;
           }
-        
-          return true;
+
+          const responseData = await res.json();
+          console.log('Rails API response:', responseData);
+
+          if (responseData.success && responseData.token && responseData.user) {
+            // Rails APIから受信したユーザー情報とJWTトークンをuserオブジェクトに一時保存
+            // これはjwtコールバックで使用される
+            user.railsJwtToken = responseData.token;
+            user.railsUser = responseData.user;
+            
+            console.log('Successfully received JWT from Rails API');
+            return true;
+          } else {
+            console.error('Invalid response from Rails API:', responseData);
+            return false;
+          }
         } catch (error) {
           console.error('API Request failed:', error);
           return false;

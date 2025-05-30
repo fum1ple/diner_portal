@@ -10,5 +10,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     post 'auth/google', to: 'auth#google'
+    
+    # 認証が必要なユーザー関連のルート
+    get 'user/profile', to: 'user#profile'
+    put 'user/update', to: 'user#update'
   end
 end
