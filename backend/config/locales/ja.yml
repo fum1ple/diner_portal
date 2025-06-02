@@ -1,0 +1,68 @@
+ja:
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "バリデーションに失敗しました: %{errors}"
+        required: "を入力してください"
+        blank: "を入力してください"
+        taken: "はすでに存在します"
+        invalid: "は不正な値です"
+        inclusion: "は一覧にありません"
+        exclusion: "は予約されています"
+        confirmation: "と%{attribute}の入力が一致しません"
+        accepted: "を受諾してください"
+        empty: "を入力してください"
+        present: "は入力しないでください"
+        too_long: "は%{count}文字以内で入力してください"
+        too_short: "は%{count}文字以上で入力してください"
+        wrong_length: "は%{count}文字で入力してください"
+        not_a_number: "は数値で入力してください"
+        not_an_integer: "は整数で入力してください"
+        greater_than: "は%{count}より大きい値にしてください"
+        greater_than_or_equal_to: "は%{count}以上の値にしてください"
+        equal_to: "は%{count}にしてください"
+        less_than: "は%{count}より小さい値にしてください"
+        less_than_or_equal_to: "は%{count}以下の値にしてください"
+        other_than: "は%{count}以外の値にしてください"
+        odd: "は奇数にしてください"
+        even: "は偶数にしてください"
+      models:
+        user:
+          attributes:
+            email:
+              blank: "メールアドレスを入力してください"
+              invalid: "メールアドレスの形式が正しくありません"
+              taken: "そのメールアドレスは既に使用されています"
+            name:
+              blank: "名前を入力してください"
+            google_id:
+              blank: "Google IDを入力してください"
+              taken: "そのGoogle IDは既に使用されています"
+        refresh_token:
+          attributes:
+            user:
+              blank: "ユーザーを選択してください"
+              required: "ユーザーを選択してください"
+            token:
+              blank: "トークンを入力してください"
+              taken: "そのトークンは既に使用されています"
+            jti:
+              blank: "JTIを入力してください"
+              taken: "そのJTIは既に使用されています"
+            expires_at:
+              blank: "有効期限を入力してください"
+    attributes:
+      user:
+        email: "メールアドレス"
+        name: "名前"
+        google_id: "Google ID"
+        created_at: "作成日時"
+        updated_at: "更新日時"
+      refresh_token:
+        user: "ユーザー"
+        token: "トークン"
+        jti: "JTI"
+        expires_at: "有効期限"
+        revoked: "無効化"
+        created_at: "作成日時"
+        updated_at: "更新日時"

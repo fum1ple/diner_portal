@@ -35,6 +35,9 @@ gem "bootsnap", require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem "rack-cors"
 
+# Rate limiting and security
+gem "rack-attack"
+
 # JWT for token-based authentication
 gem "jwt"
 
@@ -44,6 +47,8 @@ gem "googleauth"
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
+  # Mocking library for tests
+  gem "mocha"
 end
 
 group :development do
