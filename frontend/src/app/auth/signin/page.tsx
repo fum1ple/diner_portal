@@ -11,7 +11,7 @@ export default function SignIn() {
   const handleSignIn = async () => {
     setIsLoading(true);
     try {
-      await signIn('google', { callbackUrl: '/mypage' });
+      await signIn('google', { callbackUrl: '/top' });
     } catch (error) {
       console.error('ログインエラー:', error);
       setIsLoading(false);

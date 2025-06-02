@@ -11,9 +11,10 @@ const nextConfig = {
       },
     ],
   },
-  // React 18 Concurrent Features
-  experimental: {
-    optimizeCss: true,
+  // CSS処理設定
+  compiler: {
+    // styled-componentsサポート（必要に応じて）
+    styledComponents: true,
   },
   // TypeScript設定
   typescript: {

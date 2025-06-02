@@ -5,7 +5,7 @@ import Image from 'next/image'
 import SearchIcon from './icons/SearchIcon'
 import { AuthProvider } from './providers'
 import Link from 'next/link'
-import AuthButtonWrapper from './components/AuthButtonWrapper'
+import AuthButtonWrapper from '../components/AuthButtonWrapper'
 import { useEffect, useState } from 'react'
 
 // インラインスタイルを追加
@@ -60,8 +60,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <div className="col">
                     <nav className="d-flex justify-content-center gap-4">
                       <Link href="/" className="text-decoration-none text-secondary fw-medium">ホーム</Link>
-                      <a href="/restaurants" className="text-decoration-none text-secondary fw-medium">レストラン一覧</a>
-                      <a href="/mypage" className="text-decoration-none text-secondary fw-medium">マイレビュー</a>
+                      <Link href="/top" className="text-decoration-none text-secondary fw-medium">TOP</Link>
+                      <Link href="/mypage" className="text-decoration-none text-secondary fw-medium">マイページ</Link>
                     </nav>
                   </div>
     

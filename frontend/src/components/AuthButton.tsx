@@ -1,7 +1,7 @@
 'use client';
 
 import { signOut, useSession } from 'next-auth/react';
-import LoginIcon from '../icons/LoginIcon';
+import LoginIcon from '../app/icons/LoginIcon';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
