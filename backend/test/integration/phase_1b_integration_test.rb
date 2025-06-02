@@ -5,6 +5,8 @@ class Phase1BIntegrationTest < ActionDispatch::IntegrationTest
   self.use_transactional_tests = true
 
   def setup
+    # 関連するリフレッシュトークンを先に削除
+    RefreshToken.delete_all
     User.delete_all
     
     @test_user = User.create!(
@@ -51,8 +53,7 @@ class Phase1BIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
     error_response = JSON.parse(response.body)
     
-    assert_equal 'Unauthorized', error_response['error']
-    assert_equal 'Missing authorization token', error_response['message']
+    assert_equal 'Missing authorization token', error_response['error']
     
     puts "✅ Phase 1B: 未認証時の適切なエラーレスポンス"
     
@@ -62,7 +63,7 @@ class Phase1BIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
     invalid_token_response = JSON.parse(response.body)
     
-    assert_equal 'Unauthorized', invalid_token_response['error']
+    assert_equal 'Invalid token format', invalid_token_response['error']
     
     puts "✅ Phase 1B: 無効なトークン時の適切なエラーレスポンス"
     
@@ -79,7 +80,7 @@ class Phase1BIntegrationTest < ActionDispatch::IntegrationTest
     
     assert_response :unauthorized
     response_data = JSON.parse(response.body)
-    assert_equal 'Unauthorized', response_data['error']
+    assert_equal 'Invalid token format', response_data['error']
   end
 
   test "should handle missing user for valid token format" do
@@ -87,17 +88,15 @@ class Phase1BIntegrationTest < ActionDispatch::IntegrationTest
     fake_payload = {
       user_id: 999999,
       email: 'nonexistent@tokium.jp',
-      name: 'Non Existent User',
-      exp: 24.hours.from_now.to_i
+      name: 'Non Existent User'
     }
     
-    fake_token = JWT.encode(fake_payload, Rails.application.secret_key_base, 'HS256')
+    fake_token = JwtService.encode(fake_payload)
     
     get '/api/user/profile', headers: { 'Authorization' => "Bearer #{fake_token}" }
     
     assert_response :unauthorized
     response_data = JSON.parse(response.body)
-    assert_equal 'Unauthorized', response_data['error']
-    assert_equal 'User not found', response_data['message']
+    assert_equal 'User not found', response_data['error']
   end
 end

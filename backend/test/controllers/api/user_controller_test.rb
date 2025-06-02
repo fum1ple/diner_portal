@@ -6,7 +6,8 @@ class Api::UserControllerTest < ActionController::TestCase
   self.use_transactional_tests = true
 
   def setup
-    # 各テスト前にusersテーブルをクリア
+    # 各テスト前にリフレッシュトークンとユーザーテーブルをクリア
+    RefreshToken.delete_all
     User.delete_all
     
     @test_user = User.create!(
@@ -38,8 +39,7 @@ class Api::UserControllerTest < ActionController::TestCase
     assert_response :unauthorized
     
     response_data = JSON.parse(response.body)
-    assert_equal 'Unauthorized', response_data['error']
-    assert_equal 'Missing authorization token', response_data['message']
+    assert_equal 'Missing authorization token', response_data['error']
   end
 
   test "should reject request with invalid token" do
@@ -50,7 +50,7 @@ class Api::UserControllerTest < ActionController::TestCase
     assert_response :unauthorized
     
     response_data = JSON.parse(response.body)
-    assert_equal 'Unauthorized', response_data['error']
+    assert_equal 'Invalid token format', response_data['error']
   end
 
   test "should update user with valid token" do
