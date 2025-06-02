@@ -9,8 +9,11 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   namespace :api do
+    # 認証関連のルート
     post 'auth/google', to: 'auth#google'
-    
+    post 'auth/refresh', to: 'auth#refresh'
+    post 'auth/logout', to: 'auth#logout'
+
     # 認証が必要なユーザー関連のルート
     get 'user/profile', to: 'user#profile'
     put 'user/update', to: 'user#update'

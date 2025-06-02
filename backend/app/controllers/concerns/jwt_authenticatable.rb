@@ -19,31 +19,30 @@ module JwtAuthenticatable
   # Authorizationヘッダーからトークンを取得し、検証
   def authenticate_jwt_token
     token = extract_token_from_header
-    
+
     unless token
       render_unauthorized('Missing authorization token')
       return
     end
 
-    decoded_token = ::JwtService.decode(token)
-    
-    unless decoded_token
-      render_unauthorized('Invalid or expired token')
-      return
-    end
+    begin
+      decoded_token = ::JwtService.decode(token)
 
-    user_id = decoded_token['user_id']
-    @current_user = User.find_by(id: user_id)
-    
-    unless @current_user
-      render_unauthorized('User not found')
-      return
-    end
+      user_id = decoded_token['user_id']
+      @current_user = User.find_by(id: user_id)
 
-  rescue JWT::DecodeError => e
-    render_unauthorized("Token decode error: #{e.message}")
-  rescue => e
-    render_unauthorized("Authentication error: #{e.message}")
+      unless @current_user
+        render_unauthorized('User not found')
+        return
+      end
+
+    rescue JWT::ExpiredSignature => e
+      render_unauthorized('Token expired')
+    rescue JWT::DecodeError => e
+      render_unauthorized('Invalid token format')
+    rescue => e
+      render_unauthorized("Authentication error: #{e.message}")
+    end
   end
 
   # Authorizationヘッダーからトークンを抽出
@@ -58,9 +57,22 @@ module JwtAuthenticatable
 
   # 認証エラーレスポンス
   def render_unauthorized(message = 'Unauthorized')
-    render json: { 
-      error: 'Unauthorized', 
-      message: message 
+    error_code = case message
+                when /Invalid token format/, /decode error/i
+                  'INVALID_TOKEN'
+                when /Token expired/, /expired/i
+                  'TOKEN_EXPIRED'
+                when /Missing authorization token/
+                  'MISSING_TOKEN'
+                when /User not found/
+                  'USER_NOT_FOUND'
+                else
+                  'UNAUTHORIZED'
+                end
+
+    render json: {
+      error: message,
+      code: error_code
     }, status: :unauthorized
   end
 

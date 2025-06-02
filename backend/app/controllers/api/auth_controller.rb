@@ -6,6 +6,8 @@ class Api::AuthController < ApplicationController
 
   require 'googleauth'
   require 'googleauth/id_tokens'
+  require_relative '../../services/jwt_service'
+  require_relative '../../services/auth_service'
 
   # 許可するGoogle Workspaceドメイン
   ALLOWED_DOMAIN = 'tokium.jp'
@@ -23,64 +25,82 @@ class Api::AuthController < ApplicationController
         # ドメインチェック
         domain = email.split('@').last.downcase
         if domain != ALLOWED_DOMAIN.downcase
-          render json: { error: 'Unauthorized domain' }, status: :unauthorized and return
+          render_error('Unauthorized domain', status: :unauthorized) and return
         end
-        
+
         # ユーザーを作成または取得
-        user = find_or_create_user(payload)
-        
-        # JWTトークンを生成
-        token = generate_jwt_token(user)
-        
+        user = AuthService.find_or_create_user(payload)
+
+        # JWTトークンペアを生成（アクセス + リフレッシュトークン）
+        Rails.logger.info "Generating token pair for user: #{user.id}"
+        token_pair = JwtService.generate_token_pair(user)
+        Rails.logger.info "Token pair generated successfully"
+
         # 標準化されたレスポンス
-        render json: {
-          success: true,
+        render_success({
           user: {
             id: user.id,
             email: user.email,
             name: user.name,
             google_id: user.google_id
           },
-          token: token
-        }, status: :ok
+          **token_pair
+        })
       else
-        render json: { error: 'Invalid token or email' }, status: :unauthorized
+        Rails.logger.error "Invalid token or email condition failed"
+        render_error('Invalid token or email', status: :unauthorized)
       end
     rescue Google::Auth::IDTokens::VerificationError => e
-      render json: { error: 'Token verification failed', detail: e.message }, status: :unauthorized
+      Rails.logger.error "Google token verification error: #{e.message}"
+      render_error('Token verification failed', status: :unauthorized, code: 'TOKEN_VERIFICATION_FAILED')
     rescue => e
-      render json: { error: 'Authentication failed', detail: e.message }, status: :unauthorized
+      Rails.logger.error "Authentication error: #{e.class} - #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      render_error('Authentication failed', status: :unauthorized, code: 'AUTH_FAILED')
     end
   end
-  
-  private
-  
-  # ユーザーを作成または取得
-  def find_or_create_user(payload)
-    google_id = payload['sub']
-    email = payload['email']
-    name = payload['name']
-    
-    user = User.find_by(google_id: google_id)
-    
-    if user
-      # 既存ユーザーの情報を更新
-      user.update!(
-        email: email,
-        name: name
-      )
+
+  # POST /api/auth/refresh
+  def refresh
+    refresh_token = params[:refresh_token]
+
+    if refresh_token.blank?
+      render_error('Refresh token is required', code: 'MISSING_REFRESH_TOKEN', status: :bad_request) and return
+    end
+
+    new_tokens = JwtService.refresh_access_token(refresh_token)
+
+    if new_tokens
+      render_success(new_tokens)
     else
-      # 新規ユーザーを作成
-      user = User.create!(
-        google_id: google_id,
-        email: email,
-        name: name
-      )
+      render_error('Invalid or expired refresh token', code: 'INVALID_REFRESH_TOKEN', status: :unauthorized)
     end
-    
-    user
+  rescue => e
+    Rails.logger.error "Refresh token error: #{e.message}"
+    render_error('Token refresh failed', code: 'REFRESH_FAILED', status: :internal_server_error)
   end
-  
+
+  # POST /api/auth/logout
+  def logout
+    refresh_token = params[:refresh_token]
+
+    if refresh_token.present?
+      JwtService.revoke_refresh_token(refresh_token)
+    end
+
+    # 現在のユーザーの全リフレッシュトークンを無効化（オプション）
+    if current_user && params[:revoke_all] == 'true'
+      JwtService.revoke_all_refresh_tokens(current_user)
+    end
+
+    render_success({ message: 'Logged out successfully' })
+  rescue => e
+    Rails.logger.error "Logout error: #{e.message}"
+    render_error('Logout failed', code: 'LOGOUT_FAILED', status: :internal_server_error)
+  end
+
+  private
+
   # JWTトークンを生成
   def generate_jwt_token(user)
     JwtService.generate_user_token(user)
