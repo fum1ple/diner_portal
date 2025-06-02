@@ -5,7 +5,7 @@ import LoginIcon from '../app/icons/LoginIcon';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-export default function AuthButton() {
+const AuthButton = () => {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
   const router = useRouter();
@@ -74,4 +74,6 @@ export default function AuthButton() {
       ログイン
     </button>
   );
-}
+};
+
+export default AuthButton;

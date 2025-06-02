@@ -3,7 +3,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import ProtectedPage from '@/components/ProtectedPage';
 
-function TopPageContent() {
+const TopPageContent = () => {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
@@ -32,12 +32,12 @@ function TopPageContent() {
       )}
     </div>
   );
-}
+};
 
-export default function TopPage() {
-  return (
-    <ProtectedPage redirectTo="/auth/error?error=AccessDenied">
-      <TopPageContent />
-    </ProtectedPage>
-  );
-}
+const TopPage = () => (
+  <ProtectedPage redirectTo="/auth/error?error=AccessDenied">
+    <TopPageContent />
+  </ProtectedPage>
+);
+
+export default TopPage;

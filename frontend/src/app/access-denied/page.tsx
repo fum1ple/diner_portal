@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect } from 'react';
 
-export default function AccessDeniedPage() {
+const AccessDeniedPage = () => {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -99,4 +99,6 @@ export default function AccessDeniedPage() {
       </div>
     </div>
   );
-}
+};
+
+export default AccessDeniedPage;

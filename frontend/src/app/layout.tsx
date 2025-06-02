@@ -17,10 +17,9 @@ const customStyles = `
   }
 `
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="ja">
-      <head>
+const RootLayout = ({ children }: { children: React.ReactNode }) => (
+  <html lang="ja">
+    <head>
         <title>TOKIEATS</title>
         <meta name="description" content="社内限定レストラン共有プラットフォーム" />
         <style dangerouslySetInnerHTML={{ __html: customStyles }} />
@@ -114,5 +113,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </AuthProvider>
       </body>
     </html>
-  )
-}
+  );
+
+export default RootLayout;

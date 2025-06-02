@@ -92,7 +92,7 @@ export const withAuth = <P extends object>(
     fallbackComponent?: ReactNode;
   }
 ) => {
-  const WithAuthComponent: React.FC<P> = (props) => (
+  const WithAuthComponent: React.FC<P> = props => (
     <ProtectedPage {...options}>
       <WrappedComponent {...props} />
     </ProtectedPage>

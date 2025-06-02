@@ -1,10 +1,9 @@
 import Image from 'next/image'
 import LoginIcon from './icons/LoginIcon'
 
-export default function Home() {
-  return (
-    <>
-      {/* HERO セクション */}
+const Home = () => (
+  <>
+    {/* HERO セクション */}
       <section className="py-5 bg-light">
         <div className="container">
           <div className="row align-items-center">
@@ -145,5 +144,6 @@ export default function Home() {
         </div>
       </section>
     </>
-  )
-}
+  );
+
+export default Home;

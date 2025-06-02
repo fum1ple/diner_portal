@@ -24,7 +24,12 @@ declare module "next-auth" {
     image?: string | null;
     railsJwtToken?: string;
     railsRefreshToken?: string;
-    railsUser?: any;
+    railsUser?: {
+      id: string;
+      email: string;
+      name?: string;
+      google_id?: string;
+    };
   }
 }
 
@@ -48,9 +53,7 @@ const getBaseUrl = () => {
   return 'http://localhost:4000'
 }
 
-const getRailsApiUrl = () => {
-  return 'http://backend:3000'
-}
+const getRailsApiUrl = () => 'http://backend:3000';
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -124,7 +127,7 @@ const authOptions: NextAuthOptions = {
             return true;
           }
           return false;
-        } catch (error) {
+        } catch {
           return false;
         }
       }

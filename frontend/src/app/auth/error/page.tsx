@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-function AuthErrorContent() {
+const AuthErrorContent = () => {
   const searchParams = useSearchParams();
   const [errorMessage, setErrorMessage] = useState('認証エラーが発生しました');
 
@@ -58,18 +58,18 @@ function AuthErrorContent() {
       </div>
     </div>
   );
-}
+};
 
-export default function AuthError() {
-  return (
-    <Suspense fallback={
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">読み込み中...</span>
-        </div>
+const AuthError = () => (
+  <Suspense fallback={
+    <div className="d-flex justify-content-center align-items-center min-vh-100">
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">読み込み中...</span>
       </div>
-    }>
-      <AuthErrorContent />
-    </Suspense>
-  );
-}
+    </div>
+  }>
+    <AuthErrorContent />
+  </Suspense>
+);
+
+export default AuthError;
