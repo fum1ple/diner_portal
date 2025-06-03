@@ -6,7 +6,7 @@ class RestaurantSecurityTest < ActionDispatch::IntegrationTest
     @user2 = users(:two)
     @area_tag = tags(:area_tag_tokyo)
     @genre_tag = tags(:genre_tag_italian)
-    
+
     @token1 = JwtService.encode_token({ user_id: @user1.id })
     @token2 = JwtService.encode_token({ user_id: @user2.id })
     @auth_headers1 = { "Authorization" => "Bearer #{@token1}" }
@@ -121,11 +121,11 @@ class RestaurantSecurityTest < ActionDispatch::IntegrationTest
 
     assert_response :created
     response_data = JSON.parse(response.body)
-    
+
     # current_userが正しく使用されているか確認
     assert_equal @user1.id, response_data["user_id"]
     assert_not_equal @user2.id, response_data["user_id"]
-    
+
     # その他の不正パラメータが無視されているか確認
     assert_not_equal 999, response_data["id"]
     assert_nil response_data["admin"]
@@ -146,7 +146,7 @@ class RestaurantSecurityTest < ActionDispatch::IntegrationTest
 
     assert_response :created
     response_data = JSON.parse(response.body)
-    
+
     # データがそのまま保存されるが、出力時にエスケープされることを確認
     # （実際のサニタイゼーションはフロントエンド側で行われる）
     assert_equal "<script>alert('XSS')</script>", response_data["name"]
@@ -187,7 +187,7 @@ class RestaurantSecurityTest < ActionDispatch::IntegrationTest
          as: :json
 
     assert_response :created
-    
+
     # 注意: 実際のレート制限テストは環境設定に依存するため、
     # ここでは基本的な動作確認のみ実施
   end

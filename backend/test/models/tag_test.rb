@@ -43,7 +43,7 @@ class TagTest < ActiveSupport::TestCase
   test "area_tags scope should return only area tags" do
     area_tag = Tag.create!(name: "東京", category: "area")
     genre_tag = Tag.create!(name: "イタリアン", category: "genre")
-    
+
     area_tags = Tag.area_tags
     assert_includes area_tags, area_tag
     assert_not_includes area_tags, genre_tag
@@ -52,7 +52,7 @@ class TagTest < ActiveSupport::TestCase
   test "genre_tags scope should return only genre tags" do
     area_tag = Tag.create!(name: "東京", category: "area")
     genre_tag = Tag.create!(name: "イタリアン", category: "genre")
-    
+
     genre_tags = Tag.genre_tags
     assert_includes genre_tags, genre_tag
     assert_not_includes genre_tags, area_tag
