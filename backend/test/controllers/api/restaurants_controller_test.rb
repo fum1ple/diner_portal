@@ -5,7 +5,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     @user = users(:one)
     @area_tag = Tag.create!(name: "東京", category: "area")
     @genre_tag = Tag.create!(name: "イタリアン", category: "genre")
-    
+
     # JWTトークンを生成
     @token = JwtService.encode_token({ user_id: @user.id })
     @auth_headers = { "Authorization" => "Bearer #{@token}" }
@@ -19,20 +19,20 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_difference("Restaurant.count", 1) do
-      post "/api/restaurants", 
+      post "/api/restaurants",
            params: { restaurant: restaurant_params },
            headers: @auth_headers,
            as: :json
     end
 
     assert_response :created
-    
+
     response_data = JSON.parse(response.body)
     assert_equal "新しいレストラン", response_data["name"]
     assert_equal @user.id, response_data["user_id"]
     assert_equal @area_tag.id, response_data["area_tag_id"]
     assert_equal @genre_tag.id, response_data["genre_tag_id"]
-    
+
     # 関連データも含まれているかチェック
     assert_equal "東京", response_data["area_tag"]["name"]
     assert_equal "area", response_data["area_tag"]["category"]
@@ -54,7 +54,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    
+
     response_data = JSON.parse(response.body)
     assert_includes response_data["errors"]["name"], "can't be blank"
   end
@@ -73,7 +73,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    
+
     response_data = JSON.parse(response.body)
     assert_includes response_data["errors"]["area_tag"], "must exist"
   end
@@ -92,7 +92,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    
+
     response_data = JSON.parse(response.body)
     assert_includes response_data["errors"]["genre_tag"], "must exist"
   end
@@ -112,7 +112,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    
+
     response_data = JSON.parse(response.body)
     assert_includes response_data["errors"]["area_tag"], "must exist"
   end
@@ -132,7 +132,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    
+
     response_data = JSON.parse(response.body)
     assert_includes response_data["errors"]["genre_tag"], "must exist"
   end
@@ -153,7 +153,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    
+
     response_data = JSON.parse(response.body)
     assert_includes response_data["errors"]["area_tag_id"], "must be an area tag"
   end
@@ -174,7 +174,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    
+
     response_data = JSON.parse(response.body)
     assert_includes response_data["errors"]["genre_tag_id"], "must be a genre tag"
   end
@@ -229,7 +229,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    
+
     response_data = JSON.parse(response.body)
     assert_includes response_data["errors"]["name"], "can't be blank"
   end
@@ -249,7 +249,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    
+
     response_data = JSON.parse(response.body)
     assert_includes response_data["errors"]["name"], "is too long (maximum is 255 characters)"
   end

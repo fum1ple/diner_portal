@@ -3,7 +3,7 @@ require "test_helper"
 # 店舗登録機能の包括的テストスイート
 class RestaurantTestSuite < ActiveSupport::TestCase
   # このファイルは店舗登録機能のテスト概要を提供します
-  
+
   def self.run_all_restaurant_tests
     puts "=== 店舗登録機能テストスイート ==="
     puts "以下のテストファイルを実行してください:"
