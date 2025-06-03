@@ -58,4 +58,45 @@ Content-Type: application/json
 - レスポンスには関連タグ情報も含めるとフロントエンドが便利
 
 ---
-この仕様で問題なければ、次のタスク（DBスキーマ調整・マイグレーション）に進みます。
+
+## 店舗詳細API
+
+### エンドポイント
+- `GET /api/restaurants/:id`
+
+### レスポンス例（成功時 200 OK）
+```
+{
+  "id": 10,
+  "name": "トキエイツ新宿店",
+  "area_tag_id": 1,
+  "genre_tag_id": 2,
+  "user_id": 5,
+  "area_tag": {
+    "id": 1,
+    "name": "新宿",
+    "category": "area"
+  },
+  "genre_tag": {
+    "id": 2,
+    "name": "イタリアン",
+    "category": "genre"
+  },
+  "created_at": "2025-06-03T10:30:00.000Z",
+  "updated_at": "2025-06-03T10:30:00.000Z"
+}
+```
+
+### エラー時（404 Not Found）
+```
+{
+  "error": "Not Found",
+  "message": "指定された店舗は存在しません"
+}
+```
+
+### 備考
+- 認証必須（JWT等による認証を前提）
+- area_tag_id, genre_tag_idは存在するTagのIDである必要あり
+- レスポンスには関連タグ情報も含める
+- 存在しないIDの場合は404エラー
