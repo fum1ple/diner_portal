@@ -20,6 +20,16 @@ module Api
       render json: restaurants.map { |restaurant| restaurant_response(restaurant) }
     end
 
+    def show
+      # 指定IDのレストランを取得（area_tag, genre_tagも含めて）
+      restaurant = Restaurant.includes(:area_tag, :genre_tag).find_by(id: params[:id])
+      if restaurant
+        render json: restaurant_response(restaurant)
+      else
+        render json: { error: 'Restaurant not found' }, status: :not_found
+      end
+    end
+
     private
 
     # JWT認証を必須にする
