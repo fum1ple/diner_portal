@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+area_tag_tokyo:
+  name: 東京
+  category: area
+
+area_tag_osaka:
+  name: 大阪
+  category: area
+
+genre_tag_italian:
+  name: イタリアン
+  category: genre
+
+genre_tag_japanese:
+  name: 和食
+  category: genre
+
+genre_tag_french:
+  name: フレンチ
+  category: genre

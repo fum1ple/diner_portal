@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+restaurant_one:
+  name: サンプルレストラン1
+  user: one
+  area_tag: area_tag_tokyo
+  genre_tag: genre_tag_italian
+
+restaurant_two:
+  name: サンプルレストラン2
+  user: two
+  area_tag: area_tag_osaka
+  genre_tag: genre_tag_japanese
