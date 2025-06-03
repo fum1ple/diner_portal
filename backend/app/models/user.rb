@@ -3,6 +3,7 @@
 class User < ApplicationRecord
   # 関連
   has_many :refresh_tokens, dependent: :destroy
+  has_many :restaurants
 
   # バリデーション
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
