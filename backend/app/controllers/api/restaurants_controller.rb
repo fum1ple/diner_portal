@@ -11,6 +11,15 @@ module Api
       end
     end
 
+    def index
+      # レストランの一覧を取得
+      # includesメソッドを使用して、関連するarea_tagとgenre_tagを事前にロード
+      # orderメソッドを使用して、作成日時の降順で並べ替え
+      restaurants = Restaurant.includes(:area_tag, :genre_tag).order(created_at: :desc)
+      # レストランの一覧をJSON形式で返す
+      render json: restaurants.map { |restaurant| restaurant_response(restaurant) }
+    end
+
     private
 
     # JWT認証を必須にする
