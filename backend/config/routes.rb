@@ -20,7 +20,9 @@ Rails.application.routes.draw do
     get 'user/profile', to: 'user#profile'
     put 'user/update', to: 'user#update'
 
-    # レストランに関する機能のうち、createの機能だけでいいよ
+    # レストランに関する機能のうち、only以降のアクションのみを許可
     resources :restaurants, only: [:create, :index, :show]
+    # タグに関する機能のうち、indexアクションのみを許可
+    resources :tags, only: [:index]
   end
 end
