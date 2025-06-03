@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  #　通常のルーティングはここに記述しますが、API専用のルーティングを設定するために、以下のようにネームスペースを使用します。
+  # API専用のルーティングを設定
 
   namespace :api do
     # 認証関連のルート
@@ -17,5 +19,8 @@ Rails.application.routes.draw do
     # 認証が必要なユーザー関連のルート
     get 'user/profile', to: 'user#profile'
     put 'user/update', to: 'user#update'
+    
+    # レストランに関する機能のうち、createの機能だけでいいよ
+    resources :restaurants, only: [:create]
   end
 end
