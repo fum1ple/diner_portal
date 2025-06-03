@@ -21,6 +21,6 @@ Rails.application.routes.draw do
     put 'user/update', to: 'user#update'
 
     # レストランに関する機能のうち、createの機能だけでいいよ
-    resources :restaurants, only: [:create]
+    resources :restaurants, only: [:create, :index]
   end
 end
