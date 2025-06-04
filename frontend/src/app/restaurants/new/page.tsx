@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { authenticatedFetch } from "@/utils/api";
 
@@ -15,6 +17,9 @@ const RestaurantNewPage = () => {
   const [name, setName] = useState("");
   const [areaId, setAreaId] = useState("");
   const [genreId, setGenreId] = useState("");
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -36,13 +41,43 @@ const RestaurantNewPage = () => {
     fetchTags();
   }, []);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitLoading(true);
+    setSubmitError(null);
+    setSuccess(false);
+    try {
+      const res = await authenticatedFetch("/api/restaurants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          area_tag_id: Number(areaId),
+          genre_tag_id: Number(genreId),
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err?.errors ? JSON.stringify(err.errors) : "登録失敗");
+      }
+      setSuccess(true);
+      setName("");
+      setAreaId("");
+      setGenreId("");
+    } catch (e: any) {
+      setSubmitError(e.message || "登録エラー");
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
   if (loading) return <div>タグを取得中...</div>;
   if (error) return <div style={{color: 'red'}}>エラー: {error}</div>;
 
   return (
     <div>
       <h1>店舗登録フォーム</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div>
           <label>店舗名:
             <input
@@ -74,7 +109,10 @@ const RestaurantNewPage = () => {
             </select>
           </label>
         </div>
-        <button type="submit" disabled={!name || !areaId || !genreId}>登録</button>
+        <button type="submit" disabled={!name || !areaId || !genreId || submitLoading}>登録</button>
+        {submitLoading && <div>登録中...</div>}
+        {submitError && <div style={{color:'red'}}>エラー: {submitError}</div>}
+        {success && <div style={{color:'green'}}>登録しました！</div>}
       </form>
     </div>
   );
