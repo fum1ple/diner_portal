@@ -7,7 +7,7 @@ class RestaurantsIntegrationTest < ActionDispatch::IntegrationTest
     @genre_tag = tags(:genre_tag_italian)
 
     # JWTトークンを生成
-    @token = JwtService.encode_token({ user_id: @user.id })
+    @token = JwtService.encode({ user_id: @user.id })
     @auth_headers = { "Authorization" => "Bearer #{@token}" }
   end
 

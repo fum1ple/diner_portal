@@ -12,7 +12,7 @@ class Phase2cSecurityIntegrationTest < ActionDispatch::IntegrationTest
     get '/api/user/profile',
         headers: {
           'Origin' => 'http://malicious-site.com',
-          'Authorization' => "Bearer #{JwtService.generate_user_token(@user)}"
+          'Authorization' => "Bearer #{JwtService.generate_access_token(@user)}"
         }
 
     # CORS設定により不正なオリジンからのリクエストは制限される
@@ -22,7 +22,7 @@ class Phase2cSecurityIntegrationTest < ActionDispatch::IntegrationTest
 
   test "should include security headers in response" do
     get '/api/user/profile',
-        headers: { 'Authorization' => "Bearer #{JwtService.generate_user_token(@user)}" }
+        headers: { 'Authorization' => "Bearer #{JwtService.generate_access_token(@user)}" }
 
     # セキュリティヘッダーが含まれていることを確認
     assert_not_nil response.headers['X-Content-Type-Options']
@@ -59,7 +59,7 @@ class Phase2cSecurityIntegrationTest < ActionDispatch::IntegrationTest
 
   test "should refresh access token" do
     # リフレッシュトークンを作成
-    refresh_token = JwtService.generate_refresh_token(@user)
+    refresh_token = RefreshTokenService.generate(@user)
 
     post '/api/auth/refresh', params: {
       refresh_token: refresh_token.token
@@ -85,7 +85,7 @@ class Phase2cSecurityIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "should revoke refresh token on logout" do
-    refresh_token = JwtService.generate_refresh_token(@user)
+    refresh_token = RefreshTokenService.generate(@user)
 
     post '/api/auth/logout', params: {
       refresh_token: refresh_token.token

@@ -72,37 +72,5 @@ class JwtService
         token_type: 'Bearer'
       }
     end
-
-    # === 後方互換性メソッド（将来的に削除予定） ===
-
-    # @deprecated generate_access_tokenを使用してください
-    def generate_user_token(user)
-      Rails.logger.warn "DEPRECATED: generate_user_token is deprecated, use generate_access_token instead"
-      generate_access_token(user)
-    end
-
-    # @deprecated encodeを使用してください
-    def encode_token(payload)
-      Rails.logger.warn "DEPRECATED: encode_token is deprecated, use encode instead"
-      encode(payload)
-    end
-
-    # @deprecated RefreshTokenServiceを使用してください
-    def generate_refresh_token(user)
-      Rails.logger.warn "DEPRECATED: generate_refresh_token is deprecated, use RefreshTokenService.generate instead"
-      RefreshTokenService.generate(user)
-    end
-
-    # @deprecated RefreshTokenServiceを使用してください
-    def revoke_refresh_token(refresh_token_str)
-      Rails.logger.warn "DEPRECATED: revoke_refresh_token is deprecated, use RefreshTokenService.revoke instead"
-      RefreshTokenService.revoke(refresh_token_str)
-    end
-
-    # @deprecated RefreshTokenServiceを使用してください
-    def revoke_all_refresh_tokens(user)
-      Rails.logger.warn "DEPRECATED: revoke_all_refresh_tokens is deprecated, use RefreshTokenService.revoke_all instead"
-      RefreshTokenService.revoke_all(user)
-    end
   end
 end

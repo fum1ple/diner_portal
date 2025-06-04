@@ -103,6 +103,6 @@ class Api::AuthController < ApplicationController
 
   # JWTトークンを生成
   def generate_jwt_token(user)
-    JwtService.generate_user_token(user)
+    JwtService.generate_access_token(user)
   end
 end

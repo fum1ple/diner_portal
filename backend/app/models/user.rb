@@ -36,7 +36,7 @@ class User < ApplicationRecord
 
   # JWTトークンを生成
   def generate_jwt_token
-    JwtService.generate_user_token(self)
+    JwtService.generate_access_token(self)
   end
 
   private

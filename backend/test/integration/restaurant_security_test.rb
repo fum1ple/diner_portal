@@ -7,8 +7,8 @@ class RestaurantSecurityTest < ActionDispatch::IntegrationTest
     @area_tag = tags(:area_tag_tokyo)
     @genre_tag = tags(:genre_tag_italian)
 
-    @token1 = JwtService.encode_token({ user_id: @user1.id })
-    @token2 = JwtService.encode_token({ user_id: @user2.id })
+    @token1 = JwtService.encode({ user_id: @user1.id })
+    @token2 = JwtService.encode({ user_id: @user2.id })
     @auth_headers1 = { "Authorization" => "Bearer #{@token1}" }
     @auth_headers2 = { "Authorization" => "Bearer #{@token2}" }
   end
