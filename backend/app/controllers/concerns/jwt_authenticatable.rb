@@ -28,6 +28,11 @@ module JwtAuthenticatable
     begin
       decoded_token = ::JwtService.decode(token)
 
+      unless decoded_token
+        render_unauthorized('Invalid token format')
+        return
+      end
+
       user_id = decoded_token['user_id']
       @current_user = User.find_by(id: user_id)
 

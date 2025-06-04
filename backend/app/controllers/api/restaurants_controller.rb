@@ -7,7 +7,7 @@ module Api
       if restaurant.save
         render json: restaurant_response(restaurant), status: :created # レストランの作成に成功した場合、レスポンスを返す
       else
-        render json: { errors: restaurant.errors.full_messages }, status: :unprocessable_entity # レストランの作成に失敗した場合、エラーメッセージを返す
+        render json: { errors: restaurant.errors.messages }, status: :unprocessable_entity # レストランの作成に失敗した場合、エラーメッセージを返す
       end
     end
 
@@ -50,6 +50,8 @@ module Api
         area_tag_id: restaurant.area_tag_id,
         genre_tag_id: restaurant.genre_tag_id,
         user_id: restaurant.user_id,
+        created_at: restaurant.created_at,
+        updated_at: restaurant.updated_at,
         area_tag: {
           id: restaurant.area_tag&.id, #&.はnilチェックを行う。restaurant.area_tagがnilの場合、idはnilになる
           name: restaurant.area_tag&.name,

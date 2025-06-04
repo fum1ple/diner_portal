@@ -160,8 +160,8 @@ class RestaurantSecurityTest < ActionDispatch::IntegrationTest
       genre_tag_id: @genre_tag.id
     }
 
-    # テーブルが削除されないことを確認
-    assert_no_difference("Restaurant.count", -Restaurant.count) do
+    # ActiveRecordが自動的にエスケープして、1つのレストランが正常に作成されることを確認
+    assert_difference("Restaurant.count", 1) do
       post "/api/restaurants",
            params: { restaurant: sql_injection_data },
            headers: @auth_headers1,
@@ -170,6 +170,10 @@ class RestaurantSecurityTest < ActionDispatch::IntegrationTest
 
     # 正常に作成されることを確認（ActiveRecordが自動的にエスケープする）
     assert_response :created
+
+    # 作成されたレストランの名前が正しくエスケープされていることを確認
+    created_restaurant = Restaurant.last
+    assert_equal "'; DROP TABLE restaurants; --", created_restaurant.name
   end
 
   test "should rate limit requests" do
