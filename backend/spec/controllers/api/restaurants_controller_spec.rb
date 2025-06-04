@@ -5,10 +5,10 @@ describe Api::RestaurantsController, type: :controller do
   let(:area_tag) { Tag.create!(name: '新宿', category: 'area') }
   let(:genre_tag) { Tag.create!(name: 'イタリアン', category: 'genre') }
   let(:valid_attributes) do
-    { name: 'トキエイツ新宿店', area_tag: area_tag.id, genre_tag: genre_tag.id }
+    { name: 'トキエイツ新宿店', area_tag_id: area_tag.id, genre_tag_id: genre_tag.id }
   end
   let(:invalid_attributes) do
-    { name: '', area_tag: nil, genre_tag: nil }
+    { name: '', area_tag_id: nil, genre_tag_id: nil }
   end
 
   before do
