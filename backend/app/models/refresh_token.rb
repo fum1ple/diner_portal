@@ -9,6 +9,7 @@ class RefreshToken < ApplicationRecord
 
   # 不要なスコープやバリデーションを削除（valid_tokens, expired, revokedのみ残す）
   scope :valid_tokens, -> { where(revoked: false).where('expires_at > ?', Time.current) }
+  scope :token_valid, -> { where(revoked: false).where('expires_at > ?', Time.current) }
   scope :expired, -> { where('expires_at <= ?', Time.current) }
   scope :revoked, -> { where(revoked: true) }
 
@@ -26,6 +27,11 @@ class RefreshToken < ApplicationRecord
     !expired? && !revoked?
   end
 
+  # テスト用エイリアス
+  def token_valid?
+    valid_token?
+  end
+
   def revoke!
     update!(revoked: true)
   end
@@ -38,11 +44,13 @@ class RefreshToken < ApplicationRecord
   private
 
   def generate_token
+    return if self.token.present? # 既にトークンが設定されている場合はスキップ
     self.token = SecureRandom.hex(32)
     Rails.logger.info "Generated token: #{self.token}"
   end
 
   def generate_jti
+    return if self.jti.present? # 既にJTIが設定されている場合はスキップ
     self.jti = SecureRandom.uuid
     Rails.logger.info "Generated jti: #{self.jti}"
   end

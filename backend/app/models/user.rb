@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   # バリデーション
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validate :email_format_check
   validates :name, presence: true
   validates :google_id, uniqueness: true, allow_nil: true
 
@@ -36,5 +37,16 @@ class User < ApplicationRecord
   # JWTトークンを生成
   def generate_jwt_token
     JwtService.generate_user_token(self)
+  end
+
+  private
+
+  def email_format_check
+    return unless email.present?
+
+    # 連続したドットをチェック
+    if email.include?('..')
+      errors.add(:email, 'is invalid')
+    end
   end
 end
