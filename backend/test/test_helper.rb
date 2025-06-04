@@ -34,10 +34,10 @@ class ActionDispatch::IntegrationTest
     define_method(method) do |path, **args|
       # headers が指定されていない場合は空のハッシュを作成
       args[:headers] ||= {}
-      
+
       # Host ヘッダーが設定されていない場合のみ追加
       args[:headers] = api_headers(args[:headers]) unless args[:headers].key?("Host")
-      
+
       send(:"original_#{method}", path, **args)
     end
   end
