@@ -9,11 +9,11 @@ development:
   username: root
   password: password
   database: app_development
-  host: db
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
 
 test:
   <<: *default
   username: root
   password: password
   database: app_test
-  host: db
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>

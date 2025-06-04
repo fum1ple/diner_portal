@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_30_094500) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_03_015502) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,25 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_30_094500) do
     t.index ["user_id"], name: "index_refresh_tokens_on_user_id"
   end
 
+  create_table "restaurants", force: :cascade do |t|
+    t.string "name"
+    t.bigint "user_id", null: false
+    t.bigint "area_tag_id", null: false
+    t.bigint "genre_tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area_tag_id"], name: "index_restaurants_on_area_tag_id"
+    t.index ["genre_tag_id"], name: "index_restaurants_on_genre_tag_id"
+    t.index ["user_id"], name: "index_restaurants_on_user_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "name", null: false
@@ -39,4 +58,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_30_094500) do
   end
 
   add_foreign_key "refresh_tokens", "users"
+  add_foreign_key "restaurants", "tags", column: "area_tag_id"
+  add_foreign_key "restaurants", "tags", column: "genre_tag_id"
+  add_foreign_key "restaurants", "users"
 end

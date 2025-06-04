@@ -85,12 +85,12 @@ class Api::AuthController < ApplicationController
     refresh_token = params[:refresh_token]
 
     if refresh_token.present?
-      JwtService.revoke_refresh_token(refresh_token)
+      RefreshTokenService.revoke(refresh_token)
     end
 
     # 現在のユーザーの全リフレッシュトークンを無効化（オプション）
     if current_user && params[:revoke_all] == 'true'
-      JwtService.revoke_all_refresh_tokens(current_user)
+      RefreshTokenService.revoke_all(current_user)
     end
 
     render_success({ message: 'Logged out successfully' })
@@ -103,6 +103,6 @@ class Api::AuthController < ApplicationController
 
   # JWTトークンを生成
   def generate_jwt_token(user)
-    JwtService.generate_user_token(user)
+    JwtService.generate_access_token(user)
   end
 end

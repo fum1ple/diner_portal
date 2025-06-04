@@ -61,4 +61,11 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Set locale to English for tests
+  config.i18n.default_locale = :en
+
+  # Disable host authorization for tests
+  config.hosts.clear
+  config.host_authorization = { exclude: ->(request) { true } }
 end
