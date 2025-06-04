@@ -48,7 +48,7 @@ class JwtService
     def generate_token_pair(user)
       access_token = generate_access_token(user)
       refresh_token = RefreshTokenService.generate(user)
-      
+
       {
         access_token: access_token,
         refresh_token: refresh_token.token,
@@ -74,7 +74,7 @@ class JwtService
     end
 
     # === 後方互換性メソッド（将来的に削除予定） ===
-    
+
     # @deprecated generate_access_tokenを使用してください
     def generate_user_token(user)
       Rails.logger.warn "DEPRECATED: generate_user_token is deprecated, use generate_access_token instead"
