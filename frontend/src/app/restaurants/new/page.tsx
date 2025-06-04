@@ -12,6 +12,9 @@ const RestaurantNewPage = () => {
   const [genreTags, setGenreTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [areaId, setAreaId] = useState("");
+  const [genreId, setGenreId] = useState("");
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -39,27 +42,40 @@ const RestaurantNewPage = () => {
   return (
     <div>
       <h1>店舗登録フォーム</h1>
-      <div>
-        <label>エリア:
-          <select>
-            <option value="">選択してください</option>
-            {areaTags.map(tag => (
-              <option key={tag.id} value={tag.id}>{tag.name}</option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>ジャンル:
-          <select>
-            <option value="">選択してください</option>
-            {genreTags.map(tag => (
-              <option key={tag.id} value={tag.id}>{tag.name}</option>
-            ))}
-          </select>
-        </label>
-      </div>
-      {/* ここに店舗名入力や送信ボタンなど追加予定 */}
+      <form>
+        <div>
+          <label>店舗名:
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="店舗名を入力"
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>エリア:
+            <select value={areaId} onChange={e => setAreaId(e.target.value)} required>
+              <option value="">選択してください</option>
+              {areaTags.map(tag => (
+                <option key={tag.id} value={tag.id}>{tag.name}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>ジャンル:
+            <select value={genreId} onChange={e => setGenreId(e.target.value)} required>
+              <option value="">選択してください</option>
+              {genreTags.map(tag => (
+                <option key={tag.id} value={tag.id}>{tag.name}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <button type="submit" disabled={!name || !areaId || !genreId}>登録</button>
+      </form>
     </div>
   );
 };
