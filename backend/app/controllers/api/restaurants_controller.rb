@@ -1,7 +1,5 @@
 module Api
   class RestaurantsController < ApplicationController
-    # JWT認証をcreate, index, showアクションに適用
-    before_action :authenticate_user!, if: :jwt_authentication_required?, only: [:create, :index, :show]
 
     def create
       #レストランの作成
@@ -35,9 +33,10 @@ module Api
 
     private
 
-    # JWT認証を必須にする
+    # JWT認証が必要かどうかを判定
     def jwt_authentication_required?
-      true
+      # create, index, showアクションでは認証が必要
+      %w[create index show].include?(action_name)
     end
 
     def restaurant_params
