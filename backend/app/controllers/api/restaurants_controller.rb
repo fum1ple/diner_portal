@@ -7,7 +7,7 @@ module Api
       if restaurant.save
         render json: restaurant_response(restaurant), status: :created # レストランの作成に成功した場合、レスポンスを返す
       else
-        render json: { errors: restaurant.errors }, status: :unprocessable_entity # レストランの作成に失敗した場合、エラーメッセージを返す
+        render json: { errors: restaurant.errors.full_messages }, status: :unprocessable_entity # レストランの作成に失敗した場合、エラーメッセージを返す
       end
     end
 
