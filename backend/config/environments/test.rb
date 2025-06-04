@@ -64,4 +64,8 @@ Rails.application.configure do
 
   # Set locale to English for tests
   config.i18n.default_locale = :en
+
+  # Disable host authorization for tests
+  config.hosts.clear
+  config.host_authorization = { exclude: ->(request) { true } }
 end

@@ -6,9 +6,8 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     @area_tag = Tag.create!(name: "東京", category: "area")
     @genre_tag = Tag.create!(name: "イタリアン", category: "genre")
 
-    # JWTトークンを生成
-    @token = JwtService.generate_token_pair(@user)[:access_token]
-    @auth_headers = { "Authorization" => "Bearer #{@token}" }
+    # JWTトークンを生成 - 新しいヘルパーメソッドを使用
+    @auth_headers = auth_headers(@user)
   end
 
   test "should create restaurant with valid data" do
