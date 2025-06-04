@@ -7,7 +7,7 @@ class Api::RestaurantsControllerTest < ActionDispatch::IntegrationTest
     @genre_tag = Tag.create!(name: "イタリアン", category: "genre")
 
     # JWTトークンを生成
-    @token = JwtService.encode_token({ user_id: @user.id })
+    @token = JwtService.generate_token_pair(@user)[:access_token]
     @auth_headers = { "Authorization" => "Bearer #{@token}" }
   end
 
