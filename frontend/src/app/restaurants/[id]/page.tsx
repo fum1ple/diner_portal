@@ -40,27 +40,27 @@ export default function RestaurantDetailPage({ params }: PageProps) {
   }, [id]);
 
   if (loading) {
-    return <main style={{ padding: 32 }}>読み込み中...</main>;
+    return <main className="p-8">読み込み中...</main>;
   }
   if (error) {
-    return <main style={{ padding: 32, color: 'red' }}>エラー: {error}</main>;
+    return <main className="p-8 text-red-600">エラー: {error}</main>;
   }
   if (!restaurant) {
-    return <main style={{ padding: 32 }}>データがありません</main>;
+    return <main className="p-8">データがありません</main>;
   }
 
   return (
-    <main style={{ padding: 32, maxWidth: 480, margin: '0 auto', background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #eee' }}>
-      <h1 style={{ fontSize: 24, marginBottom: 16 }}>店舗詳細</h1>
-      <div style={{ marginBottom: 8 }}>店舗名: {restaurant.name}</div>
-      <div style={{ marginBottom: 8 }}>エリア: {restaurant.area_tag.name}</div>
-      <div style={{ marginBottom: 24 }}>ジャンル: {restaurant.genre_tag.name}</div>
-      <div style={{ display: 'flex', gap: 12 }}>
+    <main className="p-8 max-w-md mx-auto bg-white rounded-lg shadow">
+      <h1 className="text-2xl mb-4">店舗詳細</h1>
+      <div className="mb-2">店舗名: {restaurant.name}</div>
+      <div className="mb-2">エリア: {restaurant.area_tag.name}</div>
+      <div className="mb-6">ジャンル: {restaurant.genre_tag.name}</div>
+      <div className="flex gap-3">
         <a
           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.name)}`}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ padding: '8px 16px', background: '#4285f4', color: '#fff', border: 'none', borderRadius: 4, textDecoration: 'none', display: 'inline-block' }}
+          className="px-4 py-2 bg-blue-500 text-white rounded font-bold inline-block"
         >
           Google Mapで調べる
         </a>
@@ -68,16 +68,7 @@ export default function RestaurantDetailPage({ params }: PageProps) {
           href={`/restaurants/${restaurant.id}/reviews/new`}
           target="_blank"
           rel="noopener noreferrer"
-          style={{
-            display: 'inline-block',
-            marginLeft: '12px',
-            padding: '8px 16px',
-            background: '#1976d2',
-            color: '#fff',
-            borderRadius: '4px',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-          }}
+          className="px-4 py-2 bg-blue-700 text-white rounded font-bold inline-block ml-3"
         >
           レビューを書く
         </a>
