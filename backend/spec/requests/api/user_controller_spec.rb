@@ -68,4 +68,63 @@ RSpec.describe 'Api::User', type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
   end
+
+  describe 'JWT authentication workflow integration' do
+    it 'handles complete authentication workflow' do
+      # Step 1: JWTトークンを生成
+      token = JwtService.generate_access_token(user)
+      expect(token).not_to be_nil
+
+      # Step 2: トークンを使って保護されたエンドポイントにアクセス
+      get '/api/user/profile', headers: { 'Authorization' => "Bearer #{token}" }
+
+      expect(response).to have_http_status(:success)
+      response_data = JSON.parse(response.body)
+
+      expect(response_data['success']).to be true
+      expect(response_data['user']['id']).to eq user.id
+      expect(response_data['user']['email']).to eq user.email
+      expect(response_data['user']['name']).to eq user.name
+
+      # Step 3: ユーザー情報更新
+      put '/api/user/update',
+          params: { user: { name: 'Updated Integration User' } },
+          headers: { 'Authorization' => "Bearer #{token}" }
+
+      expect(response).to have_http_status(:success)
+      update_response = JSON.parse(response.body)
+
+      expect(update_response['success']).to be true
+      expect(update_response['user']['name']).to eq 'Updated Integration User'
+
+      # Step 4: 認証なしでのアクセス拒否
+      get '/api/user/profile'
+      expect(response).to have_http_status(:unauthorized)
+      error_response = JSON.parse(response.body)
+      expect(error_response['error']).to eq 'Missing authorization token'
+
+      # Step 5: 無効なトークンでのアクセス拒否
+      get '/api/user/profile', headers: { 'Authorization' => "Bearer invalid_token" }
+      expect(response).to have_http_status(:unauthorized)
+      invalid_token_response = JSON.parse(response.body)
+      expect(invalid_token_response['error']).to eq 'Invalid token format'
+    end
+
+    it 'handles missing user for valid token format' do
+      # 存在しないユーザーIDでトークンを生成
+      fake_payload = {
+        user_id: 999999,
+        email: 'nonexistent@tokium.jp',
+        name: 'Non Existent User'
+      }
+
+      fake_token = JwtService.encode(fake_payload)
+
+      get '/api/user/profile', headers: { 'Authorization' => "Bearer #{fake_token}" }
+
+      expect(response).to have_http_status(:unauthorized)
+      response_data = JSON.parse(response.body)
+      expect(response_data['error']).to eq 'User not found'
+    end
+  end
 end

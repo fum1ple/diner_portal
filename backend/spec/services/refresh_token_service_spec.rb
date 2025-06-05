@@ -105,6 +105,24 @@ RSpec.describe RefreshTokenService do
       expect(RefreshToken.exists?(valid_token.id)).to be true
       expect(RefreshToken.exists?(expired_token.id)).to be false
     end
+
+    it 'cleanup expired refresh tokens integration test' do
+      # 既存の期限切れトークンの数を確認
+      initial_expired_count = RefreshToken.expired.count
+
+      # 期限切れのリフレッシュトークンを作成
+      expired_token = user.refresh_tokens.create!(
+        expires_at: 1.day.ago
+      )
+
+      initial_count = RefreshToken.count
+      RefreshToken.cleanup_expired
+
+      # 期限切れトークンが全て削除されていることを確認
+      expect(RefreshToken.expired.count).to eq 0
+      expect(RefreshToken.count).to eq(initial_count - (initial_expired_count + 1))
+      expect(RefreshToken.exists?(expired_token.id)).to be false
+    end
   end
 
   describe '.statistics' do
