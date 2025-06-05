@@ -13,7 +13,8 @@ export const GET = async (_req: NextRequest, { params }: { params: { id: string 
       );
     }
     // Rails APIに転送
-    const backendUrl = `http://backend:3000/api/restaurants/${params.id}`;
+    const backendBaseUrl = process.env.BACKEND_INTERNAL_URL;
+    const backendUrl = `${backendBaseUrl}/api/restaurants/${params.id}`;
     const response = await fetch(backendUrl, {
       headers: {
         'Authorization': `Bearer ${session.jwtToken}`,
