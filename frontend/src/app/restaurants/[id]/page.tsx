@@ -1,19 +1,51 @@
 import { notFound } from 'next/navigation';
+import { useEffect, useState } from "react";
 
 interface PageProps {
   params: { id: string };
 }
 
-export default function RestaurantDetailPage({ params }: PageProps) {
-  // 店舗IDをURLから取得
-  const { id } = params;
+interface Tag {
+  id: number;
+  name: string;
+  category: string;
+}
 
-  // --- ダミーデータ（API連携前提） ---
-  const restaurant = {
-    name: "トキエイツ渋谷店",
-    area_tag: { name: "渋谷" },
-    genre_tag: { name: "イタリアン" },
-  };
+interface Restaurant {
+  id: number;
+  name: string;
+  area_tag: Tag;
+  genre_tag: Tag;
+}
+
+export default function RestaurantDetailPage({ params }: PageProps) {
+  const { id } = params;
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    fetch(`/api/restaurants/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("店舗が見つかりません");
+        return res.json();
+      })
+      .then((data) => setRestaurant(data))
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return <main style={{ padding: 32 }}>読み込み中...</main>;
+  }
+  if (error) {
+    return <main style={{ padding: 32, color: 'red' }}>エラー: {error}</main>;
+  }
+  if (!restaurant) {
+    return <main style={{ padding: 32 }}>データがありません</main>;
+  }
 
   return (
     <main style={{ padding: 32, maxWidth: 480, margin: '0 auto', background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #eee' }}>
