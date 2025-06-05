@@ -28,14 +28,21 @@ export default function RestaurantDetailPage({ params }: PageProps) {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch(`/api/restaurants/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("店舗が見つかりません");
-        return res.json();
-      })
-      .then((data) => setRestaurant(data))
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
+    (async () => {
+      try {
+        const res = await fetch(`/api/restaurants/${id}`);
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ message: "エラーが発生しました" }));
+          throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        setRestaurant(data);
+      } catch (e: any) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [id]);
 
   if (loading) {
