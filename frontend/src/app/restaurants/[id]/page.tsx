@@ -54,8 +54,31 @@ export default function RestaurantDetailPage({ params }: PageProps) {
       <div style={{ marginBottom: 8 }}>エリア: {restaurant.area_tag.name}</div>
       <div style={{ marginBottom: 24 }}>ジャンル: {restaurant.genre_tag.name}</div>
       <div style={{ display: 'flex', gap: 12 }}>
-        <button style={{ padding: '8px 16px', background: '#4285f4', color: '#fff', border: 'none', borderRadius: 4 }}>Google Mapで調べる</button>
-        <button style={{ padding: '8px 16px', background: '#f4b942', color: '#fff', border: 'none', borderRadius: 4 }}>レビューを書く</button>
+        <a
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.name)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ padding: '8px 16px', background: '#4285f4', color: '#fff', border: 'none', borderRadius: 4, textDecoration: 'none', display: 'inline-block' }}
+        >
+          Google Mapで調べる
+        </a>
+        <a
+          href={`/restaurants/${restaurant.id}/reviews/new`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-block',
+            marginLeft: '12px',
+            padding: '8px 16px',
+            background: '#1976d2',
+            color: '#fff',
+            borderRadius: '4px',
+            textDecoration: 'none',
+            fontWeight: 'bold',
+          }}
+        >
+          レビューを書く
+        </a>
       </div>
     </main>
   );
