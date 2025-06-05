@@ -6,7 +6,7 @@ namespace :auth do
     puts "Starting refresh token cleanup..."
 
     expired_count = RefreshToken.expired.count
-    RefreshToken.cleanup_expired
+    RefreshTokenService.cleanup_expired
 
     puts "Cleaned up #{expired_count} expired refresh tokens"
   end
@@ -28,22 +28,19 @@ namespace :auth do
     end
 
     token_count = user.refresh_tokens.token_valid.count
-    JwtService.revoke_all_refresh_tokens(user)
+    RefreshTokenService.revoke_all(user)
 
     puts "Revoked #{token_count} refresh tokens for user #{user.email}"
   end
 
   desc "Show refresh token statistics"
   task stats: :environment do
-    total = RefreshToken.count
-    valid = RefreshToken.token_valid.count
-    expired = RefreshToken.expired.count
-    revoked = RefreshToken.revoked.count
+    stats = RefreshTokenService.statistics
 
     puts "Refresh Token Statistics:"
-    puts "  Total: #{total}"
-    puts "  Valid: #{valid}"
-    puts "  Expired: #{expired}"
-    puts "  Revoked: #{revoked}"
+    puts "  Total: #{stats[:total]}"
+    puts "  Valid: #{stats[:valid]}"
+    puts "  Expired: #{stats[:expired]}"
+    puts "  Revoked: #{stats[:revoked]}"
   end
 end

@@ -9,14 +9,16 @@
   "scripts": {
     "dev": "next dev --port 4000",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start --port 4000",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@auth/core": "^0.39.0",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.6",
-    "next": "14.2.25",
+    "next": "14.2.29",
     "next-auth": "^4.24.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -29,8 +31,8 @@
     "@types/node": "^20",
     "@types/react": "^18.3.17",
     "@types/react-dom": "^18.3.5",
-    "eslint": "8.56.0",
-    "eslint-config-next": "14.2.25",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.29",
     "install": "^0.13.0"
   }
 }

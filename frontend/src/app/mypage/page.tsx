@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import ProtectedPage from '@/components/ProtectedPage';
 
-function MyPageContent() {
+const MyPageContent = () => {
   const { user, isLoading, isJwtValid, hasJwtToken } = useAuth();
   const [updateData, setUpdateData] = useState({ name: '', email: '' });
   const [loading, setLoading] = useState(false);
@@ -95,7 +95,7 @@ function MyPageContent() {
             <div className="card-body p-4">
               <h4 className="fw-bold mb-4">プロフィール設定</h4>
               
-              <form onSubmit={(e) => {e.preventDefault(); handleUpdateProfile();}}>
+              <form onSubmit={e => {e.preventDefault(); handleUpdateProfile();}}>
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <label htmlFor="name" className="form-label">名前</label>
@@ -104,7 +104,7 @@ function MyPageContent() {
                       className="form-control"
                       id="name"
                       value={updateData.name}
-                      onChange={(e) => setUpdateData({...updateData, name: e.target.value})}
+                      onChange={e => setUpdateData({...updateData, name: e.target.value})}
                       placeholder="山田太郎"
                     />
                   </div>
@@ -115,7 +115,7 @@ function MyPageContent() {
                       className="form-control"
                       id="email"
                       value={updateData.email}
-                      onChange={(e) => setUpdateData({...updateData, email: e.target.value})}
+                      onChange={e => setUpdateData({...updateData, email: e.target.value})}
                       placeholder="yamada@tokium.jp"
                     />
                   </div>
@@ -141,15 +141,14 @@ function MyPageContent() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
+      </div>      </div>
+    );
+  };
 
-export default function MyPage() {
-  return (
-    <ProtectedPage redirectTo="/auth/error?error=AccessDenied">
-      <MyPageContent />
-    </ProtectedPage>
-  );
-}
+const MyPage = () => (
+  <ProtectedPage redirectTo="/auth/error?error=AccessDenied">
+    <MyPageContent />
+  </ProtectedPage>
+);
+
+export default MyPage;

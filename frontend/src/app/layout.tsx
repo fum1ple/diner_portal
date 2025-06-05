@@ -6,7 +6,6 @@ import SearchIcon from './icons/SearchIcon'
 import { AuthProvider } from './providers'
 import Link from 'next/link'
 import AuthButtonWrapper from '../components/AuthButtonWrapper'
-import { useEffect, useState } from 'react'
 
 // インラインスタイルを追加
 const customStyles = `
@@ -18,18 +17,9 @@ const customStyles = `
   }
 `
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // クライアント側でのレンダリングを追跡するステート
-  const [isMounted, setIsMounted] = useState(false);
-
-  // マウント後にステートを更新して、クライアント側のレンダリングを示す
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  return (
-    <html lang="ja">
-      <head>
+const RootLayout = ({ children }: { children: React.ReactNode }) => (
+  <html lang="ja">
+    <head>
         <title>TOKIEATS</title>
         <meta name="description" content="社内限定レストラン共有プラットフォーム" />
         <style dangerouslySetInnerHTML={{ __html: customStyles }} />
@@ -123,5 +113,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </AuthProvider>
       </body>
     </html>
-  )
-}
+  );
+
+export default RootLayout;

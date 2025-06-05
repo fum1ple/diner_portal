@@ -1,7 +1,6 @@
 // 認証状態管理用カスタムフック
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // JWT トークンリフレッシュ用ユーティリティ
 const refreshJwtToken = async (refreshToken: string) => {
@@ -73,7 +72,6 @@ export interface AuthState {
 // 統合された認証フック
 export const useAuth = () => {
   const { data: session, status, update } = useSession();
-  const router = useRouter();
   const [isJwtValid, setIsJwtValid] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -82,22 +80,8 @@ export const useAuth = () => {
   const jwtToken = session?.jwtToken;
   const hasJwtToken = !!jwtToken;
 
-  // JWT トークンの有効性チェック
-  useEffect(() => {
-    if (jwtToken && !isRefreshing) {
-      const isValid = validateJwtToken(jwtToken);
-      setIsJwtValid(isValid);
-      
-      if (!isValid && session?.refreshToken) {
-        handleTokenRefresh();
-      }
-    } else {
-      setIsJwtValid(false);
-    }
-  }, [jwtToken, isRefreshing]);
-
   // トークンリフレッシュ処理
-  const handleTokenRefresh = async () => {
+  const handleTokenRefresh = useCallback(async () => {
     if (isRefreshing || !session?.refreshToken) return;
     
     setIsRefreshing(true);
@@ -115,7 +99,21 @@ export const useAuth = () => {
     } finally {
       setIsRefreshing(false);
     }
-  };
+  }, [isRefreshing, session, update]);
+
+  // JWT トークンの有効性チェック
+  useEffect(() => {
+    if (jwtToken && !isRefreshing) {
+      const isValid = validateJwtToken(jwtToken);
+      setIsJwtValid(isValid);
+      
+      if (!isValid && session?.refreshToken) {
+        handleTokenRefresh();
+      }
+    } else {
+      setIsJwtValid(false);
+    }
+  }, [jwtToken, isRefreshing, session?.refreshToken, handleTokenRefresh]);
 
   // ログイン関数
   const login = async (callbackUrl?: string) => {
@@ -125,15 +123,6 @@ export const useAuth = () => {
   // ログアウト関数
   const logout = async () => {
     await signOut({ callbackUrl: '/' });
-  };
-
-  // 認証が必要なページへのリダイレクト保護
-  const requireAuth = (redirectTo: string = '/auth/signin') => {
-    useEffect(() => {
-      if (!isLoading && !isAuthenticated) {
-        router.push(redirectTo);
-      }
-    }, [isLoading, isAuthenticated, redirectTo]);
   };
 
   return {
@@ -159,7 +148,6 @@ export const useAuth = () => {
     // アクション
     login,
     logout,
-    requireAuth,
   };
 };
 
@@ -174,3 +162,5 @@ export const useJwtToken = () => {
     refreshToken: auth.refreshToken,
   };
 };
+
+

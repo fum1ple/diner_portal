@@ -8,6 +8,6 @@ const AuthButton = dynamic(() => import('./AuthButton'), {
   loading: () => <div>ロード中...</div> 
 });
 
-export default function AuthButtonWrapper() {
-  return <AuthButton />;
-}
+const AuthButtonWrapper = () => <AuthButton />;
+
+export default AuthButtonWrapper;

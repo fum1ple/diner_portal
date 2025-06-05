@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function SignIn() {
+const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async () => {
@@ -65,4 +65,6 @@ export default function SignIn() {
       </div>
     </div>
   );
-}
+};
+
+export default SignIn;
