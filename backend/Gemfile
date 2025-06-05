@@ -49,6 +49,8 @@ group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
   # Mocking library for tests
   gem "mocha"
+  # RSpec for testing
+  gem "rspec-rails"
 end
 
 group :development do

@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe "Api::Tags", type: :request do
   describe "GET /api/tags" do
+    before do
+      Tag.delete_all
+    end
+    
     let!(:area_tag1) { Tag.create!(name: "渋谷", category: "area") }
     let!(:area_tag2) { Tag.create!(name: "新宿", category: "area") }
     let!(:genre_tag) { Tag.create!(name: "イタリアン", category: "genre") }
