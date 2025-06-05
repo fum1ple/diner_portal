@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 // JWT トークンリフレッシュ用ユーティリティ
 const refreshJwtToken = async (refreshToken: string) => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -74,6 +74,7 @@ export const useAuth = () => {
   const { data: session, status, update } = useSession();
   const [isJwtValid, setIsJwtValid] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastRefreshTime, setLastRefreshTime] = useState<number>(0);
 
   const isLoading = status === "loading";
   const isAuthenticated = status === "authenticated";
@@ -82,9 +83,14 @@ export const useAuth = () => {
 
   // トークンリフレッシュ処理
   const handleTokenRefresh = useCallback(async () => {
-    if (isRefreshing || !session?.refreshToken) return;
+    const now = Date.now();
+    // 既にリフレッシュ中、リフレッシュトークンがない、または最近リフレッシュした場合はスキップ
+    if (isRefreshing || !session?.refreshToken || (now - lastRefreshTime < 5000)) {
+      return;
+    }
     
     setIsRefreshing(true);
+    setLastRefreshTime(now);
     try {
       const newToken = await refreshJwtToken(session.refreshToken);
       if (newToken) {
@@ -92,6 +98,8 @@ export const useAuth = () => {
         setIsJwtValid(true);
       } else {
         setIsJwtValid(false);
+        // リフレッシュトークンが無効な場合はログアウト
+        signOut({ callbackUrl: '/' });
       }
     } catch (error) {
       console.error('Token refresh error:', error);
@@ -99,7 +107,7 @@ export const useAuth = () => {
     } finally {
       setIsRefreshing(false);
     }
-  }, [isRefreshing, session, update]);
+  }, [isRefreshing, session, update, lastRefreshTime]);
 
   // JWT トークンの有効性チェック
   useEffect(() => {
@@ -107,13 +115,14 @@ export const useAuth = () => {
       const isValid = validateJwtToken(jwtToken);
       setIsJwtValid(isValid);
       
-      if (!isValid && session?.refreshToken) {
+      // トークンが無効で、リフレッシュトークンがあり、まだリフレッシュ中でない場合のみリフレッシュ
+      if (!isValid && session?.refreshToken && !isRefreshing) {
         handleTokenRefresh();
       }
     } else {
       setIsJwtValid(false);
     }
-  }, [jwtToken, isRefreshing, session?.refreshToken, handleTokenRefresh]);
+  }, [jwtToken, session?.refreshToken, isRefreshing, handleTokenRefresh]); // handleTokenRefreshを依存配列から除去
 
   // ログイン関数
   const login = async (callbackUrl?: string) => {
