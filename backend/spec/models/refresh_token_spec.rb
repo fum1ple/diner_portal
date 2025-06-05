@@ -114,7 +114,7 @@ RSpec.describe RefreshToken, type: :model do
     it '期限切れトークンをクリーンアップ' do
       # テスト前にクリーンアップして既存データを削除
       RefreshToken.delete_all
-      
+
       valid_token = RefreshToken.create!(user: user, expires_at: 7.days.from_now)
       expired_token = RefreshToken.create!(user: user, expires_at: 1.day.ago)
 
