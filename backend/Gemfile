@@ -50,7 +50,8 @@ group :development, :test do
   # Mocking library for tests
   gem "mocha"
   # RSpec for testing
-  gem "rspec-rails", "~> 6.0"
+  gem "rspec-rails", "~> 7.0"
+  # ※今後、rspec-railsのバージョンは7から絶対に変更しないこと（2025/06/05 指示）
 end
 
 group :development do
