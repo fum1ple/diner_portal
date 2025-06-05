@@ -1,7 +1,6 @@
-import NextAuth, { Session, User, DefaultSession, NextAuthOptions } from "next-auth";
+import NextAuth, { Session, User, DefaultSession, NextAuthOptions, Account } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";
-import type { Account } from "next-auth";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -47,15 +46,31 @@ declare module "next-auth/jwt" {
 }
 
 const getBaseUrl = () => {
+  // 環境変数で明示的に設定されている場合はそれを使用
+  if (process.env.NEXTAUTH_URL) {
+    return process.env.NEXTAUTH_URL;
+  }
+  
+  // CodeSpaces環境の場合
   if (process.env.CODESPACES === "true" && process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN) {
     return `https://${process.env.GITHUB_CODESPACES_PORTS_HOST}-4000.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}`;
   }
-  return 'http://localhost:4000'
-}
+  
+  // デフォルト（開発環境）
+  return 'http://localhost:4000';
+};
 
-const getRailsApiUrl = () => 'http://backend:3000';
+const getRailsApiUrl = () => {
+  // 環境変数で設定されている場合はそれを使用
+  if (process.env.BACKEND_INTERNAL_URL) {
+    return process.env.BACKEND_INTERNAL_URL;
+  }
+  
+  // デフォルト（コンテナ内通信）
+  return 'http://backend:3000';
+};
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,

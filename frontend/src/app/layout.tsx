@@ -86,7 +86,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
             </header>
 
             {/* MAIN CONTENT */}
-            <main className="flex-grow-1 container py-4">{children}</main>
+            <main className="flex-grow-1 container py-4">
+              {children}
+            </main>
 
             {/* FOOTER */}
             <footer className="bg-dark text-white py-4">
