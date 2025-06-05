@@ -3,14 +3,21 @@ import { getSession } from "next-auth/react";
 
 // Rails APIのベースURL取得
 const getRailsApiUrl = () => {
+  // 環境変数で明示的に設定されている場合はそれを使用
+  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
+    return process.env.NEXT_PUBLIC_BACKEND_URL;
+  }
+  
   if (typeof window !== 'undefined') {
     // ブラウザ側からのアクセス
-    return process.env.NODE_ENV === 'production' 
-      ? `https://${window.location.hostname.replace('-3000', '-4000')}`
-      : 'http://localhost:4000';
+    if (process.env.NODE_ENV === 'production') {
+      // プロダクション環境では環境変数を必須とする
+      throw new Error('NEXT_PUBLIC_BACKEND_URL環境変数が設定されていません');
+    }
+    return 'http://localhost:3000';
   } else {
     // サーバーサイドからのアクセス（コンテナ内）
-    return 'http://backend:3000';
+    return process.env.BACKEND_INTERNAL_URL || 'http://backend:3000';
   }
 };
 
@@ -33,7 +40,13 @@ export const authenticatedFetch = async (
     ...options.headers,
   };
 
-  return fetch(url, { ...options, headers });
+  try {
+    const response = await fetch(url, { ...options, headers });
+    return response;
+  } catch (error) {
+    console.error('Fetch エラー:', error);
+    throw error;
+  }
 };
 
 // ユーザープロフィール更新
