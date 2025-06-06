@@ -6,7 +6,8 @@ import SearchIcon from './icons/SearchIcon'
 import { AuthProvider } from './providers'
 import Link from 'next/link'
 import AuthButtonWrapper from '../components/AuthButtonWrapper'
-import { Noto_Sans_JP } from 'next/font/google'; 
+import { Noto_Sans_JP } from 'next/font/google';
+import QueryProvider from '../components/QueryProvider'; 
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '500', '700'],
@@ -22,10 +23,11 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
         <meta name="description" content="社内限定レストラン共有プラットフォーム" />
       </head>
       <body className="bg-slate-50">
-        <AuthProvider>
-          <div className="flex flex-col min-h-screen">
-            {/* HEADER */}
-            <header className="sticky top-0 bg-white shadow-sm py-2 z-50">
+        <QueryProvider>
+          <AuthProvider>
+            <div className="flex flex-col min-h-screen">
+              {/* HEADER */}
+              <header className="sticky top-0 bg-white shadow-sm py-2 z-50">
               <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between">
                   {/* 左：ロゴ */}
@@ -102,6 +104,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
             </footer>
           </div>
         </AuthProvider>
+      </QueryProvider>
       </body>
     </html>
   );
