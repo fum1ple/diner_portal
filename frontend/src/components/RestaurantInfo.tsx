@@ -1,19 +1,9 @@
 import React from 'react';
-
-interface Tag {
-  id: number;
-  name: string;
-  category: string;
-}
-
-interface Restaurant {
-  id: number;
-  name: string;
-  area_tag: Tag;
-  genre_tag: Tag;
-  created_at?: string;
-  updated_at?: string;
-}
+import { Restaurant } from '@/types/api';
+import { Card, CardContent, CardHeader } from './ui/card';
+import { Badge } from './ui/badge';
+import { Separator } from './ui/separator';
+import { MapPin, Utensils } from 'lucide-react';
 
 interface RestaurantInfoProps {
   restaurant: Restaurant;
@@ -30,30 +20,42 @@ const RestaurantInfo: React.FC<RestaurantInfoProps> = ({ restaurant }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">{restaurant.name}</h1>
-        <div className="flex flex-wrap gap-4 text-sm">
-          <div className="flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
-            <span className="mr-1">📍</span>
-            <span className="font-medium">{restaurant.area_tag.name}</span>
-          </div>
-          <div className="flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full">
-            <span className="mr-1">🍽️</span>
-            <span className="font-medium">{restaurant.genre_tag.name}</span>
-          </div>
+    <Card className="mb-6">
+      <CardHeader>
+        <h1 className="text-3xl font-bold mb-3">{restaurant.name}</h1>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="secondary" className="flex items-center gap-1">
+            <MapPin className="w-3 h-3" />
+            {restaurant.area_tag.name}
+          </Badge>
+          <Badge variant="outline" className="flex items-center gap-1">
+            <Utensils className="w-3 h-3" />
+            {restaurant.genre_tag.name}
+          </Badge>
         </div>
-      </header>
+      </CardHeader>
       
-      {restaurant.created_at && (
-        <div className="border-t pt-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">登録情報</h3>
-          <p className="text-sm text-gray-600">
-            登録日: {formatDate(restaurant.created_at)}
-          </p>
-        </div>
+      {(restaurant.created_at || restaurant.user) && (
+        <CardContent>
+          <Separator className="mb-4" />
+          <div>
+            <h3 className="text-sm font-semibold mb-2">登録情報</h3>
+            <div className="space-y-1">
+              {restaurant.created_at && (
+                <p className="text-sm text-muted-foreground">
+                  登録日: {formatDate(restaurant.created_at)}
+                </p>
+              )}
+              {restaurant.user && (
+                <p className="text-sm text-muted-foreground">
+                  登録者: {restaurant.user.name || restaurant.user.email}
+                </p>
+              )}
+            </div>
+          </div>
+        </CardContent>
       )}
-    </div>
+    </Card>
   );
 };
 

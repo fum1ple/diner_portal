@@ -6,6 +6,9 @@ export type {
   Restaurant,
   CreateRestaurantRequest,
   CreateRestaurantResponse,
+  RestaurantsResponse,
+  RestaurantDetailResponse,
+  RestaurantsListResponse,
   User,
   AuthResponse,
   ApiCallOptions

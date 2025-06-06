@@ -1,23 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-
-interface Tag {
-  id: number;
-  name: string;
-  category: string;
-}
-
-interface Restaurant {
-  id: number;
-  name: string;
-  area_tag: Tag;
-  genre_tag: Tag;
-  created_at?: string;
-  updated_at?: string;
-}
-
-interface RestaurantDetailResponse {
-  restaurant: Restaurant;
-}
+import { Restaurant } from '@/types/api';
 
 export const useRestaurantDetail = (id: string) => useQuery<Restaurant, Error>({
     queryKey: ['restaurant', id],
@@ -32,8 +14,9 @@ export const useRestaurantDetail = (id: string) => useQuery<Restaurant, Error>({
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
       
-      const data: RestaurantDetailResponse = await response.json();
-      return data.restaurant;
+      const data = await response.json();
+      // APIの直接レスポンスがRestaurantオブジェクトの場合
+      return data as Restaurant;
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000, // 5分間キャッシュ

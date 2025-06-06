@@ -45,8 +45,9 @@ export interface Restaurant {
   user_id: number;
   created_at: string;
   updated_at: string;
-  area_tag?: Tag;
-  genre_tag?: Tag;
+  area_tag: Tag;  // 必須プロパティとして統一
+  genre_tag: Tag; // 必須プロパティとして統一
+  user?: User;    // 登録者情報（APIがincludeした場合）
 }
 
 export interface CreateRestaurantRequest {
@@ -70,6 +71,15 @@ export interface CreateRestaurantResponse {
 export interface RestaurantsResponse {
   restaurants?: Restaurant[];
   data?: Restaurant[];
+}
+
+// 店舗詳細・一覧レスポンス型
+export interface RestaurantDetailResponse {
+  restaurant: Restaurant;
+}
+
+export interface RestaurantsListResponse {
+  restaurants: Restaurant[];
 }
 
 // 認証関連の型

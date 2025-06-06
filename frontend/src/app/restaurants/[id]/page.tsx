@@ -5,6 +5,7 @@ import RestaurantInfo from '../../../components/RestaurantInfo';
 import RestaurantActions from '../../../components/RestaurantActions';
 import LoadingSpinner from '../../../components/LoadingSpinner';
 import ErrorMessage from '../../../components/ErrorMessage';
+import Breadcrumb from '../../../components/Breadcrumb';
 
 interface PageProps {
   params: { id: string };
@@ -43,6 +44,12 @@ export default function RestaurantDetailPage({ params }: PageProps) {
 
   return (
     <main className="max-w-4xl mx-auto p-6">
+      <Breadcrumb 
+        items={[
+          { label: '店舗一覧', href: '/restaurants' },
+          { label: restaurant.name }
+        ]} 
+      />
       <div className="space-y-6">
         <RestaurantInfo restaurant={restaurant} />
         <RestaurantActions restaurant={restaurant} />
