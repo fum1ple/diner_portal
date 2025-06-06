@@ -269,7 +269,7 @@ DEPENDENCIES
   rack-attack
   rack-cors
   rails (~> 7.1.5, >= 7.1.5.1)
-  rspec-rails
+  rspec-rails (~> 7.0)
   tzinfo-data
 
 RUBY VERSION
