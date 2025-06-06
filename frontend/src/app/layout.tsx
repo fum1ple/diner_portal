@@ -6,6 +6,7 @@ import SearchIcon from './icons/SearchIcon'
 import { AuthProvider } from './providers'
 import Link from 'next/link'
 import AuthButtonWrapper from '../components/AuthButtonWrapper'
+import { Noto_Sans_JP } from 'next/font/google'; 
 
 // インラインスタイルを追加
 const customStyles = `
@@ -17,8 +18,16 @@ const customStyles = `
   }
 `
 
+const notoSansJP = Noto_Sans_JP({
+  weight: ['400', '500', '700'], // 例: Regular 400, Medium 500, Bold 700
+  subsets: ['latin'], // 通常は 'latin' または 'japanese'。'latin' の方がファイルサイズが小さくなる場合がありますが、日本語のグリフを全てカバーしたい場合は 'japanese' が適切です。
+                      // next/font/google は自動的に unicode-range を設定してくれます。
+  display: 'swap',    // フォント表示の戦略
+  preload: true, // 必要に応じてプリロード (デフォルトで true の場合が多い
+});
+
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
-  <html lang="ja">
+  <html lang="ja" className={`${notoSansJP.className}`}>
     <head>
         <title>TOKIEATS</title>
         <meta name="description" content="社内限定レストラン共有プラットフォーム" />
