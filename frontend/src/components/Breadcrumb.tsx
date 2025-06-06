@@ -20,8 +20,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => (
       <Home className="w-4 h-4" />
     </Link>
     
-    {items.map((item, index) => (
-      <React.Fragment key={index}>
+    {items.map((item) => (
+      <React.Fragment key={item.href || item.label}>
         <ChevronRight className="w-4 h-4 text-gray-400" />
         {item.href ? (
           <Link 
