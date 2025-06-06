@@ -2,18 +2,58 @@
 
 import React, { useState } from "react";
 import ProtectedPage from "@/components/ProtectedPage";
+import InlineTagCreator from "@/components/InlineTagCreator";
 import { useTags } from "@/hooks/useTags";
 import { authApi } from "@/lib/api-client";
-import type { CreateRestaurantRequest } from "@/types/api";
+import type { CreateRestaurantRequest, Tag } from "@/types/api";
 
 const RestaurantNewPage = () => {
-  const { areaTags, genreTags, loading, error } = useTags();
+  const { areaTags, genreTags, loading, error, createTag, creating } = useTags();
   const [name, setName] = useState("");
   const [areaId, setAreaId] = useState("");
   const [genreId, setGenreId] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  
+  // インライン新規タグ作成の状態管理
+  const [showNewAreaForm, setShowNewAreaForm] = useState(false);
+  const [showNewGenreForm, setShowNewGenreForm] = useState(false);
+
+  // 新しいタグが作成された時のハンドラー
+  const handleTagCreated = (tag: Tag) => {
+    if (tag.category === 'area') {
+      setAreaId(tag.id.toString());
+      setShowNewAreaForm(false);
+    } else {
+      setGenreId(tag.id.toString());
+      setShowNewGenreForm(false);
+    }
+  };
+
+  // エリア選択のハンドラー
+  const handleAreaChange = (value: string) => {
+    if (value === 'NEW_AREA') {
+      setShowNewAreaForm(true);
+      setAreaId('');
+    } else {
+      setAreaId(value);
+      setShowNewAreaForm(false);
+    }
+  };
+
+  // ジャンル選択のハンドラー
+  const handleGenreChange = (value: string) => {
+    if (value === 'NEW_GENRE') {
+      setShowNewGenreForm(true);
+      setGenreId('');
+    } else {
+      setGenreId(value);
+      setShowNewGenreForm(false);
+    }
+  };
+
+  const isFormValid = name && areaId && genreId && !showNewAreaForm && !showNewGenreForm;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,7 +162,7 @@ const RestaurantNewPage = () => {
                       className="form-select"
                       id="areaId"
                       value={areaId}
-                      onChange={e => setAreaId(e.target.value)}
+                      onChange={e => handleAreaChange(e.target.value)}
                       required
                       disabled={submitLoading}
                     >
@@ -132,7 +172,18 @@ const RestaurantNewPage = () => {
                           {tag.name}
                         </option>
                       ))}
+                      <option value="NEW_AREA">新しいエリアを追加</option>
                     </select>
+
+                    {showNewAreaForm && (
+                      <InlineTagCreator
+                        category="area"
+                        onTagCreated={handleTagCreated}
+                        onClose={() => setShowNewAreaForm(false)}
+                        creating={creating}
+                        onCreateTag={createTag}
+                      />
+                    )}
                   </div>
 
                   <div className="mb-3">
@@ -143,7 +194,7 @@ const RestaurantNewPage = () => {
                       className="form-select"
                       id="genreId"
                       value={genreId}
-                      onChange={e => setGenreId(e.target.value)}
+                      onChange={e => handleGenreChange(e.target.value)}
                       required
                       disabled={submitLoading}
                     >
@@ -153,14 +204,25 @@ const RestaurantNewPage = () => {
                           {tag.name}
                         </option>
                       ))}
+                      <option value="NEW_GENRE">新しいジャンルを追加</option>
                     </select>
+
+                    {showNewGenreForm && (
+                      <InlineTagCreator
+                        category="genre"
+                        onTagCreated={handleTagCreated}
+                        onClose={() => setShowNewGenreForm(false)}
+                        creating={creating}
+                        onCreateTag={createTag}
+                      />
+                    )}
                   </div>
 
                   <div className="d-grid">
                     <button
                       type="submit"
                       className="btn btn-primary"
-                      disabled={submitLoading || !name || !areaId || !genreId}
+                      disabled={submitLoading || !isFormValid}
                     >
                       {submitLoading ? (
                         <>

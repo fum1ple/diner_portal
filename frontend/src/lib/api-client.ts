@@ -6,6 +6,7 @@ import type {
   Tag,
   Restaurant,
   CreateRestaurantRequest,
+  CreateTagRequest,
   ApiCallOptions
 } from '@/types/api';
 
@@ -112,6 +113,13 @@ export const authApi = {
   // 店舗作成
   createRestaurant: async (data: CreateRestaurantRequest): Promise<ApiResponse<Restaurant>> => 
     apiCall<Restaurant>('/restaurants', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  
+  // タグ作成
+  createTag: async (data: CreateTagRequest): Promise<ApiResponse<Tag>> => 
+    apiCall<Tag>('/tags', {
       method: 'POST',
       body: JSON.stringify(data),
     }),

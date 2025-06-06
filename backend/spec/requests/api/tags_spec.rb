@@ -1,6 +1,14 @@
 require 'rails_helper'
 
+def auth_headers(user)
+  token = JwtService.encode(user_id: user.id)
+  { 'Authorization' => "Bearer #{token}" }
+end
+
 RSpec.describe "Api::Tags", type: :request do
+  let!(:user) { User.create!(google_id: 'google123', email: 'user@example.com', name: 'User') }
+  let(:headers) { auth_headers(user) }
+
   describe "GET /api/tags" do
     before do
       Tag.delete_all
@@ -38,6 +46,71 @@ RSpec.describe "Api::Tags", type: :request do
       json = JSON.parse(response.body)
       tag = json.first
       expect(tag.keys).to contain_exactly("id", "name", "category")
+    end
+  end
+
+  describe "POST /api/tags" do
+    before do
+      Tag.delete_all
+    end
+
+    it "有効なデータでタグを作成できる" do
+      params = { tag: { name: "六本木", category: "area" } }
+      expect {
+        post '/api/tags', params: params, headers: headers, as: :json
+      }.to change(Tag, :count).by(1)
+      
+      expect(response).to have_http_status(:created)
+      data = JSON.parse(response.body)
+      expect(data['name']).to eq '六本木'
+      expect(data['category']).to eq 'area'
+    end
+
+    it "nameが空なら422" do
+      params = { tag: { name: '', category: 'area' } }
+      expect {
+        post '/api/tags', params: params, headers: headers, as: :json
+      }.not_to change(Tag, :count)
+      expect(response).to have_http_status(:unprocessable_entity)
+      data = JSON.parse(response.body)
+      expect(data['errors']['name']).to include("can't be blank")
+    end
+
+    it "categoryが空なら422" do
+      params = { tag: { name: '六本木', category: '' } }
+      expect {
+        post '/api/tags', params: params, headers: headers, as: :json
+      }.not_to change(Tag, :count)
+      expect(response).to have_http_status(:unprocessable_entity)
+      data = JSON.parse(response.body)
+      expect(data['errors']['category']).to include("can't be blank")
+    end
+
+    it "無効なcategoryなら422" do
+      params = { tag: { name: '六本木', category: 'invalid' } }
+      expect {
+        post '/api/tags', params: params, headers: headers, as: :json
+      }.not_to change(Tag, :count)
+      expect(response).to have_http_status(:unprocessable_entity)
+      data = JSON.parse(response.body)
+      expect(data['errors']['category']).to include('is not included in the list')
+    end
+
+    it "未認証の場合401" do
+      params = { tag: { name: '六本木', category: 'area' } }
+      expect {
+        post '/api/tags', params: params, as: :json
+      }.not_to change(Tag, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "重複するnameとcategoryの組み合わせを許可" do
+      Tag.create!(name: "六本木", category: "area")
+      params = { tag: { name: "六本木", category: "genre" } }
+      expect {
+        post '/api/tags', params: params, headers: headers, as: :json
+      }.to change(Tag, :count).by(1)
+      expect(response).to have_http_status(:created)
     end
   end
 end
