@@ -37,8 +37,8 @@ export default function RestaurantDetailPage({ params }: PageProps) {
         }
         const data = await res.json();
         setRestaurant(data);
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : 'An error occurred');
       } finally {
         setLoading(false);
       }
