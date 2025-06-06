@@ -40,14 +40,10 @@ export const GET = async (request: NextRequest) => {
 
 export const POST = async (request: NextRequest) => {
   try {
-    console.log('タグ作成API開始');
-    
     // セッション確認
     const session = await getServerSession(authOptions);
-    console.log('セッション:', session ? 'あり' : 'なし');
     
     if (!session?.jwtToken) {
-      console.log('認証が必要です');
       return NextResponse.json(
         { error: '認証が必要です' },
         { status: 401 }
@@ -56,11 +52,9 @@ export const POST = async (request: NextRequest) => {
     
     // リクエストボディを取得
     const body = await request.json();
-    console.log('リクエストボディ:', body);
 
     // バックエンドにリクエストを転送
     const backendUrl = `http://backend:3000/api/tags`;
-    console.log('バックエンドURL:', backendUrl);
     
     const response = await fetch(backendUrl, {
       method: 'POST',
@@ -72,9 +66,7 @@ export const POST = async (request: NextRequest) => {
       body: JSON.stringify(body)
     });
     
-    console.log('バックエンドレスポンス:', response.status, response.statusText);
     const data = await response.json();
-    console.log('バックエンドデータ:', data);
     
     return NextResponse.json(data, { status: response.status });
     

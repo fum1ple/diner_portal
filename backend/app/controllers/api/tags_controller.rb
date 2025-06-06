@@ -12,7 +12,7 @@ module Api
 
     def create
       tag = Tag.new(tag_params)
-      
+
       if tag.save
         render json: tag_response(tag), status: :created
       else

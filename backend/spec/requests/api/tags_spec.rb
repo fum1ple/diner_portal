@@ -59,7 +59,7 @@ RSpec.describe "Api::Tags", type: :request do
       expect {
         post '/api/tags', params: params, headers: headers, as: :json
       }.to change(Tag, :count).by(1)
-      
+
       expect(response).to have_http_status(:created)
       data = JSON.parse(response.body)
       expect(data['name']).to eq '六本木'

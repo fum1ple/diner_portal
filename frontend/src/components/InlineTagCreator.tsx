@@ -35,9 +35,7 @@ const InlineTagCreator: React.FC<InlineTagCreatorProps> = ({
     };
 
     try {
-      console.log('タグ作成開始:', tagData);
       const result = await onCreateTag(tagData);
-      console.log('タグ作成結果:', result);
       if (result) {
         onTagCreated(result);
         setName('');
@@ -45,7 +43,6 @@ const InlineTagCreator: React.FC<InlineTagCreatorProps> = ({
         setError('タグの作成に失敗しました');
       }
     } catch (err) {
-      console.error('タグ作成エラー:', err);
       setError(err instanceof Error ? err.message : 'タグの作成に失敗しました');
     }
   };
