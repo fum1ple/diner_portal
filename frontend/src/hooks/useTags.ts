@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { publicApi } from "@/lib/api-client";
-import type { Tag } from "@/types/api";
+import { publicApi, authApi } from "@/lib/api-client";
+import type { Tag, CreateTagRequest } from "@/types/api";
 
 interface UseTagsReturn {
   areaTags: Tag[];
@@ -8,6 +8,8 @@ interface UseTagsReturn {
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+  createTag: (data: CreateTagRequest) => Promise<Tag | null>;
+  creating: boolean;
 }
 
 export const useTags = (): UseTagsReturn => {
@@ -15,6 +17,7 @@ export const useTags = (): UseTagsReturn => {
   const [genreTags, setGenreTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
 
   const fetchTags = async () => {
     try {
@@ -44,6 +47,38 @@ export const useTags = (): UseTagsReturn => {
     }
   };
 
+  const createTag = async (data: CreateTagRequest): Promise<Tag | null> => {
+    try {
+      setCreating(true);
+      setError(null);
+
+      const result = await authApi.createTag(data);
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      if (!result.data) {
+        throw new Error('タグの作成に失敗しました');
+      }
+
+      // 新しいタグを適切なリストに追加
+      if (data.tag.category === 'area') {
+        setAreaTags(prev => [...prev, result.data!]);
+      } else {
+        setGenreTags(prev => [...prev, result.data!]);
+      }
+
+      return result.data;
+    } catch (e: unknown) {
+      console.error('タグ作成エラー:', e);
+      setError(e instanceof Error ? e.message : "タグの作成中にエラーが発生しました");
+      return null;
+    } finally {
+      setCreating(false);
+    }
+  };
+
   useEffect(() => {
     fetchTags();
   }, []);
@@ -53,6 +88,8 @@ export const useTags = (): UseTagsReturn => {
     genreTags,
     loading,
     error,
-    refetch: fetchTags
+    refetch: fetchTags,
+    createTag,
+    creating
   };
 };

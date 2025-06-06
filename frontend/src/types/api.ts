@@ -28,6 +28,14 @@ export interface TagsResponse {
   data?: Tag[];
 }
 
+// タグ作成リクエストの型
+export interface CreateTagRequest {
+  tag: {
+    name: string;
+    category: 'area' | 'genre';
+  };
+}
+
 // 店舗関連の型
 export interface Restaurant {
   id: number;
