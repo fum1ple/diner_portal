@@ -110,7 +110,7 @@ const AddRestaurantForm = () => {
     return (
       <StyledWrapper>
         <div className="container">
-          <LoadingSpinner text="タグを読み込み中..." />
+          <LoadingSpinner message="タグを読み込み中..." />
         </div>
       </StyledWrapper>
     );
