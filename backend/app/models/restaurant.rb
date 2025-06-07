@@ -3,6 +3,8 @@ class Restaurant < ApplicationRecord
   belongs_to :area_tag, class_name: 'Tag', foreign_key: 'area_tag_id' # エリアタグはTagモデルを参照
   belongs_to :genre_tag, class_name: 'Tag', foreign_key: 'genre_tag_id' # ジャンルタグはTagモデルを参照
 
+  has_many :reviews, dependent: :destroy # レストランは複数のレビューを持つことができる
+
   # バリデーション
   validates :name, presence: true, length: { maximum: 255 }
   validates :user_id, :area_tag_id, :genre_tag_id, presence: true

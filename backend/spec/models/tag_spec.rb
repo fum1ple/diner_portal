@@ -26,12 +26,17 @@ RSpec.describe Tag, type: :model do
     end
 
     it 'areaカテゴリを受け入れる' do
-      tag = Tag.new(name: '東京', category: 'area')
+      tag = FactoryBot.build(:tag, category: 'area')
       expect(tag).to be_valid
     end
 
     it 'genreカテゴリを受け入れる' do
-      tag = Tag.new(name: 'イタリアン', category: 'genre')
+      tag = FactoryBot.build(:tag, category: 'genre')
+      expect(tag).to be_valid
+    end
+
+    it 'sceneカテゴリを受け入れる' do
+      tag = FactoryBot.build(:tag, category: 'scene')
       expect(tag).to be_valid
     end
 
@@ -43,19 +48,29 @@ RSpec.describe Tag, type: :model do
   end
 
   describe 'scopes' do
-    let!(:area_tag) { Tag.create!(name: '東京', category: 'area') }
-    let!(:genre_tag) { Tag.create!(name: 'イタリアン', category: 'genre') }
+    let!(:area_tag) { FactoryBot.create(:tag, category: 'area', name: 'Shibuya') }
+    let!(:genre_tag) { FactoryBot.create(:tag, category: 'genre', name: 'Ramen') }
+    let!(:scene_tag) { FactoryBot.create(:tag, category: 'scene', name: 'Date Night') }
 
-    it 'area_tagsスコープはareaタグのみ返す' do
-      area_tags = Tag.area_tags
-      expect(area_tags).to include(area_tag)
-      expect(area_tags).not_to include(genre_tag)
+    it 'areasスコープはareaタグのみ返す' do # Changed from area_tags to areas to match model scope
+      area_tags_scope = Tag.areas
+      expect(area_tags_scope).to include(area_tag)
+      expect(area_tags_scope).not_to include(genre_tag)
+      expect(area_tags_scope).not_to include(scene_tag)
     end
 
-    it 'genre_tagsスコープはgenreタグのみ返す' do
-      genre_tags = Tag.genre_tags
-      expect(genre_tags).to include(genre_tag)
-      expect(genre_tags).not_to include(area_tag)
+    it 'genresスコープはgenreタグのみ返す' do # Changed from genre_tags to genres
+      genre_tags_scope = Tag.genres
+      expect(genre_tags_scope).to include(genre_tag)
+      expect(genre_tags_scope).not_to include(area_tag)
+      expect(genre_tags_scope).not_to include(scene_tag)
+    end
+
+    it 'scenesスコープはsceneタグのみ返す' do
+      scene_tags_scope = Tag.scenes
+      expect(scene_tags_scope).to include(scene_tag)
+      expect(scene_tags_scope).not_to include(area_tag)
+      expect(scene_tags_scope).not_to include(genre_tag)
     end
   end
 end
