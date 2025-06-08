@@ -44,15 +44,13 @@ const apiCall = async <T = unknown>(
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+      const headers: HeadersInit = { 
+        ...((fetchOptions.headers as Record<string, string>) || {}),
+      };
       
-      const url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-      const headers: HeadersInit = { ...fetchOptions.headers };
       if (!(fetchOptions.body instanceof FormData)) {
-        headers['Content-Type'] = 'application/json';
+        (headers as Record<string, string>)['Content-Type'] = 'application/json';
       }
 
       const response = await fetch(`/api${url}`, {

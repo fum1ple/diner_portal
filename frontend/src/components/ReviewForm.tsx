@@ -19,7 +19,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState<number>(0);
   const [image, setImage] = useState<File | null>(null);
-  const [sceneTagId, setSceneTagId] = useState<string>('');
+  const [sceneTagId, setSceneTagId] = useState<string>('none');
   const [sceneTags, setSceneTags] = useState<Tag[]>([]);
   const [isLoadingTags, setIsLoadingTags] = useState(false);
   const [errorTags, setErrorTags] = useState<string | null>(null);
@@ -71,7 +71,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
     if (image) {
       formData.append('review[image]', image);
     }
-    if (sceneTagId) {
+    if (sceneTagId && sceneTagId !== 'none') {
       formData.append('review[scene_tag_id]', sceneTagId);
     }
 
@@ -83,7 +83,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
       setComment('');
       setRating(0);
       setImage(null);
-      setSceneTagId('');
+      setSceneTagId('none');
       // Clear file input visually
       const fileInput = document.getElementById('review-image-input') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
@@ -100,7 +100,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
 
   const StarRating = ({ value, onChange }: { value: number, onChange: (rating: number) => void }) => (
     <div className="flex space-x-1">
-      {[1, 2, 3, 4, 5].map((star) => (
+      {[1, 2, 3, 4, 5].map(star => (
         <button // Changed span to button for accessibility
           type="button" // Prevent form submission
           key={star}
@@ -128,7 +128,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
         <Textarea
           id="comment"
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          onChange={e => setComment(e.target.value)}
           required
           rows={4}
           placeholder="Share your experience..."
@@ -155,8 +155,8 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
           </SelectTrigger>
           <SelectContent>
             {errorTags && <SelectItem value="error" disabled className="text-red-500">{errorTags}</SelectItem>}
-            <SelectItem value="">None</SelectItem>
-            {sceneTags.map((tag) => (
+            <SelectItem value="none">None</SelectItem>
+            {sceneTags.map(tag => (
               <SelectItem key={tag.id} value={String(tag.id)}>
                 {tag.name}
               </SelectItem>

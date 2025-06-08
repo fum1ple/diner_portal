@@ -6,14 +6,14 @@ default: &default
 
 development:
   <<: *default
-  username: postgres
-  password: postgres
+  username: root
+  password: password
   database: app_development
   host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
 
 test:
   <<: *default
-  username: postgres
-  password: postgres
+  username: root
+  password: password
   database: app_test
   host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
