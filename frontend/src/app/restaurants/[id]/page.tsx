@@ -1,11 +1,10 @@
 'use client';
-
+import React from 'react';
 import { useRestaurantDetail } from '../../../hooks/useRestaurantDetail';
-import RestaurantInfo from '../../../components/RestaurantInfo';
-import RestaurantActions from '../../../components/RestaurantActions';
-import LoadingSpinner from '../../../components/LoadingSpinner';
-import ErrorMessage from '../../../components/ErrorMessage';
-import Breadcrumb from '../../../components/Breadcrumb';
+import RestaurantDetail from '@/components/RestaurantDetail';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import ErrorMessage from '@/components/ErrorMessage';
+import Breadcrumb from '@/components/Breadcrumb';
 
 interface PageProps {
   params: { id: string };
@@ -14,45 +13,30 @@ interface PageProps {
 export default function RestaurantDetailPage({ params }: PageProps) {
   const { id } = params;
   const { data: restaurant, isLoading, error, refetch } = useRestaurantDetail(id);
+  // const [showReviewForm, setShowReviewForm] = useState(false);
 
   if (isLoading) {
-    return (
-      <main className="p-8">
-        <LoadingSpinner message="レストラン情報を読み込み中..." />
-      </main>
-    );
+    return <main className="container mx-auto p-4"><LoadingSpinner message="店舗詳細を読み込み中..." /></main>;
   }
 
   if (error) {
-    return (
-      <main className="p-8">
-        <ErrorMessage 
-          message={error.message} 
-          onRetry={() => refetch()}
-        />
-      </main>
-    );
+    return <main className="container mx-auto p-4"><ErrorMessage message={error.message || '店舗詳細の読み込みに失敗しました。'} onRetry={() => refetch()} /></main>;
   }
 
   if (!restaurant) {
-    return (
-      <main className="p-8">
-        <ErrorMessage message="レストランが見つかりません" />
-      </main>
-    );
+    return <main className="container mx-auto p-4"><ErrorMessage message="店舗が見つかりませんでした。" /></main>;
   }
 
   return (
-    <main className="max-w-4xl mx-auto p-6">
-      <Breadcrumb 
-        items={[
-          { label: '店舗一覧', href: '/restaurants' },
-          { label: restaurant.name }
-        ]} 
-      />
-      <div className="space-y-6">
-        <RestaurantInfo restaurant={restaurant} />
-        <RestaurantActions restaurant={restaurant} />
+    <main className="min-h-screen bg-gradient-to-br from-cyan-50 to-emerald-50 py-8">
+      <div className="max-w-6xl mx-auto px-6">
+        <Breadcrumb
+          items={[
+            { label: '店舗一覧', href: '/restaurants' },
+            { label: restaurant.name },
+          ]}
+        />
+        <RestaurantDetail restaurant={restaurant} />
       </div>
     </main>
   );

@@ -6,7 +6,7 @@ import FormField from './FormField';
 import LoadingSpinner from './LoadingSpinner';
 import { StyledWrapper } from './AddRestaurantForm/styles';
 import { useTags } from '@/hooks/useTags';
-import { authApi } from '@/lib/api-client';
+import { authApi } from '@/lib/apiClient';
 import type { CreateRestaurantRequest, Tag } from '@/types/api';
 
 const AddRestaurantForm = () => {

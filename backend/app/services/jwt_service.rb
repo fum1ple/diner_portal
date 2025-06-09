@@ -18,10 +18,10 @@ class JwtService
       decoded = JWT.decode(token, JWT_SECRET, true, { algorithm: 'HS256' })
       decoded[0] # ペイロード部分を返す
     rescue JWT::ExpiredSignature => e
-      Rails.logger.error "JWT expired: #{e.message}"
+      Rails.logger.error "JWTトークンが期限切れです: #{e.message}"
       raise e
     rescue JWT::DecodeError => e
-      Rails.logger.error "JWT decode error: #{e.message}"
+      Rails.logger.error "JWTデコードエラー: #{e.message}"
       nil
     end
 

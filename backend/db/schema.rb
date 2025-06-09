@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_03_015502) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_09_120002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -35,9 +35,34 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_015502) do
     t.bigint "genre_tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "average_rating", precision: 3, scale: 2, default: "0.0"
+    t.integer "review_count", default: 0
+    t.index ["area_tag_id", "genre_tag_id"], name: "index_restaurants_on_area_tag_id_and_genre_tag_id"
     t.index ["area_tag_id"], name: "index_restaurants_on_area_tag_id"
+    t.index ["average_rating"], name: "index_restaurants_on_average_rating"
+    t.index ["created_at"], name: "index_restaurants_on_created_at"
     t.index ["genre_tag_id"], name: "index_restaurants_on_genre_tag_id"
+    t.index ["name"], name: "index_restaurants_on_name"
+    t.index ["review_count"], name: "index_restaurants_on_review_count"
     t.index ["user_id"], name: "index_restaurants_on_user_id"
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "restaurant_id", null: false
+    t.bigint "scene_tag_id"
+    t.text "comment", null: false
+    t.integer "rating", null: false
+    t.string "image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_reviews_on_created_at"
+    t.index ["rating"], name: "index_reviews_on_rating"
+    t.index ["restaurant_id", "created_at"], name: "index_reviews_on_restaurant_id_and_created_at"
+    t.index ["restaurant_id", "rating"], name: "index_reviews_on_restaurant_id_and_rating"
+    t.index ["restaurant_id"], name: "index_reviews_on_restaurant_id"
+    t.index ["scene_tag_id"], name: "index_reviews_on_scene_tag_id"
+    t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -45,6 +70,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_015502) do
     t.string "category"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_tags_on_category"
+    t.index ["name", "category"], name: "index_tags_on_name_and_category"
   end
 
   create_table "users", force: :cascade do |t|
@@ -61,4 +88,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_015502) do
   add_foreign_key "restaurants", "tags", column: "area_tag_id"
   add_foreign_key "restaurants", "tags", column: "genre_tag_id"
   add_foreign_key "restaurants", "users"
+  add_foreign_key "reviews", "restaurants"
+  add_foreign_key "reviews", "tags", column: "scene_tag_id"
+  add_foreign_key "reviews", "users"
 end

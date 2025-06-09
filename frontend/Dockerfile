@@ -8,7 +8,7 @@ WORKDIR /app
 FROM base AS deps
 # deps ステージ: 依存関係のみインストール（package.json変更時のみ実行）
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 # 開発環境用のイメージ
 FROM base AS development

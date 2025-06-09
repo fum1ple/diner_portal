@@ -19,7 +19,7 @@ RSpec.describe "Api::Tags", type: :request do
     let!(:genre_tag) { Tag.create!(name: "イタリアン", category: "genre") }
 
     it "全件取得できる" do
-      get "/api/tags"
+      get "/api/tags", headers: headers
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json.size).to eq(3)
@@ -27,7 +27,7 @@ RSpec.describe "Api::Tags", type: :request do
     end
 
     it "カテゴリ指定で絞り込める" do
-      get "/api/tags?category=area"
+      get "/api/tags?category=area", headers: headers
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json.size).to eq(2)
@@ -35,17 +35,22 @@ RSpec.describe "Api::Tags", type: :request do
     end
 
     it "該当カテゴリがない場合は空配列" do
-      get "/api/tags?category=unknown"
+      get "/api/tags?category=unknown", headers: headers
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json).to eq([])
     end
 
     it "レスポンス形式が正しい" do
-      get "/api/tags"
+      get "/api/tags", headers: headers
       json = JSON.parse(response.body)
       tag = json.first
       expect(tag.keys).to contain_exactly("id", "name", "category")
+    end
+
+    it "未認証の場合401" do
+      get "/api/tags"
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 

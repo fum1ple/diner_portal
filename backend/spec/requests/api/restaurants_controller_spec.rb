@@ -97,7 +97,7 @@ RSpec.describe 'Api::Restaurants', type: :request do
       }.not_to change(Restaurant, :count)
       expect(response).to have_http_status(:unprocessable_entity)
       data = JSON.parse(response.body)
-      expect(data['errors']['area_tag_id']).to include('must be an area tag')
+      expect(data['errors']['area_tag_id']).to include('エリアタグを選択してください')
     end
 
     it 'genre_tagがgenreカテゴリでなければ422' do
@@ -108,7 +108,7 @@ RSpec.describe 'Api::Restaurants', type: :request do
       }.not_to change(Restaurant, :count)
       expect(response).to have_http_status(:unprocessable_entity)
       data = JSON.parse(response.body)
-      expect(data['errors']['genre_tag_id']).to include('must be a genre tag')
+      expect(data['errors']['genre_tag_id']).to include('ジャンルタグを選択してください')
     end
 
     it '認証なしなら401' do

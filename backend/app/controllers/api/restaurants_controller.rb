@@ -22,12 +22,12 @@ module Api
     end
 
     def show
-      # 指定IDのレストランを取得（area_tag, genre_tagも含めて）
-      restaurant = Restaurant.includes(:area_tag, :genre_tag).find_by(id: params[:id])
+      # 指定IDのレストランを取得（area_tag, genre_tag, reviewsとその関連も含めて）
+      restaurant = Restaurant.includes(:area_tag, :genre_tag, reviews: [:user, :scene_tag]).find_by(id: params[:id])
       if restaurant
         render json: restaurant_response(restaurant)
       else
-        render json: { error: 'Restaurant not found' }, status: :not_found
+        render json: { error: '店舗が見つかりません' }, status: :not_found
       end
     end
 
@@ -44,9 +44,9 @@ module Api
     end
 
     # レストランのレスポンス形式を定義
-    # @レストランオブジェクトｗを受け取り、必要な情報を含むハッシュを返す
+    # レストランオブジェクトを受け取り、必要な情報を含むハッシュを返す
     def restaurant_response(restaurant)
-      {
+      response_data = {
         id: restaurant.id,
         name: restaurant.name,
         area_tag_id: restaurant.area_tag_id,
@@ -54,8 +54,10 @@ module Api
         user_id: restaurant.user_id,
         created_at: restaurant.created_at,
         updated_at: restaurant.updated_at,
+        average_rating: restaurant.average_rating,
+        review_count: restaurant.review_count,
         area_tag: {
-          id: restaurant.area_tag&.id, #&.はnilチェックを行う。restaurant.area_tagがnilの場合、idはnilになる
+          id: restaurant.area_tag&.id,
           name: restaurant.area_tag&.name,
           category: restaurant.area_tag&.category
         },
@@ -65,6 +67,34 @@ module Api
           category: restaurant.genre_tag&.category
         }
       }
+
+      # reviewsキーをレスポンスに追加 (showアクションの場合のみ)
+      # reviews属性が存在し、かつnilでない場合にのみキーを追加
+      if restaurant.respond_to?(:reviews) && restaurant.reviews.loaded?
+        response_data[:reviews] = restaurant.reviews.order(created_at: :desc).map do |review|
+          review_data = {
+            id: review.id,
+            comment: review.comment,
+            rating: review.rating,
+            image_url: review.image_url,
+            created_at: review.created_at,
+            user: {
+              id: review.user.id,
+              name: review.user.name
+            }
+          }
+          if review.scene_tag
+            review_data[:scene_tag] = {
+              id: review.scene_tag.id,
+              name: review.scene_tag.name
+            }
+          else
+            review_data[:scene_tag] = nil
+          end
+          review_data
+        end
+      end
+      response_data
     end
   end
 end

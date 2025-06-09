@@ -7,7 +7,8 @@ import type {
   Restaurant,
   CreateRestaurantRequest,
   CreateTagRequest,
-  ApiCallOptions
+  ApiCallOptions,
+  Review
 } from '@/types/api';
 
 // 型ガード関数
@@ -43,24 +44,32 @@ const apiCall = async <T = unknown>(
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+      const headers: HeadersInit = { 
+        ...((fetchOptions.headers as Record<string, string>) || {}),
+      };
       
+      if (!(fetchOptions.body instanceof FormData)) {
+        (headers as Record<string, string>)['Content-Type'] = 'application/json';
+      }
+
       const response = await fetch(`/api${url}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...fetchOptions.headers,
-        },
-        signal: controller.signal,
         ...fetchOptions,
+        headers,
+        signal: controller.signal,
       });
       
       clearTimeout(timeoutId);
 
-      const data = await response.json();
+      // FormDataレスポンスはJSONでない場合や空の場合がある（例：201 Createdでボディなしや異なるボディ）
+      // ただし、submitReviewのバックエンドはJSONを返すため、これで問題ないはず
+      const responseBody = await response.text();
+      const data = responseBody ? JSON.parse(responseBody) : null;
 
       if (!response.ok) {
         return {
           status: response.status,
-          error: data.error || data.message || `HTTP ${response.status}`,
+          error: data?.error || data?.message || `HTTP ${response.status}`,
         };
       }
 
@@ -70,9 +79,9 @@ const apiCall = async <T = unknown>(
       };
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      
+      // 全ての再試行後にのみエラーをログ出力する
       if (attempt === retries - 1) {
-        console.error('API呼び出しエラー:', lastError);
+        console.error(`${endpoint}へのAPI呼び出しが${retries}回の試行後に失敗しました:`, lastError);
         return {
           status: 0,
           error: lastError.message,
@@ -92,8 +101,13 @@ const apiCall = async <T = unknown>(
 
 // 公開API（認証不要）
 export const publicApi = {
+  // 現在は認証不要なAPIはありません
+};
+
+// 認証API（認証必要）
+export const authApi = {
   // タグ取得
-  getTags: async (category: 'area' | 'genre'): Promise<ApiResponse<Tag[]>> => {
+  getTags: async (category: 'area' | 'genre' | 'scene'): Promise<ApiResponse<Tag[]>> => {
     const result = await apiCall<Tag[]>(`/tags?category=${category}`);
     
     // データの型検証
@@ -106,10 +120,19 @@ export const publicApi = {
     
     return result;
   },
-};
 
-// 認証API（認証必要）
-export const authApi = {
+  // シーンタグ取得 (新しい専用関数)
+  getSceneTags: async (): Promise<ApiResponse<Tag[]>> => {
+    const result = await apiCall<Tag[]>(`/tags?category=scene`);
+    if (result.data && !isTagsResponse(result.data)) {
+      return {
+        status: result.status,
+        error: 'Invalid response format for scene tags',
+      };
+    }
+    return result;
+  },
+
   // 店舗作成
   createRestaurant: async (data: CreateRestaurantRequest): Promise<ApiResponse<Restaurant>> => 
     apiCall<Restaurant>('/restaurants', {
@@ -132,10 +155,21 @@ export const authApi = {
     if (result.data && !isRestaurantsResponse(result.data)) {
       return {
         status: result.status,
-        error: 'Invalid response format for restaurants',
+        error: '店舗一覧のレスポンス形式が無効です',
       };
     }
     
     return result;
   },
+
+  // レビュー投稿
+  submitReview: async (restaurantId: string, data: FormData): Promise<ApiResponse<Review>> =>
+    apiCall<Review>(`/restaurants/${restaurantId}/reviews`, {
+      method: 'POST',
+      body: data,
+      // FormDataの場合、Content-Typeは意図的に省略し、apiCallが処理します
+    }),
 };
+
+// 後方互換性のために default export も提供
+export default apiCall;

@@ -24,14 +24,14 @@ RSpec.describe 'Api::User', type: :request do
       get '/api/user/profile'
       expect(response).to have_http_status(:unauthorized)
       data = JSON.parse(response.body)
-      expect(data['error']).to eq 'Missing authorization token'
+      expect(data['error']).to eq '認証トークンがありません'
     end
 
     it '不正なトークンは401' do
       get '/api/user/profile', headers: { 'Authorization' => 'Bearer invalid_token' }
       expect(response).to have_http_status(:unauthorized)
       data = JSON.parse(response.body)
-      expect(data['error']).to eq 'Invalid token format'
+      expect(data['error']).to eq '無効なトークン形式です'
     end
 
     it 'Authorizationヘッダー不正は401' do
@@ -101,13 +101,13 @@ RSpec.describe 'Api::User', type: :request do
       get '/api/user/profile'
       expect(response).to have_http_status(:unauthorized)
       error_response = JSON.parse(response.body)
-      expect(error_response['error']).to eq 'Missing authorization token'
+      expect(error_response['error']).to eq '認証トークンがありません'
 
       # Step 5: 無効なトークンでのアクセス拒否
       get '/api/user/profile', headers: { 'Authorization' => "Bearer invalid_token" }
       expect(response).to have_http_status(:unauthorized)
       invalid_token_response = JSON.parse(response.body)
-      expect(invalid_token_response['error']).to eq 'Invalid token format'
+      expect(invalid_token_response['error']).to eq '無効なトークン形式です'
     end
 
     it 'handles missing user for valid token format' do
@@ -124,7 +124,7 @@ RSpec.describe 'Api::User', type: :request do
 
       expect(response).to have_http_status(:unauthorized)
       response_data = JSON.parse(response.body)
-      expect(response_data['error']).to eq 'User not found'
+      expect(response_data['error']).to eq 'ユーザーが見つかりません'
     end
   end
 end
