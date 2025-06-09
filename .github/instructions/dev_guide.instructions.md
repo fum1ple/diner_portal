@@ -1,3 +1,8 @@
+---
+applyTo: '**'
+---
+Coding standards, domain knowledge, and preferences that AI should follow.
+
 # Diner Portal 開発ガイド
 
 > このドキュメントは、開発者が常に参照できるプロジェクトの開発情報をまとめたものです。
@@ -254,6 +259,9 @@ JWT_SECRET_KEY=<JWT署名用シークレット>
 2. **パッケージマネージャー**: フロントエンドは **Yarn のみ** 使用
 3. **認証ドメイン**: `tokium.jp` のみ許可
 4. **Node.js**: v20+ 必須
+5. **開発ツール制限**: 
+   - **Rails Console使用禁止**: `rails console`での直接操作は行わない
+   - 代替手段: VS Codeタスク、ファイル操作ツール、APIクライアント、またはRSpecテストでの動作確認
 
 ### セキュリティ要件
 - 全API認証必須
