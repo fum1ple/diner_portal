@@ -13,7 +13,7 @@ class Review < ApplicationRecord
 
   def scene_tag_is_scene_category
     if scene_tag.present? && scene_tag.category != 'scene'
-      errors.add(:scene_tag_id, 'must be a scene tag')
+      errors.add(:scene_tag_id, 'シーンタグを選択してください')
     end
   end
 end

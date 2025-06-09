@@ -9,14 +9,11 @@ module Api
       review = @restaurant.reviews.new(review_params)
       review.user = current_user
 
-      # Handle image upload
       if params[:review] && params[:review][:image].present?
         uploaded_file = params[:review][:image]
-        # Ensure the directory exists
         upload_dir = Rails.root.join('public', 'uploads', 'reviews')
         FileUtils.mkdir_p(upload_dir) unless Dir.exist?(upload_dir)
 
-        # Generate a unique filename
         filename = "#{SecureRandom.hex}_#{uploaded_file.original_filename}"
         file_path = upload_dir.join(filename)
 
@@ -35,7 +32,7 @@ module Api
 
     private
 
-    # This ensures that authenticate_jwt_token from JwtAuthenticatable concern runs for :create
+    # JWT認証が必要かどうかを判定
     def jwt_authentication_required?
       action_name.to_sym == :create
     end
@@ -43,7 +40,7 @@ module Api
     def set_restaurant
       @restaurant = Restaurant.find_by(id: params[:restaurant_id])
       unless @restaurant
-        render json: { error: 'Restaurant not found' }, status: :not_found
+        render json: { error: '店舗が見つかりません' }, status: :not_found
       end
     end
 

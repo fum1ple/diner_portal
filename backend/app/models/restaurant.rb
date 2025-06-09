@@ -17,14 +17,14 @@ class Restaurant < ApplicationRecord
   def area_tag_category
     # area_tagが選ばれていて、かつ、そのカテゴリが 'area' じゃなかったらエラー
     if area_tag && area_tag.category != 'area'
-      errors.add(:area_tag_id, 'must be an area tag')
+      errors.add(:area_tag_id, 'エリアタグを選択してください')
     end
   end
 
   def genre_tag_category
     # genre_tagが選ばれていて、かつ、そのカテゴリが 'genre' じゃなかったらエラー
     if genre_tag && genre_tag.category != 'genre'
-      errors.add(:genre_tag_id, 'must be a genre tag')
+      errors.add(:genre_tag_id, 'ジャンルタグを選択してください')
     end
   end
 end

@@ -27,7 +27,7 @@ module Api
       if restaurant
         render json: restaurant_response(restaurant)
       else
-        render json: { error: 'Restaurant not found' }, status: :not_found
+        render json: { error: '店舗が見つかりません' }, status: :not_found
       end
     end
 
@@ -44,7 +44,7 @@ module Api
     end
 
     # レストランのレスポンス形式を定義
-    # @レストランオブジェクトｗを受け取り、必要な情報を含むハッシュを返す
+    # レストランオブジェクトを受け取り、必要な情報を含むハッシュを返す
     def restaurant_response(restaurant)
       response_data = {
         id: restaurant.id,

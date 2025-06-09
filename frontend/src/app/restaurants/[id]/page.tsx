@@ -21,7 +21,7 @@ export default function RestaurantDetailPage({ params }: PageProps) {
   if (isLoading) {
     return (
       <main className="container mx-auto p-4">
-        <LoadingSpinner message="Loading restaurant details..." />
+        <LoadingSpinner message="店舗詳細を読み込み中..." />
       </main>
     );
   }
@@ -29,7 +29,7 @@ export default function RestaurantDetailPage({ params }: PageProps) {
   if (error) {
     return (
       <main className="container mx-auto p-4">
-        <ErrorMessage message={error.message || 'Failed to load restaurant details.'} onRetry={refetch} />
+        <ErrorMessage message={error.message || '店舗詳細の読み込みに失敗しました。'} onRetry={refetch} />
       </main>
     );
   }
@@ -37,7 +37,7 @@ export default function RestaurantDetailPage({ params }: PageProps) {
   if (!restaurant) {
     return (
       <main className="container mx-auto p-4">
-        <ErrorMessage message="Restaurant not found." />
+        <ErrorMessage message="店舗が見つかりませんでした。" />
       </main>
     );
   }
@@ -50,7 +50,7 @@ export default function RestaurantDetailPage({ params }: PageProps) {
     <main className="container mx-auto p-4">
       <Breadcrumb
         items={[
-          { label: 'All Restaurants', href: '/restaurants' },
+          { label: '店舗一覧', href: '/restaurants' },
           { label: restaurant.name },
         ]}
       />

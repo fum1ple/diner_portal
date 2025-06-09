@@ -8,7 +8,7 @@ import type {
   CreateRestaurantRequest,
   CreateTagRequest,
   ApiCallOptions,
-  Review // Added Review type
+  Review
 } from '@/types/api';
 
 // 型ガード関数
@@ -54,15 +54,15 @@ const apiCall = async <T = unknown>(
       }
 
       const response = await fetch(`/api${url}`, {
-        ...fetchOptions, // Spread options first
-        headers,         // Then override headers
+        ...fetchOptions,
+        headers,
         signal: controller.signal,
       });
       
       clearTimeout(timeoutId);
 
-      // FormData responses might not be JSON, or might be empty (e.g., 201 Created with no body or different body)
-      // However, our backend for submitReview returns JSON, so this should be fine.
+      // FormDataレスポンスはJSONでない場合や空の場合がある（例：201 Createdでボディなしや異なるボディ）
+      // ただし、submitReviewのバックエンドはJSONを返すため、これで問題ないはず
       const responseBody = await response.text();
       const data = responseBody ? JSON.parse(responseBody) : null;
 
@@ -80,9 +80,9 @@ const apiCall = async <T = unknown>(
       };
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      // Ensure that the error is logged only once after all retries.
+      // 全ての再試行後にのみエラーをログ出力する
       if (attempt === retries - 1) {
-        console.error(`API call to ${endpoint} failed after ${retries} attempts:`, lastError);
+        console.error(`${endpoint}へのAPI呼び出しが${retries}回の試行後に失敗しました:`, lastError);
         return {
           status: 0,
           error: lastError.message,
@@ -154,7 +154,7 @@ export const authApi = {
     if (result.data && !isRestaurantsResponse(result.data)) {
       return {
         status: result.status,
-        error: 'Invalid response format for restaurants',
+        error: '店舗一覧のレスポンス形式が無効です',
       };
     }
     
@@ -166,6 +166,6 @@ export const authApi = {
     apiCall<Review>(`/restaurants/${restaurantId}/reviews`, {
       method: 'POST',
       body: data,
-      // Content-Type is intentionally omitted for FormData, apiCall will handle it
+      // FormDataの場合、Content-Typeは意図的に省略し、apiCallが処理します
     }),
 };

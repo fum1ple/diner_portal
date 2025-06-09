@@ -48,7 +48,7 @@ export interface Restaurant {
   area_tag: Tag;  // 必須プロパティとして統一
   genre_tag: Tag; // 必須プロパティとして統一
   user?: User;    // 登録者情報（APIがincludeした場合）
-  reviews?: Review[]; // For restaurant details
+  reviews?: Review[]; // 店舗詳細情報用のレビューリスト
 }
 
 // Review関連の型
@@ -59,7 +59,7 @@ export interface Review {
   image_url?: string;
   created_at: string;
   user: {
-    id: number; // Changed from string for consistency with Rails IDs
+    id: number; // Rails IDとの一貫性のため文字列から変更
     name: string;
   };
   scene_tag?: {
@@ -109,7 +109,7 @@ export interface RestaurantsListResponse {
 
 // 認証関連の型
 export interface User {
-  id: number; // Changed from string to number for consistency
+  id: number; // 一貫性のため文字列から数値に変更
   email: string;
   name?: string;
   google_id?: string;

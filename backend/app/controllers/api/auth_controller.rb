@@ -25,7 +25,7 @@ class Api::AuthController < ApplicationController
         # ドメインチェック
         domain = email.split('@').last.downcase
         if domain != ALLOWED_DOMAIN.downcase
-          render_error('Unauthorized domain', status: :unauthorized) and return
+          render_error('許可されていないドメインです', status: :unauthorized) and return
         end
 
         # ユーザーを作成または取得
@@ -48,15 +48,15 @@ class Api::AuthController < ApplicationController
         })
       else
         Rails.logger.error "Invalid token or email condition failed"
-        render_error('Invalid token or email', status: :unauthorized)
+        render_error('無効なトークンまたはメールアドレスです', status: :unauthorized)
       end
     rescue Google::Auth::IDTokens::VerificationError => e
       Rails.logger.error "Google token verification error: #{e.message}"
-      render_error('Token verification failed', status: :unauthorized, code: 'TOKEN_VERIFICATION_FAILED')
+      render_error('トークンの検証に失敗しました', status: :unauthorized, code: 'TOKEN_VERIFICATION_FAILED')
     rescue => e
       Rails.logger.error "Authentication error: #{e.class} - #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
-      render_error('Authentication failed', status: :unauthorized, code: 'AUTH_FAILED')
+      render_error('認証に失敗しました', status: :unauthorized, code: 'AUTH_FAILED')
     end
   end
 
@@ -65,7 +65,7 @@ class Api::AuthController < ApplicationController
     refresh_token = params[:refresh_token]
 
     if refresh_token.blank?
-      render_error('Refresh token is required', code: 'MISSING_REFRESH_TOKEN', status: :bad_request) and return
+      render_error('リフレッシュトークンが必要です', code: 'MISSING_REFRESH_TOKEN', status: :bad_request) and return
     end
 
     new_tokens = JwtService.refresh_access_token(refresh_token)
@@ -73,11 +73,11 @@ class Api::AuthController < ApplicationController
     if new_tokens
       render_success(new_tokens)
     else
-      render_error('Invalid or expired refresh token', code: 'INVALID_REFRESH_TOKEN', status: :unauthorized)
+      render_error('無効または期限切れのリフレッシュトークンです', code: 'INVALID_REFRESH_TOKEN', status: :unauthorized)
     end
   rescue => e
     Rails.logger.error "Refresh token error: #{e.message}"
-    render_error('Token refresh failed', code: 'REFRESH_FAILED', status: :internal_server_error)
+    render_error('トークンの更新に失敗しました', code: 'REFRESH_FAILED', status: :internal_server_error)
   end
 
   # POST /api/auth/logout
@@ -93,10 +93,10 @@ class Api::AuthController < ApplicationController
       RefreshTokenService.revoke_all(current_user)
     end
 
-    render_success({ message: 'Logged out successfully' })
+    render_success({ message: 'ログアウトしました' })
   rescue => e
     Rails.logger.error "Logout error: #{e.message}"
-    render_error('Logout failed', code: 'LOGOUT_FAILED', status: :internal_server_error)
+    render_error('ログアウトに失敗しました', code: 'LOGOUT_FAILED', status: :internal_server_error)
   end
 
   private

@@ -23,7 +23,7 @@ const refreshJwtToken = async (refreshToken: string) => {
       return null;
     }
   } catch (error) {
-    console.error('Token refresh error:', error);
+    console.error('トークン更新エラー:', error);
     return null;
   }
 };
@@ -102,7 +102,7 @@ export const useAuth = () => {
         signOut({ callbackUrl: '/' });
       }
     } catch (error) {
-      console.error('Token refresh error:', error);
+      console.error('トークン更新エラー:', error);
       setIsJwtValid(false);
     } finally {
       setIsRefreshing(false);

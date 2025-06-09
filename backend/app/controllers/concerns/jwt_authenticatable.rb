@@ -21,7 +21,7 @@ module JwtAuthenticatable
     token = extract_token_from_header
 
     unless token
-      render_unauthorized('Missing authorization token')
+      render_unauthorized('認証トークンがありません')
       return
     end
 
@@ -29,7 +29,7 @@ module JwtAuthenticatable
       decoded_token = ::JwtService.decode(token)
 
       unless decoded_token
-        render_unauthorized('Invalid token format')
+        render_unauthorized('無効なトークン形式です')
         return
       end
 
@@ -37,16 +37,16 @@ module JwtAuthenticatable
       @current_user = User.find_by(id: user_id)
 
       unless @current_user
-        render_unauthorized('User not found')
+        render_unauthorized('ユーザーが見つかりません')
         return
       end
 
     rescue JWT::ExpiredSignature => e
-      render_unauthorized('Token expired')
+      render_unauthorized('トークンの有効期限が切れています')
     rescue JWT::DecodeError => e
-      render_unauthorized('Invalid token format')
+      render_unauthorized('無効なトークン形式です')
     rescue => e
-      render_unauthorized("Authentication error: #{e.message}")
+      render_unauthorized("認証エラー: #{e.message}")
     end
   end
 
@@ -61,15 +61,15 @@ module JwtAuthenticatable
   end
 
   # 認証エラーレスポンス
-  def render_unauthorized(message = 'Unauthorized')
+  def render_unauthorized(message = '認証が必要です')
     error_code = case message
-                when /Invalid token format/, /decode error/i
+                when /無効なトークン形式です/, /decode error/i
                   'INVALID_TOKEN'
-                when /Token expired/, /expired/i
+                when /トークンの有効期限が切れています/, /expired/i
                   'TOKEN_EXPIRED'
-                when /Missing authorization token/
+                when /認証トークンがありません/
                   'MISSING_TOKEN'
-                when /User not found/
+                when /ユーザーが見つかりません/
                   'USER_NOT_FOUND'
                 else
                   'UNAUTHORIZED'

@@ -45,7 +45,7 @@ const MyPageContent = () => {
     return (
       <div className="d-flex justify-content-center py-5">
         <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">読み込み中...</span>
         </div>
       </div>
     );
