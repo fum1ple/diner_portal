@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useMemo, useCallback, memo } from 'react';
 import { Restaurant } from '@/types/api';
-import { Card, CardContent, CardHeader } from './ui/card';
-import { Badge } from './ui/badge';
-import { MapPin, Utensils, Clock } from 'lucide-react';
-import StarRating from './StarRating';
+import RestaurantDetailLayout from './RestaurantDetail/RestaurantDetailLayout';
+import FloatingActionButton from './RestaurantDetail/FloatingActionButton';
+import BackgroundDecorations from './RestaurantDetail/BackgroundDecorations';
+import ComponentStyles from './RestaurantDetail/styles/ComponentStyles';
 
 interface RestaurantDetailProps {
   restaurant: Restaurant;
@@ -11,101 +11,68 @@ interface RestaurantDetailProps {
   className?: string;
 }
 
-const RestaurantDetail: React.FC<RestaurantDetailProps> = ({ 
-  restaurant, 
-  className = '' 
+const RestaurantDetail: React.FC<RestaurantDetailProps> = memo(({
+  restaurant,
+  showReviews: initialShowReviews = false,
+  className = ''
 }) => {
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  const [showReviews, setShowReviews] = useState(initialShowReviews);
 
-  const calculateAverageRating = () => {
-    if (!restaurant.reviews || restaurant.reviews.length === 0) return 0;
-    const sum = restaurant.reviews.reduce((acc, review) => acc + review.rating, 0);
-    return Math.round((sum / restaurant.reviews.length) * 10) / 10;
-  };
+  // Google Maps URLを useMemo でメモ化
+  const googleMapsUrl = useMemo(() => {
+    const query = encodeURIComponent(`${restaurant.name} ${restaurant.area_tag.name}`);
+    return `https://www.google.com/maps/search/?api=1&query=${query}`;
+  }, [restaurant.name, restaurant.area_tag.name]);
+
+  // レビュー切り替えハンドラーをuseCallbackでメモ化
+  const handleToggleReviews = useCallback(() => {
+    setShowReviews(prev => !prev);
+  }, []);
+
+  // Google Maps開くハンドラーをuseCallbackでメモ化
+  const handleOpenGoogleMaps = useCallback(() => {
+    window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
+  }, [googleMapsUrl]);
+
+  // レビュー投稿ハンドラー
+  const handleWriteReview = useCallback(() => {
+    // レビュー投稿モーダルやページへの遷移処理をここに実装
+    console.log('レビュー投稿機能は開発中です');
+  }, []);
+
+  // レビューデータをuseMemoでメモ化
+  const reviewsData = useMemo(() => ({
+    reviews: restaurant.reviews || [],
+    reviewCount: restaurant.reviews?.length || 0
+  }), [restaurant.reviews]);
 
   return (
-    <div className={`space-y-6 ${className}`}>
-      {/* レストラン基本情報 */}
-      <Card>
-        <CardHeader>
-          <div className="space-y-4">
-            <h1 className="text-3xl font-bold text-gray-900">{restaurant.name}</h1>
-            
-            {/* タグ情報 */}
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                {restaurant.area_tag.name}
-              </Badge>
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Utensils className="w-3 h-3" />
-                {restaurant.genre_tag.name}
-              </Badge>
-            </div>
+    <div className={`bg-gradient-to-br from-cyan-50 via-teal-50 to-emerald-50 relative transition-all duration-700 ${className}`}>
+      {/* Background Decorative Elements */}
+      <BackgroundDecorations />
+      
+      {/* Component Styles */}
+      <ComponentStyles />
+      
+      {/* Floating Action Button for Mobile */}
+      <FloatingActionButton
+        showReviews={showReviews}
+        onToggle={handleToggleReviews}
+      />
 
-            {/* 評価情報 */}
-            {restaurant.reviews && restaurant.reviews.length > 0 && (
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <StarRating value={calculateAverageRating()} readOnly size="sm" />
-                  <span className="text-lg font-semibold text-gray-700">
-                    {calculateAverageRating()}
-                  </span>
-                </div>
-                <span className="text-sm text-gray-500">
-                  ({restaurant.reviews.length}件のレビュー)
-                </span>
-              </div>
-            )}
-          </div>
-        </CardHeader>
-      </Card>
-
-      {/* レストラン詳細情報 */}
-      <Card>
-        <CardHeader>
-          <h2 className="text-xl font-semibold text-gray-800">詳細情報</h2>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 bg-green-100 rounded-full">
-                <Clock className="w-4 h-4 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-900">登録日</p>
-                <p className="text-sm text-gray-600">{formatDate(restaurant.created_at)}</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Google Map検索ボタン */}
-      <Card>
-        <CardContent className="pt-6">
-          <button
-            onClick={() => {
-              const query = encodeURIComponent(`${restaurant.name} ${restaurant.area_tag.name}`);
-              const url = `https://www.google.com/maps/search/?api=1&query=${query}`;
-              window.open(url, '_blank', 'noopener,noreferrer');
-            }}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
-          >
-            <MapPin className="w-4 h-4" />
-            Google Mapで調べる
-          </button>
-        </CardContent>
-      </Card>
+      {/* Main Layout */}
+      <RestaurantDetailLayout
+        restaurant={restaurant}
+        showReviews={showReviews}
+        reviewsData={reviewsData}
+        onOpenGoogleMaps={handleOpenGoogleMaps}
+        onToggleReviews={handleToggleReviews}
+        onWriteReview={handleWriteReview}
+      />
     </div>
   );
-};
+});
+
+RestaurantDetail.displayName = 'RestaurantDetail';
 
 export default RestaurantDetail;

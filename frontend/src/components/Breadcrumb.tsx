@@ -15,23 +15,23 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => (
   <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
     <Link 
       href="/" 
-      className="flex items-center hover:text-blue-600 transition-colors"
+      className="flex items-center hover:text-cyan-600 transition-colors duration-200"
     >
       <Home className="w-4 h-4" />
     </Link>
     
-    {items.map((item) => (
+    {items.map(item => (
       <React.Fragment key={item.href || item.label}>
         <ChevronRight className="w-4 h-4 text-gray-400" />
         {item.href ? (
           <Link 
             href={item.href}
-            className="hover:text-blue-600 transition-colors"
+            className="hover:text-cyan-600 transition-colors duration-200 font-medium"
           >
             {item.label}
           </Link>
         ) : (
-          <span className="text-gray-900 font-medium">{item.label}</span>
+          <span className="text-cyan-700 font-semibold">{item.label}</span>
         )}
       </React.Fragment>
     ))}
