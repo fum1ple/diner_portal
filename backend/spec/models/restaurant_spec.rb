@@ -60,14 +60,14 @@ RSpec.describe Restaurant, type: :model do
       wrong_category_tag = Tag.create!(name: 'フレンチ', category: 'genre')
       restaurant = Restaurant.new(valid_restaurant_params.merge(area_tag: wrong_category_tag))
       expect(restaurant).not_to be_valid
-      expect(restaurant.errors[:area_tag_id]).to include('must be an area tag')
+      expect(restaurant.errors[:area_tag_id]).to include('エリアタグを選択してください')
     end
 
     it 'genre_tagのカテゴリを検証' do
       wrong_category_tag = Tag.create!(name: '大阪', category: 'area')
       restaurant = Restaurant.new(valid_restaurant_params.merge(genre_tag: wrong_category_tag))
       expect(restaurant).not_to be_valid
-      expect(restaurant.errors[:genre_tag_id]).to include('must be a genre tag')
+      expect(restaurant.errors[:genre_tag_id]).to include('ジャンルタグを選択してください')
     end
 
     it '空のnameを許可しない' do

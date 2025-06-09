@@ -76,7 +76,7 @@ RSpec.describe Review, type: :model do
       it 'is invalid when scene_tag is not nil and category is not "scene"' do
         review = FactoryBot.build(:review, user: user, restaurant: restaurant, scene_tag: area_tag)
         expect(review).not_to be_valid
-        expect(review.errors[:scene_tag_id]).to include('must be a scene tag')
+        expect(review.errors[:scene_tag_id]).to include('シーンタグを選択してください')
       end
     end
   end

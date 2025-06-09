@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "Api::Reviews", type: :request do
   let!(:user) { FactoryBot.create(:user) }
   let!(:restaurant) { FactoryBot.create(:restaurant) }
-  let!(:scene_tag) { FactoryBot.create(:tag, :scene, name: "Dinner Date") } # Specific scene tag
+  let!(:scene_tag) { FactoryBot.create(:tag, :scene, name: "Dinner Date") }
   let(:valid_headers) { { "Authorization" => "Bearer #{JwtService.encode(user_id: user.id)}" } }
   let(:valid_attributes) do
     {
@@ -17,7 +17,7 @@ RSpec.describe "Api::Reviews", type: :request do
   let(:invalid_attributes) do
     {
       review: {
-        comment: "", # Invalid: blank comment
+        comment: "",
         rating: 5
       }
     }
@@ -65,7 +65,6 @@ RSpec.describe "Api::Reviews", type: :request do
             }
           end
 
-          # Create a dummy fixture file if it doesn't exist
           before(:all) do
             fixture_dir = Rails.root.join('spec/fixtures/files')
             FileUtils.mkdir_p(fixture_dir) unless Dir.exist?(fixture_dir)
@@ -83,7 +82,6 @@ RSpec.describe "Api::Reviews", type: :request do
             expect(json_response['comment']).to eq("Great food and photo!")
             expect(json_response['image_url']).to start_with("/uploads/reviews/")
             expect(json_response['image_url']).to end_with("_test_image.png")
-            # Ensure there's content between the prefix and suffix from SecureRandom.hex
             path_parts = json_response['image_url'].split('/')
             filename_part = path_parts.last
             expect(filename_part.sub("_test_image.png", "")).not_to be_empty
@@ -105,7 +103,7 @@ RSpec.describe "Api::Reviews", type: :request do
 
         it "returns status 422 for invalid rating" do
           attributes_invalid_rating = valid_attributes.deep_dup
-          attributes_invalid_rating[:review][:rating] = 6 # Invalid rating
+          attributes_invalid_rating[:review][:rating] = 6
            expect {
             post "/api/restaurants/#{restaurant.id}/reviews", params: attributes_invalid_rating, headers: valid_headers
           }.not_to change(Review, :count)
@@ -125,7 +123,7 @@ RSpec.describe "Api::Reviews", type: :request do
 
           expect(response).to have_http_status(:unprocessable_entity)
           json_response = JSON.parse(response.body)
-          expect(json_response['errors']).to include("Scene tag must be a scene tag")
+          expect(json_response['errors']).to include("Scene tag シーンタグを選択してください")
         end
       end
 
@@ -134,18 +132,17 @@ RSpec.describe "Api::Reviews", type: :request do
           post "/api/restaurants/invalid_id/reviews", params: valid_attributes, headers: valid_headers
           expect(response).to have_http_status(:not_found)
           json_response = JSON.parse(response.body)
-          expect(json_response['error']).to eq('Restaurant not found')
+          expect(json_response['error']).to eq('店舗が見つかりません')
         end
       end
     end
 
     context "when not authenticated" do
       it "returns status 401" do
-        post "/api/restaurants/#{restaurant.id}/reviews", params: valid_attributes # No headers
+        post "/api/restaurants/#{restaurant.id}/reviews", params: valid_attributes
         expect(response).to have_http_status(:unauthorized)
         json_response = JSON.parse(response.body)
-        # The exact message depends on JwtAuthenticatable concern's render_unauthorized
-        expect(json_response['error']).to include('Missing authorization token')
+        expect(json_response['error']).to include('認証トークンがありません')
       end
     end
   end
