@@ -102,6 +102,11 @@ const apiCall = async <T = unknown>(
 
 // 公開API（認証不要）
 export const publicApi = {
+  // 現在は認証不要なAPIはありません
+};
+
+// 認証API（認証必要）
+export const authApi = {
   // タグ取得
   getTags: async (category: 'area' | 'genre' | 'scene'): Promise<ApiResponse<Tag[]>> => {
     const result = await apiCall<Tag[]>(`/tags?category=${category}`);
@@ -127,11 +132,8 @@ export const publicApi = {
       };
     }
     return result;
-  }
-};
+  },
 
-// 認証API（認証必要）
-export const authApi = {
   // 店舗作成
   createRestaurant: async (data: CreateRestaurantRequest): Promise<ApiResponse<Restaurant>> => 
     apiCall<Restaurant>('/restaurants', {

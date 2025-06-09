@@ -1,7 +1,6 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
-import { publicApi, authApi } from '@/lib/api-client';
-import { Tag } from '@/types/api'; // CreateReviewRequest is not used directly in this component's props/state
-// Assuming shadcn/ui components are available
+import { authApi } from '@/lib/api-client';
+import { Tag } from '@/types/api'; 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,13 +28,12 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
     const fetchTags = async () => {
       setIsLoadingTags(true);
       setErrorTags(null);
-      const response = await publicApi.getSceneTags();
+      const response = await authApi.getSceneTags();
       if (response.data) {
         setSceneTags(response.data);
       } else {
         const errorMessage = response.error || 'シーンタグの読み込みに失敗しました。';
         setErrorTags(errorMessage);
-        // toast.error(errorMessage);
         console.error("シーンタグ取得エラー:", errorMessage);
       }
       setIsLoadingTags(false);
@@ -57,7 +55,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
 
     if (rating === 0) {
       setSubmitError('評価を選択してください。');
-      // toast.error('評価を選択してください。');
       alert('評価を選択してください。');
       return;
     }
@@ -76,20 +73,17 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
     const response = await authApi.submitReview(restaurantId, formData);
 
     if (response.data) {
-      // toast.success('レビューを正常に投稿しました！');
       alert('レビューを正常に投稿しました！');
       setComment('');
       setRating(0);
       setImage(null);
       setSceneTagId('none');
-      // Clear file input visually
       const fileInput = document.getElementById('review-image-input') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
       onReviewSubmitted();
     } else {
       const errorMessage = response.error || 'レビューの投稿に失敗しました。';
       setSubmitError(errorMessage);
-      // toast.error(errorMessage);
       alert(errorMessage);
       console.error("レビュー投稿エラー:", errorMessage);
     }
@@ -99,8 +93,8 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
   const StarRating = ({ value, onChange }: { value: number, onChange: (rating: number) => void }) => (
     <div className="flex space-x-1">
       {[1, 2, 3, 4, 5].map(star => (
-        <button // Changed span to button for accessibility
-          type="button" // Prevent form submission
+        <button
+          type="button"
           key={star}
           onClick={() => onChange(star)}
           className={`cursor-pointer text-2xl ${star <= value ? 'text-yellow-400' : 'text-gray-300'}`}

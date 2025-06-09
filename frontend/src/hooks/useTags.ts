@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { publicApi, authApi } from "@/lib/api-client";
+import { authApi } from "@/lib/api-client";
 import type { Tag, CreateTagRequest } from "@/types/api";
 
 interface UseTagsReturn {
@@ -24,10 +24,10 @@ export const useTags = (): UseTagsReturn => {
       setLoading(true);
       setError(null);
       
-      // シンプルに並列取得
+      // シンプルに並列取得（認証API使用）
       const [areaResult, genreResult] = await Promise.all([
-        publicApi.getTags('area'),
-        publicApi.getTags('genre'),
+        authApi.getTags('area'),
+        authApi.getTags('genre'),
       ]);
       
       // エラーチェック

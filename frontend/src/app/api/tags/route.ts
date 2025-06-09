@@ -4,6 +4,16 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export const GET = async (request: NextRequest) => {
   try {
+    // セッション確認（認証必須に変更）
+    const session = await getServerSession(authOptions);
+    
+    if (!session?.jwtToken) {
+      return NextResponse.json(
+        { error: '認証が必要です' },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     
@@ -11,13 +21,14 @@ export const GET = async (request: NextRequest) => {
       return NextResponse.json({ error: 'category parameter is required' }, { status: 400 });
     }
 
-    // サーバーサイドからbackendコンテナにアクセス
+    // サーバーサイドからbackendコンテナにアクセス（認証ヘッダー付き）
     const backendUrl = `http://backend:3000/api/tags?category=${category}`;
     
     const response = await fetch(backendUrl, {
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.jwtToken}`
       }
     });
     
