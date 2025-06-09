@@ -1,9 +1,10 @@
-import React, { useState, useMemo, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Restaurant } from '@/types/api';
 import RestaurantDetailLayout from './RestaurantDetail/RestaurantDetailLayout';
 import FloatingActionButton from './RestaurantDetail/FloatingActionButton';
 import BackgroundDecorations from './RestaurantDetail/BackgroundDecorations';
 import ComponentStyles from './RestaurantDetail/styles/ComponentStyles';
+import { useRestaurantOptimization } from '@/hooks/useRestaurantOptimization';
 
 interface RestaurantDetailProps {
   restaurant: Restaurant;
@@ -18,13 +19,12 @@ const RestaurantDetail: React.FC<RestaurantDetailProps> = memo(({
 }) => {
   const [showReviews, setShowReviews] = useState(initialShowReviews);
 
-  // Google Maps URLを useMemo でメモ化
-  const googleMapsUrl = useMemo(() => {
-    const query = encodeURIComponent(`${restaurant.name} ${restaurant.area_tag.name}`);
-    return `https://www.google.com/maps/search/?api=1&query=${query}`;
-  }, [restaurant.name, restaurant.area_tag.name]);
+  // useRestaurantOptimizationフックを使用して最適化された値を取得
+  const { googleMapsUrl, reviewsData } = useRestaurantOptimization({ 
+    restaurant 
+  });
 
-  // レビュー切り替えハンドラーをuseCallbackでメモ化
+  // レビュー切り替えハンドラー
   const handleToggleReviews = useCallback(() => {
     setShowReviews(prev => !prev);
   }, []);
@@ -33,18 +33,6 @@ const RestaurantDetail: React.FC<RestaurantDetailProps> = memo(({
   const handleOpenGoogleMaps = useCallback(() => {
     window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
   }, [googleMapsUrl]);
-
-  // レビュー投稿ハンドラー
-  const handleWriteReview = useCallback(() => {
-    // レビュー投稿モーダルやページへの遷移処理をここに実装
-    console.log('レビュー投稿機能は開発中です');
-  }, []);
-
-  // レビューデータをuseMemoでメモ化
-  const reviewsData = useMemo(() => ({
-    reviews: restaurant.reviews || [],
-    reviewCount: restaurant.reviews?.length || 0
-  }), [restaurant.reviews]);
 
   return (
     <div className={`bg-gradient-to-br from-cyan-50 via-teal-50 to-emerald-50 relative transition-all duration-700 ${className}`}>
@@ -67,7 +55,6 @@ const RestaurantDetail: React.FC<RestaurantDetailProps> = memo(({
         reviewsData={reviewsData}
         onOpenGoogleMaps={handleOpenGoogleMaps}
         onToggleReviews={handleToggleReviews}
-        onWriteReview={handleWriteReview}
       />
     </div>
   );

@@ -12,10 +12,11 @@ interface RestaurantDetailLayoutProps {
   reviewsData: {
     reviews: Review[];
     reviewCount: number;
+    averageRating: number;
+    hasReviews: boolean;
   };
   onOpenGoogleMaps: () => void;
   onToggleReviews: () => void;
-  onWriteReview: () => void;
 }
 
 const RestaurantDetailLayout: React.FC<RestaurantDetailLayoutProps> = memo(({
@@ -24,7 +25,6 @@ const RestaurantDetailLayout: React.FC<RestaurantDetailLayoutProps> = memo(({
   reviewsData,
   onOpenGoogleMaps,
   onToggleReviews,
-  onWriteReview
 }) => (
   <div
     className={`${LAYOUT.container} px-4 py-6 ${TRANSITIONS.extraLong} ${
@@ -59,7 +59,7 @@ const RestaurantDetailLayout: React.FC<RestaurantDetailLayoutProps> = memo(({
     <ReviewsSection
       reviews={reviewsData.reviews}
       isVisible={showReviews}
-      onWriteReview={onWriteReview}
+      restaurantId={restaurant.id}
     />
   </div>
 ));

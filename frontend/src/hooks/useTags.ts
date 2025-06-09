@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { authApi } from "@/lib/api-client";
+import { authApi } from "@/lib/apiClient";
 import type { Tag, CreateTagRequest } from "@/types/api";
 
 interface UseTagsReturn {

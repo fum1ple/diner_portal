@@ -21,7 +21,7 @@ const RestaurantInfo: React.FC<RestaurantInfoProps> = ({ restaurant }) => {
 
   // バックエンドから提供される平均評価と件数を使用
   const reviewStats = {
-    averageRating: restaurant.average_rating || 0,
+    averageRating: Number(restaurant.average_rating) || 0,
     reviewCount: restaurant.review_count || 0,
     hasReviews: (restaurant.review_count || 0) > 0
   };
