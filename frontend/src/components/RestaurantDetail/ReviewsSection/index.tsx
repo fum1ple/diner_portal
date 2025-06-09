@@ -4,7 +4,7 @@ import { glassmorphismCardDark } from '../styles/glassmorphism';
 import ReviewsHeader from './ReviewsHeader';
 import ReviewsList from './ReviewsList';
 import WriteReviewButton from './WriteReviewButton';
-import ReviewForm from './ReviewForm';
+import ReviewForm from '@/components/ReviewForm';
 
 interface ReviewsSectionProps {
   reviews: Review[];
