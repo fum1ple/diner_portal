@@ -47,7 +47,6 @@ export interface Restaurant {
   updated_at: string;
   area_tag: Tag;  // 必須プロパティとして統一
   genre_tag: Tag; // 必須プロパティとして統一
-  user?: User;    // 登録者情報（APIがincludeした場合）
   reviews?: Review[]; // 店舗詳細情報用のレビューリスト
 }
 

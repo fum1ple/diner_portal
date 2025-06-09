@@ -6,10 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import StarRating from '@/components/StarRating';
 
 interface ReviewFormProps {
   restaurantId: string;
   onReviewSubmitted: () => void;
+  className?: string;
 }
 
 const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted }) => {
@@ -90,79 +93,45 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
     setIsSubmitting(false);
   };
 
-  const StarRating = ({ value, onChange }: { value: number, onChange: (rating: number) => void }) => (
-    <div className="flex space-x-1">
-      {[1, 2, 3, 4, 5].map(star => (
-        <button
-          type="button"
-          key={star}
-          onClick={() => onChange(star)}
-          className={`cursor-pointer text-2xl ${star <= value ? 'text-yellow-400' : 'text-gray-300'}`}
-          aria-label={`${star}段階評価`}
-        >
-          ★
-        </button>
-      ))}
-    </div>
-  );
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-4 border rounded-lg shadow-sm bg-white">
-      <h3 className="text-xl font-semibold text-gray-800">レビューを投稿</h3>
-
-      <div>
-        <Label htmlFor="rating" className="block text-sm font-medium text-gray-700 mb-1">評価</Label>
-        <StarRating value={rating} onChange={setRating} />
-      </div>
-
-      <div>
-        <Label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">コメント</Label>
-        <Textarea
-          id="comment"
-          value={comment}
-          onChange={e => setComment(e.target.value)}
-          required
-          rows={4}
-          placeholder="体験について教えてください..."
-          className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="review-image-input" className="block text-sm font-medium text-gray-700 mb-1">画像（任意）</Label>
-        <Input
-          id="review-image-input"
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="scene_tag_id" className="block text-sm font-medium text-gray-700 mb-1">シーンタグ（任意）</Label>
-        <Select value={sceneTagId} onValueChange={setSceneTagId} disabled={isLoadingTags}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder={isLoadingTags ? "タグ読み込み中..." : "シーンタグを選択"} />
-          </SelectTrigger>
-          <SelectContent>
-            {errorTags && <SelectItem value="error" disabled className="text-red-500">{errorTags}</SelectItem>}
-            <SelectItem value="none">なし</SelectItem>
-            {sceneTags.map(tag => (
-              <SelectItem key={tag.id} value={String(tag.id)}>
-                {tag.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {submitError && <p className="text-sm text-red-600">{submitError}</p>}
-
-      <Button type="submit" disabled={isSubmitting || rating === 0} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm disabled:opacity-50">
-        {isSubmitting ? '投稿中...' : 'レビューを投稿'}
-      </Button>
-    </form>
+    <Card>
+      <CardHeader>
+        <CardTitle>レビューを投稿</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* 評価 */}
+          <div>
+            <Label htmlFor="rating">評価</Label>
+            <StarRating value={rating} onChange={setRating} />
+          </div>
+          {/* コメント */}
+          <div>
+            <Label htmlFor="comment">コメント</Label>
+            <Textarea id="comment" value={comment} onChange={e => setComment(e.target.value)} required />
+          </div>
+          {/* 画像 */}
+          <div>
+            <Label htmlFor="review-image-input">画像（任意）</Label>
+            <Input id="review-image-input" type="file" accept="image/*" onChange={handleImageChange} />
+          </div>
+          {/* シーンタグ */}
+          <div>
+            <Label htmlFor="scene_tag_id">シーンタグ（任意）</Label>
+            <Select value={sceneTagId} onValueChange={setSceneTagId}>
+              <SelectTrigger><SelectValue placeholder="選択してください" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">なし</SelectItem>
+                {sceneTags.map(tag => <SelectItem key={tag.id} value={String(tag.id)}>{tag.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          {/* エラー */}
+          {submitError && <p className="text-red-600">{submitError}</p>}
+          <Button type="submit" disabled={isSubmitting}>投稿</Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
