@@ -16,7 +16,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   return (
     <div className={`text-center ${className}`}>
       <div className={`spinner-border ${spinnerClass}`} role="status">
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">読み込み中...</span>
       </div>
       {text && <p className="mt-2">{text}</p>}
     </div>

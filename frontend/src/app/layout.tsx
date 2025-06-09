@@ -77,7 +77,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
             </header>
 
             {/* MAIN CONTENT */}
-            <main className="flex-grow container mx-auto px-4 py-8">
+            <main className="flex-grow">
               {children}
             </main>
 

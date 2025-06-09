@@ -51,6 +51,10 @@ group :development, :test do
   gem "mocha"
   # RSpec for testing
   gem "rspec-rails", "~> 7.0"
+  # FactoryBot for test fixtures
+  gem "factory_bot_rails"
+  # Shoulda Matchers for RSpec
+  gem "shoulda-matchers"
   # ※今後、rspec-railsのバージョンは7から絶対に変更しないこと（2025/06/05 指示）
 end
 

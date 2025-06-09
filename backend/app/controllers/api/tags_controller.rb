@@ -36,8 +36,8 @@ module Api
 
     # JWT認証が必要かどうかを判定
     def jwt_authentication_required?
-      # createアクションでは認証が必要、indexは認証不要
-      %w[create].include?(action_name)
+      # index、createアクションの両方で認証が必要
+      %w[index create].include?(action_name)
     end
   end
 end

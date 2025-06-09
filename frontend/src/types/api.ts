@@ -18,7 +18,7 @@ export interface ApiError {
 export interface Tag {
   id: number;
   name: string;
-  category: 'area' | 'genre';
+  category: 'area' | 'genre' | 'scene';
   created_at?: string;
   updated_at?: string;
 }
@@ -45,9 +45,35 @@ export interface Restaurant {
   user_id: number;
   created_at: string;
   updated_at: string;
+  average_rating: number;
+  review_count: number;
   area_tag: Tag;  // 必須プロパティとして統一
   genre_tag: Tag; // 必須プロパティとして統一
-  user?: User;    // 登録者情報（APIがincludeした場合）
+  reviews?: Review[]; // 店舗詳細情報用のレビューリスト
+}
+
+// Review関連の型
+export interface Review {
+  id: number;
+  comment: string;
+  rating: number;
+  image_url?: string;
+  created_at: string;
+  user: {
+    id: number; // Rails IDとの一貫性のため文字列から変更
+    name: string;
+  };
+  scene_tag?: {
+    id: number;
+    name: string;
+  };
+}
+
+export interface CreateReviewRequest {
+  comment: string;
+  rating: number;
+  image?: File;
+  scene_tag_id?: number;
 }
 
 export interface CreateRestaurantRequest {
@@ -84,7 +110,7 @@ export interface RestaurantsListResponse {
 
 // 認証関連の型
 export interface User {
-  id: string;
+  id: number; // 一貫性のため文字列から数値に変更
   email: string;
   name?: string;
   google_id?: string;

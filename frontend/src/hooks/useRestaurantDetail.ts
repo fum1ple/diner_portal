@@ -11,7 +11,7 @@ export const useRestaurantDetail = (id: string) => useQuery<Restaurant, Error>({
           throw new Error('店舗が見つかりません');
         }
         const errorData = await response.json().catch(() => ({ message: "エラーが発生しました" }));
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        throw new Error(errorData.message || `HTTPエラー! ステータス: ${response.status}`);
       }
       
       const data = await response.json();

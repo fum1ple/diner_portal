@@ -1,9 +1,6 @@
 class ApplicationController < ActionController::API
   include JwtAuthenticatable
 
-  # CSRF対策 - API専用アプリケーションのため、JWTとOriginチェックで対応
-  # protect_from_forgery with: :null_session, if: :json_request?
-
   # レート制限チェック（本番環境のみ）
   before_action :check_rate_limit, if: :production?
 
@@ -56,21 +53,21 @@ class ApplicationController < ActionController::API
 
   def handle_invalid_token
     render json: {
-      error: 'Invalid token',
+      error: '無効なトークンです',
       code: 'INVALID_TOKEN'
     }, status: :unauthorized
   end
 
   def handle_expired_token
     render json: {
-      error: 'Token expired',
+      error: 'トークンの有効期限が切れています',
       code: 'TOKEN_EXPIRED'
     }, status: :unauthorized
   end
 
   def handle_not_found
     render json: {
-      error: 'Resource not found',
+      error: 'リソースが見つかりません',
       code: 'NOT_FOUND'
     }, status: :not_found
   end
