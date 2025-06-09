@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Restaurant, Review } from '@/types/api';
-import { LAYOUT, TRANSITIONS } from './styles/constants';
+import { LAYOUT, TRANSITIONS, ANIMATIONS } from './styles/constants';
 import { glassmorphismCard, gradientOverlay } from './styles/glassmorphism';
 import RestaurantInfo from '../RestaurantInfo';
 import RestaurantActions from './RestaurantActions';
@@ -29,7 +29,7 @@ const RestaurantDetailLayout: React.FC<RestaurantDetailLayoutProps> = memo(({
   <div
     className={`${LAYOUT.container} px-4 py-6 ${TRANSITIONS.extraLong} ${
       showReviews ? LAYOUT.grid.reviews : LAYOUT.grid.center
-    }`}
+    } ${showReviews ? 'max-w-7xl mx-auto' : 'max-w-6xl mx-auto'}`}
   >
     {/* 左パネル：レストラン詳細 */}
     <div
@@ -37,7 +37,7 @@ const RestaurantDetailLayout: React.FC<RestaurantDetailLayoutProps> = memo(({
         showReviews 
           ? LAYOUT.responsive.leftPanel.withReviews
           : LAYOUT.responsive.leftPanel.withoutReviews
-      }`}
+      } ${!showReviews ? ANIMATIONS.scaleIn : ''}`}
     >
       {/* レストラン情報カード */}
       <div className={`group ${glassmorphismCard} p-8 mb-6`}>

@@ -27,6 +27,17 @@ export const TRANSITIONS = {
   extraLong: 'transition-all duration-700',
 } as const;
 
+export const ANIMATIONS = {
+  slideInRight: 'animate-in slide-in-from-right duration-700',
+  slideOutRight: 'animate-out slide-out-to-right duration-500',
+  slideInLeft: 'animate-in slide-in-from-left duration-700',
+  slideOutLeft: 'animate-out slide-out-to-left duration-500',
+  fadeIn: 'animate-in fade-in duration-500',
+  fadeOut: 'animate-out fade-out duration-300',
+  scaleIn: 'animate-in zoom-in-95 duration-500',
+  scaleOut: 'animate-out zoom-out-95 duration-300',
+} as const;
+
 export const SPACING = {
   section: 'space-y-6',
   large: 'space-y-8',
@@ -50,7 +61,7 @@ export const LAYOUT = {
   responsive: {
     leftPanel: {
       withReviews: 'lg:col-span-1 scale-95 lg:scale-100',
-      withoutReviews: 'w-full max-w-5xl mx-auto scale-100',
+      withoutReviews: 'w-full max-w-4xl mx-auto scale-100',
     },
     rightPanel: 'lg:col-span-2',
   },
