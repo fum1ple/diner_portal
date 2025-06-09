@@ -47,7 +47,7 @@ const ReviewCard: React.FC<ReviewCardProps> = memo(({ review }) => {
   );
 
   return (
-    <Card className="mb-4 shadow-lg">
+    <Card className="mb-2 shadow-md">
       <CardHeader className="pb-3">
         <div className="flex items-center space-x-3">
           <Avatar className="h-10 w-10">

@@ -66,7 +66,6 @@ const apiCall = async <T = unknown>(
       const responseBody = await response.text();
       const data = responseBody ? JSON.parse(responseBody) : null;
 
-
       if (!response.ok) {
         return {
           status: response.status,
@@ -171,3 +170,6 @@ export const authApi = {
       // FormDataの場合、Content-Typeは意図的に省略し、apiCallが処理します
     }),
 };
+
+// 後方互換性のために default export も提供
+export default apiCall;

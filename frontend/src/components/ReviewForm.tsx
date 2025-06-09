@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
-import { authApi } from '@/lib/api-client';
+import { authApi } from '@/lib/apiClient';
 import { Tag } from '@/types/api'; 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

@@ -26,7 +26,7 @@ const ReviewsList: React.FC<ReviewsListProps> = memo(({ reviews }) => {
   }
 
   return (
-    <div className="space-y-8 max-h-[70vh] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-cyan-300 scrollbar-track-transparent">
+    <div className="space-y-1 max-h-[70vh] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-cyan-300 scrollbar-track-transparent">
       {reviews.map(review => (
         <div
           key={review.id}
@@ -35,9 +35,9 @@ const ReviewsList: React.FC<ReviewsListProps> = memo(({ reviews }) => {
             animation: animationClasses.fadeInUp
           }}
         >
-          <div className="relative backdrop-blur-sm bg-white/70 rounded-3xl border border-white/60 overflow-hidden hover:shadow-2xl hover:bg-white/80 transition-all duration-300 group-hover:border-cyan-200/60">
+          <div className="relative backdrop-blur-sm bg-white/70 rounded-2xl border border-white/60 overflow-hidden hover:bg-white/80 transition-all duration-300 group-hover:border-cyan-200/60">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-teal-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="relative z-10 p-6">
+            <div className="relative z-10 p-2">
               <ReviewCard review={review} />
             </div>
           </div>

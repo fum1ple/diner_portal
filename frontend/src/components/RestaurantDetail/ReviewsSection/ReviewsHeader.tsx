@@ -19,7 +19,6 @@ const ReviewsHeader: React.FC<ReviewsHeaderProps> = memo(({ reviewCount }) => (
       <h2 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 via-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2">
         レビュー
       </h2>
-      <p className="text-gray-600 text-lg">お客様からの貴重なご意見</p>
     </div>
     <div className="px-6 py-3 bg-gradient-to-r from-cyan-100 via-teal-100 to-emerald-100 rounded-2xl border border-cyan-200/50 shadow-lg">
       <span className="text-cyan-700 font-bold text-lg">
