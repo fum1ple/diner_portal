@@ -54,6 +54,8 @@ module Api
         user_id: restaurant.user_id,
         created_at: restaurant.created_at,
         updated_at: restaurant.updated_at,
+        average_rating: restaurant.average_rating,
+        review_count: restaurant.review_count,
         area_tag: {
           id: restaurant.area_tag&.id,
           name: restaurant.area_tag&.name,

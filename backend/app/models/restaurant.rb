@@ -12,6 +12,18 @@ class Restaurant < ApplicationRecord
   # タグのカテゴリ整合性チェック（カスタムバリデーション）
   validate :area_tag_category, :genre_tag_category
 
+  # 平均評価を計算して更新するメソッド
+  def update_average_rating
+    if reviews.any?
+      self.average_rating = reviews.average(:rating).round(2)
+      self.review_count = reviews.count
+    else
+      self.average_rating = 0.0
+      self.review_count = 0
+    end
+    save!
+  end
+
   private
 
   def area_tag_category
