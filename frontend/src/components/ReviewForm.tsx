@@ -118,13 +118,15 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmitted
           {/* シーンタグ */}
           <div>
             <Label htmlFor="scene_tag_id">シーンタグ（任意）</Label>
-            <Select value={sceneTagId} onValueChange={setSceneTagId}>
-              <SelectTrigger><SelectValue placeholder="選択してください" /></SelectTrigger>
+            <Select value={sceneTagId} onValueChange={setSceneTagId} disabled={isLoadingTags}>
+              <SelectTrigger><SelectValue placeholder={isLoadingTags ? "読み込み中..." : "選択してください"} /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">なし</SelectItem>
                 {sceneTags.map(tag => <SelectItem key={tag.id} value={String(tag.id)}>{tag.name}</SelectItem>)}
               </SelectContent>
             </Select>
+            {isLoadingTags && <p className="text-sm text-muted-foreground mt-1">シーンタグを読み込み中...</p>}
+            {errorTags && <p className="text-sm text-red-600 mt-1">{errorTags}</p>}
           </div>
           {/* エラー */}
           {submitError && <p className="text-red-600">{submitError}</p>}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { Review } from '@/types/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'; // Removed AvatarImage as not used in example
@@ -9,35 +9,56 @@ interface ReviewCardProps {
   review: Review;
 }
 
-// Reusable StarDisplay component
-const StarDisplay = ({ rating }: { rating: number }) => (
-  <div className="flex items-center">
-    {[...Array(5)].map((_, index) => (
-      <span key={index} className={`text-xl ${index < rating ? 'text-yellow-400' : 'text-gray-300'}`}>
+// Reusable StarDisplay component - メモ化
+const StarDisplay = memo(({ rating }: { rating: number }) => {
+  const stars = useMemo(() => 
+    [...Array(5)].map((_, index) => (
+      <span key={index} className={`text-xl ${index + 1 <= rating ? 'text-yellow-400' : 'text-gray-300'}`}>
         ★
       </span>
-    ))}
-  </div>
-);
+    )), [rating]
+  );
 
-const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
-  // Ensure NEXT_PUBLIC_API_URL is defined in your .env.local or environment
-  // Default to typical Rails dev server URL if not set.
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  return <div className="flex items-center">{stars}</div>;
+});
+
+StarDisplay.displayName = 'StarDisplay';
+
+const ReviewCard: React.FC<ReviewCardProps> = memo(({ review }) => {
+  // APIベースURLをuseMemoでメモ化
+  const apiBaseUrl = useMemo(() => 
+    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001', 
+    []
+  );
+
+  // 日付フォーマットをuseMemoでメモ化
+  const formattedDate = useMemo(() => 
+    new Date(review.created_at).toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }), [review.created_at]
+  );
+
+  // ユーザーのイニシャルをuseMemoでメモ化
+  const userInitials = useMemo(() => 
+    review.user.name.substring(0, 2).toUpperCase(), 
+    [review.user.name]
+  );
 
   return (
     <Card className="mb-4 shadow-lg">
       <CardHeader className="pb-3">
         <div className="flex items-center space-x-3">
           <Avatar className="h-10 w-10">
-            <AvatarFallback>{review.user.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+            <AvatarFallback>{userInitials}</AvatarFallback>
           </Avatar>
           <div className="flex-grow">
             <CardTitle className="text-lg font-semibold">{review.user.name}</CardTitle>
             <StarDisplay rating={review.rating} />
           </div>
           <CardDescription className="text-xs text-gray-500 pt-1 self-start">
-            {new Date(review.created_at).toLocaleDateString()}
+            {formattedDate}
           </CardDescription>
         </div>
       </CardHeader>
@@ -62,6 +83,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
       </CardContent>
     </Card>
   );
-};
+});
+
+ReviewCard.displayName = 'ReviewCard';
 
 export default ReviewCard;
