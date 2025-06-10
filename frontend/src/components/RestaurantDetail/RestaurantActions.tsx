@@ -34,19 +34,19 @@ const RestaurantActions: React.FC<RestaurantActionsProps> = memo(({
       {/* レビュー切り替えボタン */}
       <button
         onClick={onToggleReviews}
-        className="group/btn w-full relative overflow-hidden bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 hover:from-emerald-700 hover:via-green-700 hover:to-teal-700 text-white font-bold py-5 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/30 active:scale-95"
+        className="group/btn w-full relative overflow-hidden bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 hover:from-emerald-700 hover:via-green-700 hover:to-teal-700 text-white font-bold py-5 px-8 rounded-2xl transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/30 active:scale-95"
       >
         <div className={buttonShineEffect}></div>
         <div className={buttonGradientOverlay('from-emerald-400/20 to-green-600/20')}></div>
         <div className="relative flex items-center justify-center gap-3">
           <div className="p-1 bg-white/20 rounded-lg">
             {showReviews ? (
-              <ArrowLeft className="w-6 h-6 transition-transform duration-300 group-hover/btn:scale-110 group-hover/btn:-translate-x-1" />
+              <ArrowLeft className="w-6 h-6 transition-all duration-500 group-hover/btn:scale-110 group-hover/btn:-translate-x-2 group-hover/btn:rotate-12" />
             ) : (
-              <Eye className="w-6 h-6 transition-transform duration-300 group-hover/btn:scale-110 group-hover/btn:rotate-12" />
+              <Eye className="w-6 h-6 transition-all duration-500 group-hover/btn:scale-110 group-hover/btn:rotate-12" />
             )}
           </div>
-          <span className="text-lg font-semibold">
+          <span className="text-lg font-semibold transition-all duration-300">
             {showReviews ? '詳細に戻る' : 'レビューを見る'}
           </span>
         </div>

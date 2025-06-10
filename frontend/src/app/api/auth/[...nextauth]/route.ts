@@ -1,6 +1,7 @@
 import NextAuth, { Session, User, DefaultSession, NextAuthOptions, Account } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";
+import { config as envConfig } from "@/lib/env-config";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -60,15 +61,7 @@ const getBaseUrl = () => {
   return 'http://localhost:4000';
 };
 
-const getRailsApiUrl = () => {
-  // 環境変数で設定されている場合はそれを使用
-  if (process.env.BACKEND_INTERNAL_URL) {
-    return process.env.BACKEND_INTERNAL_URL;
-  }
-  
-  // デフォルト（コンテナ内通信）
-  return 'http://backend:3000';
-};
+const getRailsApiUrl = () => envConfig.backendInternalUrl;
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -149,6 +142,16 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
+      // エラーページからのリダイレクト処理
+      if (url.includes('/auth/error')) {
+        const urlObj = new URL(url, baseUrl);
+        const error = urlObj.searchParams.get('error');
+        
+        if (error === 'AccessDenied') {
+          return `${baseUrl}/access-denied`;
+        }
+      }
+      
       if (url.includes('/api/auth/callback') || url.includes('mypage') || url === baseUrl || url.startsWith(baseUrl)) {
         return `${baseUrl}/top`;
       }
