@@ -22,8 +22,10 @@ Rails.application.routes.draw do
 
     # レストランに関する機能のうち、only以降のアクションのみを許可
     resources :restaurants, only: [:create, :index, :show] do
-      resources :reviews, only: [:create] # Add this line
+      resource :favorite, only: [:create, :destroy], controller: 'favorites'
+      resources :reviews, only: [:create]
     end
+    resources :favorites, only: [:index]
     # タグに関する機能のうち、indexとcreateアクションを許可
     resources :tags, only: [:index, :create]
   end
