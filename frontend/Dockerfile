@@ -1,6 +1,6 @@
 FROM node:22-alpine AS base
 
-ENV TZ Asia/Tokyo
+ENV TZ=Asia/Tokyo
 
 WORKDIR /app
 

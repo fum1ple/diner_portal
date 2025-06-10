@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { config } from '@/lib/env-config';
 
 export const GET = async (_req: NextRequest, { params }: { params: { id: string } }) => {
   try {
@@ -13,8 +14,7 @@ export const GET = async (_req: NextRequest, { params }: { params: { id: string 
       );
     }
     // Rails APIに転送
-    const backendBaseUrl = process.env.BACKEND_INTERNAL_URL;
-    const backendUrl = `${backendBaseUrl}/api/restaurants/${params.id}`;
+    const backendUrl = `${config.backendInternalUrl}/api/restaurants/${params.id}`;
     const response = await fetch(backendUrl, {
       headers: {
         'Authorization': `Bearer ${session.jwtToken}`,
