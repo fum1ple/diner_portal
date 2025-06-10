@@ -28,7 +28,7 @@ const Home = () => {
           }`}>
             <div className="relative inline-block mb-8">
               <div className="w-20 h-20 mx-auto bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg flex items-center justify-center transform rotate-3 hover:rotate-6 transition-transform duration-300">
-                <Utensils className="w-10 h-10 text-white" />
+                <Utensils className="w-10 h-10 text-white" aria-hidden="true" />
               </div>
               <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-400 rounded-full animate-bounce delay-500" />
             </div>
