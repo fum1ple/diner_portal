@@ -5,7 +5,7 @@ import { ANIMATIONS } from '../styles/constants';
 import ReviewsHeader from './ReviewsHeader';
 import ReviewsList from './ReviewsList';
 import WriteReviewButton from './WriteReviewButton';
-import ReviewForm from '@/components/ReviewForm';
+import ReviewForm from './ReviewForm';
 
 interface ReviewsSectionProps {
   reviews: Review[];

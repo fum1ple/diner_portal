@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,6 +15,22 @@ interface ReviewFormProps {
   onCancel: () => void;
 }
 
+// 画像バリデーション関数
+const validateImage = (file: File): { isValid: boolean; error?: string } => {
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  
+  if (file.size > maxSize) {
+    return { isValid: false, error: '画像サイズは5MB以下にしてください' };
+  }
+  
+  if (!allowedTypes.includes(file.type)) {
+    return { isValid: false, error: 'JPEG、PNG、WebP形式の画像のみ対応しています' };
+  }
+  
+  return { isValid: true };
+};
+
 const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, onCancel }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -24,6 +40,10 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
   const [sceneTags, setSceneTags] = useState<Tag[]>([]);
   const [isLoadingTags, setIsLoadingTags] = useState(false);
   const [errorTags, setErrorTags] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
+  
+  // ファイル入力のref
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // useCreateReviewフックを使用
   const createReviewMutation = useCreateReview(restaurantId, {
@@ -39,10 +59,12 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
       setComment('');
       setImage(null);
       setSceneTagId('none');
+      setImageError(null);
       
-      // ファイル入力もリセット
-      const fileInput = document.getElementById('review-image-input') as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
+      // ファイル入力をリセット
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     },
     onError: error => {
       // エラーハンドリング（コンソールログは useCreateReview 内で既に実行済み）
@@ -70,8 +92,24 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
 
   // 画像選択のハンドラー
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setImageError(null);
+    
     if (event.target.files && event.target.files[0]) {
-      setImage(event.target.files[0]);
+      const file = event.target.files[0];
+      const validation = validateImage(file);
+      
+      if (validation.isValid) {
+        setImage(file);
+      } else {
+        setImage(null);
+        setImageError(validation.error || '');
+        // ファイル入力をクリア
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      }
+    } else {
+      setImage(null);
     }
   };
 
@@ -83,7 +121,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
       rating,
       comment,
       image: image || undefined,
-      scene_tag_id: sceneTagId !== 'none' ? Number(sceneTagId) : undefined,
+      scene_tag_id: sceneTagId !== 'none' ? parseInt(sceneTagId, 10) : undefined,
     };
 
     // API送信を実行
@@ -147,9 +185,10 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
       <div className="mb-4">
         <Label htmlFor="review-image-input">画像（任意）</Label>
         <Input 
+          ref={fileInputRef}
           id="review-image-input" 
           type="file" 
-          accept="image/*" 
+          accept="image/jpeg,image/png,image/webp" 
           onChange={handleImageChange}
           disabled={isPending}
           className="mt-1"
@@ -157,6 +196,10 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
         {image && (
           <p className="text-sm text-gray-600 mt-1">選択された画像: {image.name}</p>
         )}
+        {imageError && (
+          <p className="text-sm text-red-600 mt-1">{imageError}</p>
+        )}
+        <p className="text-xs text-gray-500 mt-1">対応形式: JPEG、PNG、WebP（最大5MB）</p>
       </div>
 
       {/* シーンタグ選択 */}
