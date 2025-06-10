@@ -239,7 +239,7 @@ const TopPageContent = () => {
 
             {/* Interactive instruction with arrow pointing to search button */}
             {showInstruction && (
-              <div className="absolute -top-24 left-1/2 transform -translate-x-3/4">
+              <div className="absolute -top-24 left-0 ml-20">
                 {/* Animated arrow pointing to search button */}
                 <div className="relative">
                   <svg 
@@ -259,7 +259,7 @@ const TopPageContent = () => {
                 </div>
                 
                 {/* Instruction text */}
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 animate-in slide-in-from-bottom-4 duration-700">
+                <div className="absolute top-full left-0 mt-2 animate-in slide-in-from-bottom-4 duration-700">
                   <div className="group bg-white/90 backdrop-blur-sm rounded-full px-6 py-3 border border-primary/20 shadow-lg hover:shadow-xl hover:bg-white transition-all duration-500 cursor-pointer">
                     <div className="flex items-center gap-3">
                       <div className="relative">
