@@ -259,7 +259,7 @@ const TopPageContent = () => {
 
             {/* Interactive instruction with arrow pointing to search button */}
             {showInstruction && (
-              <div className="absolute -top-24 left-0 ml-20">
+              <div className="absolute -top-24 left-1/2 transform -translate-x-[calc(100%-2rem)]">
                 {/* Animated arrow pointing to search button */}
                 <div className="relative">
                   <svg 
