@@ -41,16 +41,29 @@ const HeaderContent = () => {
                 <div className="absolute right-0 top-0 w-11 group-hover:w-72 h-11 bg-gray-100 group-hover:bg-white rounded-full transition-all duration-300 group-hover:shadow-lg group-hover:border group-hover:border-gray-200 overflow-hidden group-hover:-translate-x-15">
                   <div className="flex items-center h-full">
                     <div className="w-11 flex-shrink-0 flex items-center justify-center">
-                      <SearchIcon className="text-gray-600 w-4 h-4" />
+                      <SearchIcon className="text-gray-600 w-4 h-4" aria-hidden="true" />
                     </div>
                     <input
                       type="search"
                       placeholder="レストランを検索..."
-                      className="flex-1 px-3 py-2 bg-transparent border-none outline-none text-sm placeholder-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      aria-label="レストラン検索"
+                      id="restaurant-search"
+                      role="searchbox"
+                      aria-describedby="search-description"
+                      className="flex-1 px-3 py-2 bg-transparent border-none outline-none text-sm placeholder-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          // TODO: Implement search functionality
+                          console.log('Search functionality to be implemented');
+                        }
+                      }}
                     />
                   </div>
                 </div>
                 <div className="w-11 h-11"></div>
+                <div id="search-description" className="sr-only">
+                  Enterキーを押して検索を実行してください
+                </div>
               </div>
             )}
             <div className="flex-shrink-0">

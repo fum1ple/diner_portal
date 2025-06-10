@@ -59,7 +59,7 @@ const ClockButton = ({ icon, title, subtitle, position, isHovered, onClick, colo
 }
 
 const TopPageContent = () => {
-  const { user, isLoading } = useAuth()
+  const { isLoading } = useAuth()
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)
   const [isVisible, setIsVisible] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -234,7 +234,7 @@ const TopPageContent = () => {
               </div>
 
               {/* Clock Buttons */}
-              {clockButtons.map((button) => (
+              {clockButtons.map(button => (
                 <ClockButton
                   key={button.id}
                   icon={button.icon}

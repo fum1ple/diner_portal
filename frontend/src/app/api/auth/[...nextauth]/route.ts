@@ -61,9 +61,7 @@ const getBaseUrl = () => {
   return 'http://localhost:4000';
 };
 
-const getRailsApiUrl = () => {
-  return envConfig.backendInternalUrl;
-};
+const getRailsApiUrl = () => envConfig.backendInternalUrl;
 
 export const authOptions: NextAuthOptions = {
   providers: [

@@ -12,7 +12,7 @@ const AuthButton = () => {
 
   if (loading) {
     return (
-      <button className="bg-blue-600 text-white rounded-full px-4 py-2 flex items-center" disabled>
+      <button className="bg-primary text-white rounded-full px-4 py-2 flex items-center" disabled>
         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
         ロード中...
       </button>
@@ -35,7 +35,7 @@ const AuthButton = () => {
               className="rounded-full mr-2"
             />
           ) : (
-            <div className="bg-blue-600 text-white rounded-full mr-2 flex items-center justify-center w-8 h-8">
+            <div className="bg-primary text-white rounded-full mr-2 flex items-center justify-center w-8 h-8">
               {session.user.name?.[0] || 'U'}
             </div>
           )}
@@ -66,7 +66,7 @@ const AuthButton = () => {
 
   return (
     <button
-      className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 flex items-center transition-colors"
+      className="bg-primary hover:bg-primary/90 text-white rounded-full px-4 py-2 flex items-center transition-colors"
       onClick={() => router.push('/auth/signin')}
     >
       <LoginIcon className="mr-2" />

@@ -8,6 +8,8 @@ import styles from './page.module.css';
 
 const SignInClient = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [logoError, setLogoError] = useState(false);
+  const [googleLogoError, setGoogleLogoError] = useState(false);
 
   const handleSignIn = async () => {
     setIsLoading(true);
@@ -23,18 +25,25 @@ const SignInClient = () => {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.logoContainer}>
-          <Image 
-            src="/TOKIEATS-logo.png" 
-            alt="TOKIEATS ロゴ" 
-            width={80} 
-            height={80} 
-            className={styles.logo}
-            priority
-            unoptimized
-            onError={(e) => {
-              console.error('Logo image failed to load:', e);
-            }}
-          />
+          {logoError ? (
+            <div className={`${styles.logo} ${styles.logoFallback}`}>
+              <span className={styles.logoText}>TE</span>
+            </div>
+          ) : (
+            <Image 
+              src="/TOKIEATS-logo.png" 
+              alt="TOKIEATS ロゴ" 
+              width={80} 
+              height={80} 
+              className={styles.logo}
+              priority
+              unoptimized
+              onError={() => {
+                console.error('Logo image failed to load');
+                setLogoError(true);
+              }}
+            />
+          )}
           <h1 className={styles.title}>TOKIEATSにログイン</h1>
         </div>
         
@@ -47,22 +56,28 @@ const SignInClient = () => {
           onClick={handleSignIn} 
           disabled={isLoading} 
           className={styles.googleButton}
+          aria-label="Googleアカウントでログイン"
         >
           {!isLoading && (
-            <Image 
-              src="/google-logo.svg" 
-              alt="Google" 
-              width={20} 
-              height={20} 
-              unoptimized
-              onError={(e) => {
-                console.error('Google logo failed to load:', e);
-              }}
-            />
+            googleLogoError ? (
+              <div className={styles.googleLogoFallback}>G</div>
+            ) : (
+              <Image 
+                src="/google-logo.svg" 
+                alt="Google" 
+                width={20} 
+                height={20} 
+                unoptimized
+                onError={() => {
+                  console.error('Google logo failed to load');
+                  setGoogleLogoError(true);
+                }}
+              />
+            )
           )}
           {isLoading ? (
             <>
-              <div className={styles.spinner}></div>
+              <div className={styles.spinner} aria-hidden="true"></div>
               ログイン中...
             </>
           ) : 'Googleでログイン'}
