@@ -29,13 +29,15 @@ export default function RestaurantDetailPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-cyan-50 to-emerald-50 py-8">
-      <div className="max-w-6xl mx-auto px-6">
-        <Breadcrumb
-          items={[
-            { label: '店舗一覧', href: '/restaurants' },
-            { label: restaurant.name },
-          ]}
-        />
+      <div className="w-full mx-auto px-6">
+        <div className="max-w-6xl mx-auto mb-6">
+          <Breadcrumb
+            items={[
+              { label: '店舗一覧', href: '/restaurants' },
+              { label: restaurant.name },
+            ]}
+          />
+        </div>
         <RestaurantDetail restaurant={restaurant} />
       </div>
     </main>

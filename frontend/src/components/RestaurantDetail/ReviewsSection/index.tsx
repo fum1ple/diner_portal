@@ -1,6 +1,7 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { Review } from '@/types/api';
 import { glassmorphismCardDark } from '../styles/glassmorphism';
+import { ANIMATIONS } from '../styles/constants';
 import ReviewsHeader from './ReviewsHeader';
 import ReviewsList from './ReviewsList';
 import WriteReviewButton from './WriteReviewButton';
@@ -18,6 +19,15 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = memo(({
   restaurantId
 }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (isVisible) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => setIsAnimating(false), 700);
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible]);
 
   if (!isVisible) return null;
 
@@ -35,7 +45,9 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = memo(({
   };
 
   return (
-    <div className="lg:col-span-2 transition-all duration-700 transform animate-in slide-in-from-right">
+    <div className={`lg:col-span-2 transition-all duration-700 transform ${
+      isAnimating ? ANIMATIONS.slideInRight : ANIMATIONS.fadeIn
+    }`}>
       <div className={glassmorphismCardDark + ' p-10'}>
         <ReviewsHeader reviewCount={reviews.length} />
         {showReviewForm && (

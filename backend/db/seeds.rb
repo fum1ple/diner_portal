@@ -49,6 +49,27 @@ genre_tags.each do |genre_name|
   Tag.find_or_create_by!(name: genre_name, category: 'genre')
 end
 
+# シーンタグの作成
+scene_tags = [
+  '一人',
+  'ビジネス',
+  '歓送迎会',
+  '飲み会',
+  'ランチ',
+  'ディナー',
+  'モーニング',
+  'お祝い',
+  '接待',
+  'カジュアル',
+  'フォーマル',
+  'シャッフルランチ'
+]
+
+scene_tags.each do |scene_name|
+  Tag.find_or_create_by!(name: scene_name, category: 'scene')
+end
+
 puts "シードデータの作成が完了しました！"
 puts "エリアタグ: #{Tag.where(category: 'area').count}件"
 puts "ジャンルタグ: #{Tag.where(category: 'genre').count}件"
+puts "シーンタグ: #{Tag.where(category: 'scene').count}件"
