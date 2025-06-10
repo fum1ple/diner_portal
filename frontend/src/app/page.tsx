@@ -62,10 +62,10 @@ const Home = () => {
               className="text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 group"
               asChild
             >
-              <a href="/auth/signin" className="inline-flex items-center gap-3">
+              <Link href="/auth/signin" className="inline-flex items-center gap-3">
                 ログインして始める
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </a>
+              </Link>
             </Button>
           </div>
 
