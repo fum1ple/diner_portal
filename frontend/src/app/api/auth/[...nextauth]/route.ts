@@ -142,6 +142,16 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
+      // エラーページからのリダイレクト処理
+      if (url.includes('/auth/error')) {
+        const urlObj = new URL(url, baseUrl);
+        const error = urlObj.searchParams.get('error');
+        
+        if (error === 'AccessDenied') {
+          return `${baseUrl}/access-denied`;
+        }
+      }
+      
       if (url.includes('/api/auth/callback') || url.includes('mypage') || url === baseUrl || url.startsWith(baseUrl)) {
         return `${baseUrl}/top`;
       }

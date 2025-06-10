@@ -4,7 +4,7 @@
   align-items: flex-start;
   min-height: 100vh;
   padding: 6rem 2rem 2rem;
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
 }
 
 .card {
@@ -28,7 +28,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, #14b8a6, #059669);
 }
 
 .logoContainer {
@@ -46,7 +46,7 @@
 .logoFallback {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #14b8a6, #059669);
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -94,13 +94,13 @@
 }
 
 .description code {
-  background: linear-gradient(45deg, #e2e8f0, #edf2f7);
-  color: #2d3748;
+  background: linear-gradient(45deg, #ccfbf1, #a7f3d0);
+  color: #134e4a;
   padding: 0.3rem 0.6rem;
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid #cbd5e0;
+  border: 1px solid #5eead4;
 }
 
 .googleButton {
@@ -109,9 +109,9 @@
   justify-content: center;
   width: 100%;
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
   color: #2d3748;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #5eead4;
   border-radius: 12px;
   font-weight: 600;
   font-size: 1rem;
@@ -138,9 +138,9 @@
 }
 
 .googleButton:hover {
-  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-  border-color: #cbd5e0;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+  border-color: #2dd4bf;
+  box-shadow: 0 8px 25px rgba(20, 184, 166, 0.15);
   transform: translateY(-2px);
 }
 
@@ -159,15 +159,15 @@
 .googleButton:disabled:hover {
   transform: none;
   box-shadow: none;
-  background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
-  border-color: #e2e8f0;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+  border-color: #5eead4;
 }
 
 .spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid #e2e8f0;
-  border-top: 2px solid #667eea;
+  border: 2px solid #a7f3d0;
+  border-top: 2px solid #14b8a6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -191,7 +191,7 @@
 .footer a {
   display: inline-flex;
   align-items: center;
-  color: #667eea;
+  color: #14b8a6;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s;
@@ -199,8 +199,8 @@
 }
 
 .footer a:hover {
-  color: #764ba2;
-  border-bottom-color: #764ba2;
+  color: #059669;
+  border-bottom-color: #059669;
 }
 
 @media (max-width: 640px) {
