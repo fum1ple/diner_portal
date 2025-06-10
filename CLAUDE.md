@@ -66,6 +66,16 @@ bundle exec rspec spec/requests/api/restaurants_controller_spec.rb -e "returns r
 
 ## Key Implementation Details
 
+### Test Driven Development
+- As a general principle, proceed with Test-Driven Development (TDD).
+- First, create tests based on the expected input and output.
+- Write only the tests, without any implementation code.
+- Run the tests and confirm that they fail.
+- Once you have confirmed that the tests are correct, commit them.
+- After that, proceed with the implementation to make the tests pass.
+- Do not change the tests during implementation; continue to modify the code.
+- Repeat until all tests pass.
+
 ### Authentication Flow
 - Google OAuth 2.0 with JWT tokens
 - All API endpoints require Bearer token authentication
