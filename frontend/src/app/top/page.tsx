@@ -191,12 +191,12 @@ const TopPageContent = () => {
             {/* Main Clock Circle */}
             <div className="relative w-96 h-96 md:w-[28rem] md:h-[28rem]">
               {/* Outer ring with hour marks */}
-              <div className="absolute inset-0 rounded-full border-4 border-primary/20">
+              <div className="absolute inset-0 rounded-full border-8 border-primary/40 shadow-2xl bg-gradient-to-br from-white/20 to-primary/5">
                 {/* Hour marks */}
                 {[...Array(12)].map((_, i) => (
                   <div
                     key={i}
-                    className="absolute w-1 h-6 bg-primary/30 rounded-full"
+                    className="absolute w-2 h-8 bg-primary/60 rounded-full shadow-sm"
                     style={{
                       top: '8px',
                       left: '50%',
@@ -205,21 +205,41 @@ const TopPageContent = () => {
                     }}
                   />
                 ))}
+                
+                {/* Major hour marks (12, 3, 6, 9) */}
+                {[0, 3, 6, 9].map((hour) => (
+                  <div
+                    key={`major-${hour}`}
+                    className="absolute w-3 h-12 bg-primary/80 rounded-full shadow-md"
+                    style={{
+                      top: '4px',
+                      left: '50%',
+                      transformOrigin: '50% 188px',
+                      transform: `translateX(-50%) rotate(${hour * 90}deg)`
+                    }}
+                  />
+                ))}
               </div>
 
               {/* Inner circle */}
-              <div className="absolute inset-8 rounded-full bg-white/40 backdrop-blur-sm border-2 border-white/50 shadow-inner">
+              <div className="absolute inset-8 rounded-full bg-white/60 backdrop-blur-sm border-4 border-white/70 shadow-inner shadow-primary/20">
                 {/* Center dot */}
-                <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-primary rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-lg" />
+                <div className="absolute top-1/2 left-1/2 w-6 h-6 bg-gradient-to-br from-primary to-secondary rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-xl border-2 border-white" />
                 
                 {/* Clock hands showing current time */}
                 <div 
-                  className="absolute top-1/2 left-1/2 w-1 h-20 md:h-24 bg-primary/80 rounded-full origin-bottom transform -translate-x-1/2 -translate-y-full transition-transform duration-1000 ease-in-out"
+                  className="absolute top-1/2 left-1/2 w-2 h-20 md:h-24 bg-gradient-to-t from-primary to-primary/80 rounded-full origin-bottom transform -translate-x-1/2 -translate-y-full transition-transform duration-1000 ease-in-out shadow-lg"
                   style={{ transform: `translateX(-50%) translateY(-100%) rotate(${hourAngle}deg)` }}
                 />
                 <div 
-                  className="absolute top-1/2 left-1/2 w-0.5 h-24 md:h-28 bg-secondary/80 rounded-full origin-bottom transform -translate-x-1/2 -translate-y-full transition-transform duration-300 ease-in-out"
+                  className="absolute top-1/2 left-1/2 w-1.5 h-24 md:h-28 bg-gradient-to-t from-secondary to-secondary/80 rounded-full origin-bottom transform -translate-x-1/2 -translate-y-full transition-transform duration-300 ease-in-out shadow-lg"
                   style={{ transform: `translateX(-50%) translateY(-100%) rotate(${minuteAngle}deg)` }}
+                />
+                
+                {/* Second hand for extra visual appeal */}
+                <div 
+                  className="absolute top-1/2 left-1/2 w-0.5 h-28 md:h-32 bg-gradient-to-t from-red-500 to-red-400 rounded-full origin-bottom transform -translate-x-1/2 -translate-y-full transition-transform duration-75 ease-linear"
+                  style={{ transform: `translateX(-50%) translateY(-100%) rotate(${(currentTime.getSeconds() * 6)}deg)` }}
                 />
               </div>
 
