@@ -31,18 +31,33 @@ export default async function FavoritesPage() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-6">保存したお店</h1>
+      <h1 className="text-2xl font-bold mb-6 text-teal-700">保存したお店</h1>
       {favorites.length === 0 ? (
         <div className="text-gray-500">お気に入りはありません</div>
       ) : (
         <ul className="space-y-4">
           {favorites.map((restaurant: any) => (
-            <li key={restaurant.id} className="bg-white rounded shadow p-4 flex flex-col md:flex-row md:items-center justify-between">
+            <li key={restaurant.id} className="bg-gradient-to-br from-[#e0f2f1] to-white border border-[#4db6ac] rounded-lg shadow p-4 flex flex-col md:flex-row md:items-center justify-between transition hover:shadow-lg">
               <div>
-                <div className="font-semibold text-lg">{restaurant.name}</div>
-                <div className="text-sm text-gray-500">{restaurant.area_tag?.name} / {restaurant.genre_tag?.name}</div>
+                <Link href={`/restaurants/${restaurant.id}`} className="font-semibold text-lg text-[#26a69a] underline hover:text-[#66bb6a] transition-colors">
+                  {restaurant.name}
+                </Link>
+                <div className="flex gap-2 mt-1">
+                  {restaurant.area_tag?.name && (
+                    <span className="inline-block bg-[#4db6ac]/20 text-[#26a69a] text-xs px-2 py-0.5 rounded font-medium border border-[#4db6ac]/30">
+                      {restaurant.area_tag.name}
+                    </span>
+                  )}
+                  {restaurant.genre_tag?.name && (
+                    <span className="inline-block bg-[#66bb6a]/20 text-[#388e3c] text-xs px-2 py-0.5 rounded font-medium border border-[#66bb6a]/30">
+                      {restaurant.genre_tag.name}
+                    </span>
+                  )}
+                </div>
               </div>
-              <Link href={`/restaurants/${restaurant.id}`} className="text-blue-600 underline mt-2 md:mt-0">詳細を見る</Link>
+              <Link href={`/restaurants/${restaurant.id}`} className="text-[#26a69a] underline mt-2 md:mt-0 hover:text-[#66bb6a] transition-colors font-semibold">
+                詳細を見る
+              </Link>
             </li>
           ))}
         </ul>
