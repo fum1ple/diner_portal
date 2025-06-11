@@ -104,14 +104,14 @@ export default function RestaurantListPage() {
           </select>
           <button
             type="submit"
-            className="px-6 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition"
+            className="px-7 py-3 bg-teal-500 text-white rounded hover:bg-teal-600 transition whitespace-nowrap"
             disabled={loading}
           >
             検索
           </button>
           <button
             type="button"
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition"
+            className="px-7 py-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition whitespace-nowrap"
             onClick={handleClear}
             disabled={loading}
           >
