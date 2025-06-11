@@ -92,7 +92,8 @@ module Api
           id: restaurant.genre_tag&.id,
           name: restaurant.genre_tag&.name,
           category: restaurant.genre_tag&.category
-        }
+        },
+        url: "/restaurants/#{restaurant.id}"
       }
 
       # reviewsキーをレスポンスに追加 (showアクションの場合のみ)
