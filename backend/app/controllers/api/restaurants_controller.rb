@@ -17,6 +17,33 @@ module Api
       # includesメソッドを使用して、関連するarea_tagとgenre_tagを事前にロード
       # orderメソッドを使用して、作成日時の降順で並べ替え
       restaurants = Restaurant.includes(:area_tag, :genre_tag).order(created_at: :desc)
+
+      # 店舗名で部分一致検索
+      if params[:name].present?
+        name = params[:name].strip
+        unless name.blank?
+          restaurants = restaurants.where('restaurants.name ILIKE ?', "%#{name}%") #sqlのILIKEを使用して大文字小文字を区別せずに部分一致検索
+        else
+          restaurants = Restaurant.none
+        end
+      end
+
+      # エリアタグ名で絞り込み
+      if params[:area].present?
+        area = params[:area].strip
+        unless area.blank?
+          restaurants = restaurants.joins(:area_tag).where('tags.name = ? AND tags.category = ?', area, 'area')
+        end
+      end
+
+      # ジャンルタグ名で絞り込み
+      if params[:genre].present?
+        genre = params[:genre].strip
+        unless genre.blank?
+          restaurants = restaurants.joins(:genre_tag).where('tags.name = ? AND tags.category = ?', genre, 'genre')
+        end
+      end
+
       # レストランの一覧をJSON形式で返す
       render json: restaurants.map { |restaurant| restaurant_response(restaurant) }
     end
