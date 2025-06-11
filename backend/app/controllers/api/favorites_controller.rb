@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class Api::FavoritesController < ApplicationController
-  before_action :authenticate_user!
+ # JWT認証が必要かどうかを判定
+  def jwt_authentication_required?
+    true
+  end
 
   # GET /api/favorites
   def index
