@@ -22,13 +22,13 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ restaurant, className }
     setLoading(true);
     try {
       const method = isFavorited ? 'DELETE' : 'POST';
-      const res = await fetch(`/api/restaurants/${restaurant.id}/favorite`, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
+    const res = await fetch(`/api/restaurants/${restaurant.id}/favorite`, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    });
       if (res.status === 401) {
         router.push('/auth/signin');
         return;
