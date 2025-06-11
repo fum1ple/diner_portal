@@ -1,14 +1,3 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
-# エリアタグの作成
 # frozen_string_literal: true
 
 # このファイルは、`bin/rails db:seed` コマンドで実行されます。
@@ -41,7 +30,7 @@ end
 genre_tags = [
   '和食', '洋食', '中華', 'イタリアン', 'フレンチ', '韓国料理',
   'タイ料理', 'インド料理', 'メキシコ料理', 'ファストフード',
-  'カフェ', '居酒屋', '焼肉', '寿司', 'ラーメン', '天ぷら', 'そば'
+  'カフェ', '居酒屋', '焼肉', '寿司', 'ラーメン', '天ぷら', 'そば', 'スペイン料理'
 ]
 genre_tags.each do |genre_name|
   Tag.find_or_create_by!(name: genre_name, category: 'genre')
@@ -120,22 +109,26 @@ puts '店舗とレビューを作成しています...'
 
 # 先にタグ情報を取得しておくことで、ループ内のDB問い合わせを減らす
 ginza_area = Tag.find_by(name: '銀座', category: 'area')
-genre_tags_map = Tag.where(category: 'genre').pluck(:name, :id).to_h
-scene_tags_map = Tag.where(category: 'scene').pluck(:name, :id).to_h
+# ★★★ 修正点1: pluckではなく、index_byを使ってTagオブジェクト自体をハッシュで取得 ★★★
+genre_tags_by_name = Tag.where(category: 'genre').index_by(&:name)
+scene_tags_by_name = Tag.where(category: 'scene').index_by(&:name)
 
 restaurants_data.each do |data|
   # 店舗の作成
   restaurant = Restaurant.find_or_create_by!(name: data[:name]) do |r|
     r.user = user
     r.area_tag = ginza_area
-    r.genre_tag_id = genre_tags_map[data[:genre]]
+    # ★★★ 修正点2: genre_tag_idではなく、genre_tagにオブジェクトを直接代入 ★★★
+    r.genre_tag = genre_tags_by_name[data[:genre]]
   end
 
   # レビューの作成
-  data[:reviews].each do |review_data|
+  # ★★★ 修正点3: nilの可能性があるため、安全な呼び出し `&.` を使用 ★★★
+  data[:reviews]&.each do |review_data|
     Review.find_or_create_by!(restaurant: restaurant, user: user, comment: review_data[:comment]) do |rev|
       rev.rating = review_data[:rating]
-      rev.scene_tag_id = scene_tags_map[review_data[:scene]]
+      # ★★★ 修正点4: scene_tagにもオブジェクトを直接代入 ★★★
+      rev.scene_tag = scene_tags_by_name[review_data[:scene]]
       # 画像URLは必要に応じて設定してください
       # rev.image_url = 'https://example.com/image.jpg'
     end
@@ -150,4 +143,3 @@ puts "ユーザー: #{User.count}件"
 puts "店舗: #{Restaurant.count}件"
 puts "レビュー: #{Review.count}件"
 puts "タグ（合計）: #{Tag.count}件"
-
