@@ -1,10 +1,9 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { requireServerAuth } from '@/lib/server-auth';
 import { Restaurant } from '@/types';
 import FavoriteItem from '@/components/FavoriteItem';
 
 export default async function FavoritesPage() {
-  const session = await getServerSession(authOptions);
+  const session = await requireServerAuth();
   
   try {
     const res = await fetch(`${process.env.BACKEND_INTERNAL_URL || 'http://backend:3000'}/api/favorites`, {
