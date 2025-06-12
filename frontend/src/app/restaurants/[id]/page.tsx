@@ -1,10 +1,15 @@
 'use client';
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { useRestaurantDetail } from '../../../hooks/useRestaurantDetail';
-import RestaurantDetail from '@/components/RestaurantDetail';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 import Breadcrumb from '@/components/Breadcrumb';
+
+const RestaurantDetail = dynamic(() => import('@/components/RestaurantDetail'), {
+  loading: () => <LoadingSpinner message="コンポーネントを読み込み中..." />,
+  ssr: false
+});
 
 interface PageProps {
   params: { id: string };

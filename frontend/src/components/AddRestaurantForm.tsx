@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useCallback, useMemo } from 'react';
 import InlineTagCreator from './InlineTagCreator';
 import HeadlessDropdown from './HeadlessDropdown';

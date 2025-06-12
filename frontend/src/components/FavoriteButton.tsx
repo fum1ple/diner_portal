@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart } from 'lucide-react';
+import { Restaurant } from '@/types';
 
 interface FavoriteButtonProps {
-  restaurant: {
-    id: number;
-    is_favorited: boolean;
-    [key: string]: any;
-  };
+  restaurant: Restaurant;
   className?: string;
 }
 

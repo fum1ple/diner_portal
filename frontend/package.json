@@ -13,12 +13,12 @@
     "start": "next start --port 4000",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "analyze": "ANALYZE=true yarn build"
   },
   "dependencies": {
     "@auth/core": "^0.39.0",
     "@headlessui/react": "^2.2.4",
-    "@heroicons/react": "^2.2.0",
     "@popperjs/core": "^2.11.8",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-label": "^2.1.7",
@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^15.3.3",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20",
     "@types/react": "^18.3.1",
