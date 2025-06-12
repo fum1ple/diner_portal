@@ -40,7 +40,6 @@ export const useTags = (): UseTagsReturn => {
       setGenreTags(genreResult.data || []);
       
     } catch (e: unknown) {
-      console.error('タグ取得エラー:', e);
       setError(e instanceof Error ? e.message : "タグの取得中にエラーが発生しました");
     } finally {
       setLoading(false);
@@ -71,7 +70,6 @@ export const useTags = (): UseTagsReturn => {
 
       return result.data;
     } catch (e: unknown) {
-      console.error('タグ作成エラー:', e);
       setError(e instanceof Error ? e.message : "タグの作成中にエラーが発生しました");
       return null;
     } finally {

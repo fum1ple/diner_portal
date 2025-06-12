@@ -35,8 +35,7 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = memo(({
     setShowReviewForm(true);
   };
 
-  const handleReviewSubmit = (review: { rating: number; comment: string }) => {
-    console.log('Review submitted in ReviewsSection:', review, 'for restaurantId:', restaurantId);
+  const handleReviewSubmit = () => {
     setShowReviewForm(false);
   };
 

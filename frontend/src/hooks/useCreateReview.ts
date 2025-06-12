@@ -52,7 +52,6 @@ export const useCreateReview = (restaurantId: number, hookOptions?: UseCreateRev
       }
     },
     onError: error => {
-      console.error('Failed to create review:', error);
       if (hookOptions?.onError) {
         hookOptions.onError(error);
       }

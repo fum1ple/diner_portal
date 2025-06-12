@@ -58,12 +58,7 @@ export const useRestaurantOptimization = ({
   }, [onToggleReviews]);
 
   // デバッグ用のパフォーマンス測定
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Restaurant data changed:', hasRestaurantChanged);
-      console.log('Reviews calculated:', reviewsData.reviewCount);
-    }
-  }, [hasRestaurantChanged, reviewsData.reviewCount]);
+  // コンソールログは本番環境への影響を避けるため削除
 
   return {
     googleMapsUrl,
