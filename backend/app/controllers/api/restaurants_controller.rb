@@ -32,7 +32,8 @@ module Api
       if params[:area].present?
         area = params[:area].strip
         unless area.blank?
-          restaurants = restaurants.joins(:area_tag).where('tags.name = ? AND tags.category = ?', area, 'area')
+          restaurants = restaurants.joins('JOIN tags AS area_tags ON restaurants.area_tag_id = area_tags.id')
+                                  .where('area_tags.name = ? AND area_tags.category = ?', area, 'area')
         end
       end
 
@@ -40,7 +41,8 @@ module Api
       if params[:genre].present?
         genre = params[:genre].strip
         unless genre.blank?
-          restaurants = restaurants.joins(:genre_tag).where('tags.name = ? AND tags.category = ?', genre, 'genre')
+          restaurants = restaurants.joins('JOIN tags AS genre_tags ON restaurants.genre_tag_id = genre_tags.id')
+                                  .where('genre_tags.name = ? AND genre_tags.category = ?', genre, 'genre')
         end
       end
 
