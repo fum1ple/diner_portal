@@ -1,21 +1,28 @@
 import React, { memo } from 'react';
 import { MapPin, Eye, ArrowLeft } from 'lucide-react';
 import { glassmorphismCard, buttonShineEffect, buttonGradientOverlay, gradientOverlay } from './styles/glassmorphism';
+import FavoriteButton from '../FavoriteButton';
 
 interface RestaurantActionsProps {
   showReviews: boolean;
   onOpenGoogleMaps: () => void;
   onToggleReviews: () => void;
+  restaurant: import('@/types/api').Restaurant;
 }
 
 const RestaurantActions: React.FC<RestaurantActionsProps> = memo(({
   showReviews,
   onOpenGoogleMaps,
-  onToggleReviews
+  onToggleReviews,
+  restaurant
 }) => (
   <div className={`group ${glassmorphismCard} p-8 space-y-6`}>
     <div className={gradientOverlay}></div>
     <div className="relative z-10 space-y-6">
+      {/* お気に入りボタン */}
+      <div className="flex justify-end">
+        <FavoriteButton restaurant={restaurant} />
+      </div>
       {/* Google Maps ボタン */}
       <button
         onClick={onOpenGoogleMaps}

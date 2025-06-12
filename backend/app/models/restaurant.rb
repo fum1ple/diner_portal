@@ -4,6 +4,8 @@ class Restaurant < ApplicationRecord
   belongs_to :genre_tag, class_name: 'Tag', foreign_key: 'genre_tag_id' # ジャンルタグはTagモデルを参照
 
   has_many :reviews, dependent: :destroy # レストランは複数のレビューを持つことができる
+  has_many :favorites, dependent: :destroy
+  has_many :favoriting_users, through: :favorites, source: :user
 
   # バリデーション
   validates :name, presence: true, length: { maximum: 255 }

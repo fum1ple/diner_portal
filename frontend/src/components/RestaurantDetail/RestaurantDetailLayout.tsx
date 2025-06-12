@@ -52,6 +52,7 @@ const RestaurantDetailLayout: React.FC<RestaurantDetailLayoutProps> = memo(({
         showReviews={showReviews}
         onOpenGoogleMaps={onOpenGoogleMaps}
         onToggleReviews={onToggleReviews}
+        restaurant={restaurant}
       />
     </div>
 
