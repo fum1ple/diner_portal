@@ -1,20 +1,10 @@
-'use client';
-
-import { useAuth } from '@/hooks/useAuth';
-import { useState, useEffect } from 'react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Image from 'next/image';
-import ProtectedPage from '@/components/ProtectedPage';
 
-const MyPageContent = () => {
-  const { user, isLoading, isJwtValid, hasJwtToken } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#26a69a]"></div>
-      </div>
-    );
-  }
+export default async function MyPage() {
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
 
   return (
     <div className="min-h-screen bg-white py-12 px-4">
@@ -74,19 +64,11 @@ const MyPageContent = () => {
         </div>
         {/* --- 認証状態 --- */}
         <div className="text-center mt-8">
-          <span className={`inline-block px-6 py-3 rounded-full text-lg font-extrabold tracking-wide shadow-lg border-4 ${hasJwtToken && isJwtValid ? 'bg-[#66bb6a]/20 text-[#388e3c] border-[#66bb6a]' : 'bg-yellow-100 text-yellow-800 border-yellow-300'}`}>
-            認証状態: {hasJwtToken && isJwtValid ? '有効' : '無効'}
+          <span className="inline-block px-6 py-3 rounded-full text-lg font-extrabold tracking-wide shadow-lg border-4 bg-[#66bb6a]/20 text-[#388e3c] border-[#66bb6a]">
+            認証状態: 有効
           </span>
         </div>
       </div>
     </div>
   );
-};
-
-const MyPage = () => (
-  <ProtectedPage redirectTo="/auth/error?error=AccessDenied">
-    <MyPageContent />
-  </ProtectedPage>
-);
-
-export default MyPage;
+}
