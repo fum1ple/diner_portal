@@ -28,5 +28,10 @@ Rails.application.routes.draw do
     resources :favorites, only: [:index]
     # タグに関する機能のうち、indexとcreateアクションを許可
     resources :tags, only: [:index, :create]
+
+    resources :restaurants, only: [] do
+      resource :favorite, only: [:create, :destroy], controller: 'favorites'
+    end
+    resources :favorites, only: [:index]
   end
 end

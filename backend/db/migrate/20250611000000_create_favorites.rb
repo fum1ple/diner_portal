@@ -3,9 +3,10 @@ class CreateFavorites < ActiveRecord::Migration[7.1]
     create_table :favorites do |t|
       t.references :user, null: false, foreign_key: true
       t.references :restaurant, null: false, foreign_key: true
+
       t.timestamps
+
+      t.index [:user_id, :restaurant_id], unique: true
     end
-    
-    add_index :favorites, [:user_id, :restaurant_id], unique: true
   end
 end

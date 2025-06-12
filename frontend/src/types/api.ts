@@ -50,6 +50,7 @@ export interface Restaurant {
   area_tag: Tag;  // 必須プロパティとして統一
   genre_tag: Tag; // 必須プロパティとして統一
   reviews?: Review[]; // 店舗詳細情報用のレビューリスト
+  is_favorited: boolean; // 追加
 }
 
 // Review関連の型
