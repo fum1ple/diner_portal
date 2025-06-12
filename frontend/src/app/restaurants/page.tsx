@@ -151,7 +151,7 @@ export default function RestaurantListPage() {
             <div className="text-center text-gray-400 py-8">該当する店舗がありません。</div>
           ) : (
             <ul className="space-y-4">
-              {restaurants.map((r) => (
+              {restaurants.map(r => (
                 <li key={r.id} className="border-b last:border-b-0 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <Link href={r.url || `/restaurants/${r.id}`} className="font-bold text-lg text-teal-600 hover:underline">

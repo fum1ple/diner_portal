@@ -3,7 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import AuthButtonWrapper from './AuthButtonWrapper';
-const HeaderContent = () => (
+import { useAuth } from '../hooks/useAuth';
+import AddRestaurantButton from './ui/AddRestaurantButton';
+
+const HeaderContent = () => {
+  const { isAuthenticated } = useAuth();
+
+  return (
     <header className="sticky top-0 bg-white shadow-sm py-4 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
@@ -27,9 +33,11 @@ const HeaderContent = () => (
             <Link href="/mypage" className="text-gray-600 hover:text-gray-900 font-medium text-lg transition-colors">マイページ</Link>
           </nav>
 
-          {/* 右：検索＆ログイン */}
+          {/* 右：ログイン＋店舗追加ボタン */}
           <div className="flex items-center gap-3">
             {/* 検索ボタン削除済み */}
+            {/* 店舗追加ボタン（認証時のみ表示） */}
+            {isAuthenticated && <AddRestaurantButton />}
             <div className="flex-shrink-0">
               <AuthButtonWrapper />
             </div>
@@ -37,6 +45,7 @@ const HeaderContent = () => (
         </div>
       </div>
     </header>
-);
+  );
+};
 
 export default HeaderContent;
