@@ -78,6 +78,12 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
     error: '/auth/error',
   },
+  debug: false, // Explicitly disable debug mode
+  logger: {
+    error: () => {},
+    warn: () => {},
+    debug: () => {}
+  },
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
@@ -171,6 +177,15 @@ export const authOptions: NextAuthOptions = {
 
 if (!process.env.NEXTAUTH_URL) {
   process.env.NEXTAUTH_URL = getBaseUrl();
+}
+
+// デバッグログを無効化
+if (typeof window !== 'undefined') {
+  // クライアント側でデバッグを無効化
+  (window as any).__NEXTAUTH = {
+    ...((window as any).__NEXTAUTH || {}),
+    debug: false
+  };
 }
 
 const handler = NextAuth(authOptions);

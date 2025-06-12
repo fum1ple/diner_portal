@@ -79,9 +79,8 @@ const apiCall = async <T = unknown>(
       };
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      // 全ての再試行後にのみエラーをログ出力する
+      // 全ての再試行後にのみエラーを返す
       if (attempt === retries - 1) {
-        console.error(`${endpoint}へのAPI呼び出しが${retries}回の試行後に失敗しました:`, lastError);
         return {
           status: 0,
           error: lastError.message,

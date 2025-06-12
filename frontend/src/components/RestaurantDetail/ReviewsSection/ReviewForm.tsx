@@ -11,7 +11,7 @@ import { authApi } from '@/lib/apiClient';
 
 interface ReviewFormProps {
   restaurantId: number;
-  onReviewSubmit: (review: { rating: number; comment: string }) => void;
+  onReviewSubmit: () => void;
   onCancel: () => void;
 }
 
@@ -47,12 +47,10 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
 
   // useCreateReviewフックを使用
   const createReviewMutation = useCreateReview(restaurantId, {
-    onSuccess: createdReview => {
+    onSuccess: () => {
       // レビュー投稿成功時の処理
-      console.log('Review created successfully:', createdReview);
-      
       // 親コンポーネントに通知
-      onReviewSubmit({ rating, comment });
+      onReviewSubmit();
       
       // フォームをリセット
       setRating(0);
@@ -66,9 +64,8 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
         fileInputRef.current.value = '';
       }
     },
-    onError: error => {
+    onError: () => {
       // エラーハンドリング（コンソールログは useCreateReview 内で既に実行済み）
-      console.error('Review submission failed in form:', error);
     }
   });
 
@@ -83,7 +80,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
       } else {
         const errorMessage = response.error || 'シーンタグの読み込みに失敗しました。';
         setErrorTags(errorMessage);
-        console.error("シーンタグ取得エラー:", errorMessage);
       }
       setIsLoadingTags(false);
     };

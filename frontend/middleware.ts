@@ -11,6 +11,11 @@ const PROTECTED_PATHS = ['/mypage', '/admin', '/dashboard', '/top','/favorites']
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // _logエンドポイントへのリクエストをブロック
+  if (pathname === '/api/auth/_log') {
+    return new NextResponse(null, { status: 204 });
+  }
+
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   // 保護対象ルート以外ならスルー
@@ -34,5 +39,5 @@ export async function middleware(req: NextRequest) {
 
 // ✅ matcher は middleware.ts 内で export
 export const config = {
-  matcher: ['/mypage/:path*', '/admin/:path*', '/dashboard/:path*', '/top/:path*', '/favorites/:path*'],
+  matcher: ['/api/auth/_log', '/mypage/:path*', '/admin/:path*', '/dashboard/:path*', '/top/:path*', '/favorites/:path*'],
 };

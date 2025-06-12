@@ -22,8 +22,8 @@ const refreshJwtToken = async (refreshToken: string) => {
     } else {
       return null;
     }
-  } catch (error) {
-    console.error('トークン更新エラー:', error);
+  } catch {
+    // エラー処理
     return null;
   }
 };
@@ -85,7 +85,7 @@ export const useAuth = () => {
   const handleTokenRefresh = useCallback(async () => {
     const now = Date.now();
     // 既にリフレッシュ中、リフレッシュトークンがない、または最近リフレッシュした場合はスキップ
-    if (isRefreshing || !session?.refreshToken || (now - lastRefreshTime < 5000)) {
+    if (isRefreshing || !session?.refreshToken || (now - lastRefreshTime < 10000)) {
       return;
     }
     
@@ -99,15 +99,18 @@ export const useAuth = () => {
       } else {
         setIsJwtValid(false);
         // リフレッシュトークンが無効な場合はログアウト
-        signOut({ callbackUrl: '/' });
+        // タイムアウトを設定して、複数回のリダイレクトを防ぐ
+        setTimeout(() => {
+          signOut({ callbackUrl: '/' });
+        }, 100);
       }
-    } catch (error) {
-      console.error('トークン更新エラー:', error);
+    } catch {
+      // エラー処理
       setIsJwtValid(false);
     } finally {
       setIsRefreshing(false);
     }
-  }, [isRefreshing, session, update, lastRefreshTime]);
+  }, [session?.refreshToken, update]);
 
   // JWT トークンの有効性チェック
   useEffect(() => {
@@ -122,7 +125,7 @@ export const useAuth = () => {
     } else {
       setIsJwtValid(false);
     }
-  }, [jwtToken, session?.refreshToken, isRefreshing, handleTokenRefresh]); // handleTokenRefreshを依存配列から除去
+  }, [jwtToken, session?.refreshToken, isRefreshing]); // handleTokenRefreshを依存配列から除去
 
   // ログイン関数
   const login = async (callbackUrl?: string) => {

@@ -42,8 +42,8 @@ export const POST = async (request: NextRequest) => {
     const data = await response.json();
     return NextResponse.json(data);
 
-  } catch (error) {
-    console.error('店舗作成APIエラー:', error);
+  } catch {
+    // エラーハンドリング
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -71,8 +71,7 @@ export const GET = async (request: NextRequest) => { // requestを受け取れ�
     // Railsバックエンドに投げるURLに、受け取ったクエリパラメータをそのまま付け加えます。
     const backendUrl = `http://backend:3000/api/restaurants${search}`;
     
-    // デバッグ用に、実際にリクエストするURLをログに出力します。
-    console.log(`Forwarding request to: ${backendUrl}`);
+    // Railsバックエンドにリクエストを転送
     
     const response = await fetch(backendUrl, {
       headers: {
@@ -91,8 +90,8 @@ export const GET = async (request: NextRequest) => { // requestを受け取れ�
     const data = await response.json();
     return NextResponse.json(data);
 
-  } catch (error) {
-    console.error('店舗一覧取得APIエラー:', error);
+  } catch {
+    // エラーハンドリング
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

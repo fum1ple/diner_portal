@@ -65,9 +65,14 @@ export const ProtectedPage: React.FC<ProtectedPageProps> = ({
 
     // 認証されていない場合はリダイレクト
     if (!isAuthenticated) {
-      router.push(redirectTo);
+      // 一度だけリダイレクトを実行するために、タイムアウトを設定
+      const redirectTimeout = setTimeout(() => {
+        router.push(redirectTo);
+      }, 100);
+      
+      return () => clearTimeout(redirectTimeout);
     }
-  }, [isAuthenticated, isLoading, router, redirectTo]);
+  }, [isAuthenticated, isLoading, redirectTo]); // routerを依存配列から除去
 
   // ローディング中
   if (isLoading) {
