@@ -1,152 +1,82 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React from 'react';
 
-// 型定義
 interface Tag {
   id: number;
   name: string;
   category: string;
 }
 
-interface Restaurant {
-  id: number;
+interface SearchFormProps {
   name: string;
-  area_tag_id: number;
-  genre_tag_id: number;
-  user_id: number;
-  created_at: string;
-  updated_at: string;
-  average_rating?: number;
-  review_count?: number;
-  area_tag?: Tag;
-  genre_tag?: Tag;
-  url?: string;
+  area: string;
+  genre: string;
+  areaTags: Tag[];
+  genreTags: Tag[];
+  loading: boolean;
+  onNameChange: (value: string) => void;
+  onAreaChange: (value: string) => void;
+  onGenreChange: (value: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClear: () => void;
 }
 
-const SearchForm: React.FC = () => {
-  const [searchName, setSearchName] = useState('');
-  const [selectedArea, setSelectedArea] = useState('');
-  const [selectedGenre, setSelectedGenre] = useState('');
-  const [areaTags, setAreaTags] = useState<Tag[]>([]);
-  const [genreTags, setGenreTags] = useState<Tag[]>([]);
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // タグ一覧取得
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const [areaRes, genreRes] = await Promise.all([
-          fetch('/api/tags?category=area'),
-          fetch('/api/tags?category=genre'),
-        ]);
-        if (!areaRes.ok || !genreRes.ok) throw new Error('タグの取得に失敗しました');
-        const areaData = await areaRes.json();
-        const genreData = await genreRes.json();
-        setAreaTags(areaData);
-        setGenreTags(genreData);
-      } catch (e: any) {
-        setError(e.message || 'タグ取得エラー');
-      }
-    };
-    fetchTags();
-  }, []);
-
-  // 検索実行
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      const params = new URLSearchParams();
-      if (searchName.trim() !== '') params.append('name', searchName.trim());
-      if (selectedArea) params.append('area', selectedArea);
-      if (selectedGenre) params.append('genre', selectedGenre);
-      const res = await fetch(`/api/restaurants?${params.toString()}`);
-      if (!res.ok) throw new Error('店舗検索に失敗しました');
-      const data = await res.json();
-      setRestaurants(data);
-    } catch (e: any) {
-      setError(e.message || '検索エラー');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow">
-      <form className="flex flex-col md:flex-row gap-4 items-end" onSubmit={handleSearch}>
-        <div className="flex-1">
-          <label className="block text-sm font-medium mb-1">店舗名</label>
-          <input
-            type="text"
-            className="w-full border rounded px-3 py-2"
-            value={searchName}
-            onChange={e => setSearchName(e.target.value)}
-            placeholder="例: カフェ"
-          />
-        </div>
-        <div className="flex-1">
-          <label className="block text-sm font-medium mb-1">エリア</label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={selectedArea}
-            onChange={e => setSelectedArea(e.target.value)}
-          >
-            <option value="">すべて</option>
-            {areaTags.map(tag => (
-              <option key={tag.id} value={tag.name}>{tag.name}</option>
-            ))}
-          </select>
-        </div>
-        <div className="flex-1">
-          <label className="block text-sm font-medium mb-1">ジャンル</label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={selectedGenre}
-            onChange={e => setSelectedGenre(e.target.value)}
-          >
-            <option value="">すべて</option>
-            {genreTags.map(tag => (
-              <option key={tag.id} value={tag.name}>{tag.name}</option>
-            ))}
-          </select>
-        </div>
-        <button
-          type="submit"
-          className="bg-primary text-white px-6 py-2 rounded font-semibold hover:bg-primary/90 transition"
-          disabled={loading}
-        >
-          {loading ? '検索中...' : '検索'}
-        </button>
-      </form>
-      {error && <div className="mt-4 text-red-500">{error}</div>}
-      <div className="mt-8">
-        {restaurants.length === 0 && !loading && <div className="text-gray-500">該当する店舗がありません</div>}
-        <ul className="space-y-4">
-          {restaurants.map(r => (
-            <li key={r.id} className="border rounded p-4 flex flex-col md:flex-row md:items-center md:justify-between">
-              <div>
-                <div className="font-bold text-lg">
-                  {r.url ? (
-                    <a href={r.url} className="text-primary hover:underline">{r.name}</a>
-                  ) : (
-                    r.name
-                  )}
-                </div>
-                <div className="text-sm text-gray-500 mt-1">
-                  {r.area_tag?.name} / {r.genre_tag?.name}
-                </div>
-              </div>
-              {typeof r.average_rating === 'number' && (
-                <div className="mt-2 md:mt-0 text-yellow-500 font-semibold">★ {r.average_rating.toFixed(1)}</div>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-};
+const SearchForm: React.FC<SearchFormProps> = ({
+  name,
+  area,
+  genre,
+  areaTags,
+  genreTags,
+  loading,
+  onNameChange,
+  onAreaChange,
+  onGenreChange,
+  onSubmit,
+  onClear,
+}) => (
+  <form onSubmit={onSubmit} className="flex flex-col md:flex-row gap-4 items-center bg-white p-4 rounded-lg shadow-md mb-8">
+      <input
+        type="text"
+        placeholder="店舗名で検索"
+        value={name}
+        onChange={e => onNameChange(e.target.value)}
+        className="w-full md:w-auto flex-grow px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+      />
+      <select
+        value={area}
+        onChange={e => onAreaChange(e.target.value)}
+        className="w-full md:w-auto px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+      >
+        <option value="">すべてのエリア</option>
+        {areaTags.map(tag => (
+          <option key={tag.id} value={tag.name}>{tag.name}</option>
+        ))}
+      </select>
+      <select
+        value={genre}
+        onChange={e => onGenreChange(e.target.value)}
+        className="w-full md:w-auto px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+      >
+        <option value="">すべてのジャンル</option>
+        {genreTags.map(tag => (
+          <option key={tag.id} value={tag.name}>{tag.name}</option>
+        ))}
+      </select>
+      <button
+        type="submit"
+        className="w-full md:w-auto px-6 py-2 bg-teal-500 text-white font-semibold rounded-md hover:bg-teal-600 transition whitespace-nowrap disabled:bg-gray-400"
+        disabled={loading}
+      >
+        検索
+      </button>
+      <button
+        type="button"
+        className="w-full md:w-auto px-6 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md hover:bg-gray-300 transition whitespace-nowrap disabled:bg-gray-400"
+        onClick={onClear}
+        disabled={loading}
+      >
+        クリア
+      </button>
+    </form>
+);
 
 export default SearchForm;
