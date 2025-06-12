@@ -94,6 +94,8 @@ module Api
           review_data
         end
       end
+      # is_favoritedフラグを追加
+      response_data[:is_favorited] = current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
       response_data
     end
   end
