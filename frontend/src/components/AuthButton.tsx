@@ -1,7 +1,7 @@
 'use client';
 
 import { signOut, useSession } from 'next-auth/react';
-import LoginIcon from '../app/icons/LoginIcon';
+import { LogIn } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -69,7 +69,7 @@ const AuthButton = () => {
       className="bg-primary hover:bg-primary/90 text-white rounded-full px-4 py-2 flex items-center transition-colors"
       onClick={() => router.push('/auth/signin')}
     >
-      <LoginIcon className="mr-2" />
+      <LogIn className="mr-2 w-4 h-4" />
       ログイン
     </button>
   );
