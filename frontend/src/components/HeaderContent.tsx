@@ -36,8 +36,8 @@ const HeaderContent = () => {
           {/* 右：ログイン＋店舗追加ボタン */}
           <div className="flex items-center gap-3">
             {/* 検索ボタン削除済み */}
-            {/* 店舗追加ボタン（常時表示 or 認証時のみ表示にしたい場合は条件分岐可） */}
-            <AddRestaurantButton />
+            {/* 店舗追加ボタン（認証時のみ表示） */}
+            {isAuthenticated && <AddRestaurantButton />}
             <div className="flex-shrink-0">
               <AuthButtonWrapper />
             </div>
@@ -45,6 +45,7 @@ const HeaderContent = () => {
         </div>
       </div>
     </header>
-);
+  );
+};
 
 export default HeaderContent;
