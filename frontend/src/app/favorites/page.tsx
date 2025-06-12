@@ -5,7 +5,6 @@ import Link from 'next/link';
 // お気に入り一覧ページ
 export default async function FavoritesPage() {
   const session = await getServerSession(authOptions);
-  if (!session?.jwtToken) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="bg-white p-8 rounded shadow text-center">
@@ -14,7 +13,7 @@ export default async function FavoritesPage() {
         </div>
       </div>
     );
-  }
+  
 
   // Rails APIからお気に入り一覧を取得
   const res = await fetch(`${process.env.BACKEND_INTERNAL_URL || 'http://backend:3000'}/api/favorites`, {
