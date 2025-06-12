@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 // GET /api/favorites: お気に入り一覧取得
-export const GET = async (_req: NextRequest) => {
+export const GET = async () => {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.jwtToken) {

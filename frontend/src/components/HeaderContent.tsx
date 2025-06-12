@@ -3,12 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import AuthButtonWrapper from './AuthButtonWrapper';
-import { useAuth } from '../hooks/useAuth';
-
-const HeaderContent = () => {
-  const { isAuthenticated } = useAuth();
-
-  return (
+const HeaderContent = () => (
     <header className="sticky top-0 bg-white shadow-sm py-4 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
@@ -42,7 +37,6 @@ const HeaderContent = () => {
         </div>
       </div>
     </header>
-  );
-};
+);
 
 export default HeaderContent;
