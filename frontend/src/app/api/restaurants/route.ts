@@ -1,3 +1,5 @@
+// frontend/app/api/restaurants/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
@@ -49,7 +51,9 @@ export const POST = async (request: NextRequest) => {
   }
 };
 
-export const GET = async () => {
+// --- 店舗一覧取得・検索 (GET) ---
+// ★★★ このGET関数を修正します ★★★
+export const GET = async (request: NextRequest) => { // requestを受け取れるように引数を追加
   try {
     // セッション確認
     const session = await getServerSession(authOptions);
@@ -61,8 +65,14 @@ export const GET = async () => {
       );
     }
 
-    // Rails APIに転送
-    const backendUrl = 'http://backend:3000/api/restaurants';
+    // Next.jsが受け取ったリクエストのURLから、クエリパラメータ部分 (?name=...など) を取得します。
+    const { search } = new URL(request.url);
+
+    // Railsバックエンドに投げるURLに、受け取ったクエリパラメータをそのまま付け加えます。
+    const backendUrl = `http://backend:3000/api/restaurants${search}`;
+    
+    // デバッグ用に、実際にリクエストするURLをログに出力します。
+    console.log(`Forwarding request to: ${backendUrl}`);
     
     const response = await fetch(backendUrl, {
       headers: {

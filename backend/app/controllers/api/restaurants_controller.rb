@@ -17,6 +17,35 @@ module Api
       # includesメソッドを使用して、関連するarea_tagとgenre_tagを事前にロード
       # orderメソッドを使用して、作成日時の降順で並べ替え
       restaurants = Restaurant.includes(:area_tag, :genre_tag).order(created_at: :desc)
+
+      # 店舗名で部分一致検索
+      if params[:name].present?
+        name = params[:name].strip
+        unless name.blank?
+          restaurants = restaurants.where('restaurants.name ILIKE ?', "%#{name}%") #sqlのILIKEを使用して大文字小文字を区別せずに部分一致検索
+        else
+          restaurants = Restaurant.none
+        end
+      end
+
+      # エリアタグ名で絞り込み
+      if params[:area].present?
+        area = params[:area].strip
+        unless area.blank?
+          restaurants = restaurants.joins('JOIN tags AS area_tags ON restaurants.area_tag_id = area_tags.id')
+                                  .where('area_tags.name = ? AND area_tags.category = ?', area, 'area')
+        end
+      end
+
+      # ジャンルタグ名で絞り込み
+      if params[:genre].present?
+        genre = params[:genre].strip
+        unless genre.blank?
+          restaurants = restaurants.joins('JOIN tags AS genre_tags ON restaurants.genre_tag_id = genre_tags.id')
+                                  .where('genre_tags.name = ? AND genre_tags.category = ?', genre, 'genre')
+        end
+      end
+
       # レストランの一覧をJSON形式で返す
       render json: restaurants.map { |restaurant| restaurant_response(restaurant) }
     end
@@ -65,7 +94,8 @@ module Api
           id: restaurant.genre_tag&.id,
           name: restaurant.genre_tag&.name,
           category: restaurant.genre_tag&.category
-        }
+        },
+        url: "/restaurants/#{restaurant.id}"
       }
 
       # reviewsキーをレスポンスに追加 (showアクションの場合のみ)

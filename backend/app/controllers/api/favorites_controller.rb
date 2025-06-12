@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Api::FavoritesController < ApplicationController
- # JWT認証が必要かどうかを判定
   def jwt_authentication_required?
     true
   end
@@ -21,6 +20,8 @@ class Api::FavoritesController < ApplicationController
     else
       render json: { error: favorite.errors.full_messages }, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Restaurant not found' }, status: :not_found
   end
 
   # DELETE /api/restaurants/:restaurant_id/favorite
