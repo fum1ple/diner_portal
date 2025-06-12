@@ -1,7 +1,5 @@
 # お気に入りAPIコントローラ雛形
 class Api::FavoritesController < ApplicationController
-  before_action :authenticate_user!
-
   # JWT認証必須
   def jwt_authentication_required?
     true
