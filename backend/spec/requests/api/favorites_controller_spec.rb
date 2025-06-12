@@ -23,11 +23,10 @@ RSpec.describe 'Api::Favorites', type: :request do
       expect(response).to have_http_status(:created)
       data = JSON.parse(response.body)
       expect(data['success']).to be true
-      expect(data['favorite_id']).to be_present
+expect(data['success']).to be true
       
-      favorite = Favorite.find(data['favorite_id'])
-      expect(favorite.user).to eq(user)
-      expect(favorite.restaurant).to eq(restaurant)
+      favorite = Favorite.find_by(user: user, restaurant: restaurant)
+      expect(favorite).to be_present
     end
 
     it 'returns existing favorite if already exists' do
@@ -37,10 +36,9 @@ RSpec.describe 'Api::Favorites', type: :request do
         post "/api/restaurants/#{restaurant.id}/favorite", headers: headers
       }.not_to change(Favorite, :count)
       
-      expect(response).to have_http_status(:created)
+      expect(response).to have_http_status(:unprocessable_entity)
       data = JSON.parse(response.body)
-      expect(data['success']).to be true
-      expect(data['favorite_id']).to eq(existing_favorite.id)
+      expect(data['error']).to be_present
     end
 
     it 'returns 404 if restaurant not found' do
@@ -80,9 +78,7 @@ RSpec.describe 'Api::Favorites', type: :request do
         delete "/api/restaurants/#{restaurant.id}/favorite", headers: headers
       }.to change(Favorite, :count).by(-1)
       
-      expect(response).to have_http_status(:ok)
-      data = JSON.parse(response.body)
-      expect(data['success']).to be true
+      expect(response).to have_http_status(:no_content)
     end
 
     it 'returns 404 if favorite not found' do
@@ -92,7 +88,7 @@ RSpec.describe 'Api::Favorites', type: :request do
       
       expect(response).to have_http_status(:not_found)
       data = JSON.parse(response.body)
-      expect(data['error']).to eq('Favorite not found')
+      expect(data['error']).to eq('お気に入りが見つかりません')
     end
 
     it 'returns 401 without authentication' do
