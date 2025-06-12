@@ -5,6 +5,7 @@ import Link from 'next/link';
 import SearchIcon from '../app/icons/SearchIcon';
 import AuthButtonWrapper from './AuthButtonWrapper';
 import { useAuth } from '../hooks/useAuth';
+import AddRestaurantButton from './ui/AddRestaurantButton';
 
 const HeaderContent = () => {
   const { isAuthenticated } = useAuth();
@@ -33,7 +34,7 @@ const HeaderContent = () => {
             <Link href="/mypage" className="text-gray-600 hover:text-gray-900 font-medium text-lg transition-colors">マイページ</Link>
           </nav>
 
-          {/* 右：検索＆ログイン */}
+          {/* 右：検索＆ログイン＋店舗追加ボタン */}
           <div className="flex items-center gap-3">
             {/* 検索ボタン（ログイン時のみ表示） */}
             {isAuthenticated && (
@@ -66,6 +67,8 @@ const HeaderContent = () => {
                 </div>
               </div>
             )}
+            {/* 店舗追加ボタン（常時表示 or 認証時のみ表示にしたい場合は条件分岐可） */}
+            <AddRestaurantButton />
             <div className="flex-shrink-0">
               <AuthButtonWrapper />
             </div>
