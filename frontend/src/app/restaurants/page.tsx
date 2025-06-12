@@ -67,8 +67,8 @@ export default function RestaurantListPage() {
 
         setAreaTags(areaData);
         setGenreTags(genreData);
-      } catch (e: any) {
-        setError(e.message || '予期せぬエラーが発生しました。');
+      } catch (e) {
+        setError(e instanceof Error ? e.message : '予期せぬエラーが発生しました。');
       }
     };
     fetchTags();
@@ -89,8 +89,8 @@ export default function RestaurantListPage() {
       
       const data = await res.json();
       setRestaurants(data);
-    } catch (e: any) {
-      setError(e.message || '予期せぬエラーが発生しました。');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '予期せぬエラーが発生しました。');
       setRestaurants([]); // エラー時はリストを空にする
     } finally {
       setLoading(false);
