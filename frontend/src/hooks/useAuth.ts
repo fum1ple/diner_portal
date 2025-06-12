@@ -110,7 +110,7 @@ export const useAuth = () => {
     } finally {
       setIsRefreshing(false);
     }
-  }, [session?.refreshToken, update]);
+  }, [session, isRefreshing, lastRefreshTime, update]);
 
   // JWT トークンの有効性チェック
   useEffect(() => {
@@ -125,7 +125,7 @@ export const useAuth = () => {
     } else {
       setIsJwtValid(false);
     }
-  }, [jwtToken, session?.refreshToken, isRefreshing]); // handleTokenRefreshを依存配列から除去
+  }, [jwtToken, session?.refreshToken, isRefreshing, handleTokenRefresh]);
 
   // ログイン関数
   const login = async (callbackUrl?: string) => {
@@ -174,5 +174,6 @@ export const useJwtToken = () => {
     refreshToken: auth.refreshToken,
   };
 };
+
 
 

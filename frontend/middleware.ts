@@ -6,7 +6,7 @@ import { getToken } from 'next-auth/jwt';
 const AUTH_DOMAIN = 'tokium.jp';
 
 // 認証が必要なパスの一覧
-const PROTECTED_PATHS = ['/mypage', '/admin', '/dashboard', '/top','/favorites'];
+const PROTECTED_PATHS = ['/mypage', '/top', '/favorites'];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -39,5 +39,11 @@ export async function middleware(req: NextRequest) {
 
 // ✅ matcher は middleware.ts 内で export
 export const config = {
-  matcher: ['/api/auth/_log', '/mypage/:path*', '/admin/:path*', '/dashboard/:path*', '/top/:path*', '/favorites/:path*'],
+  matcher: [
+    '/api/auth/_log', 
+    '/mypage/:path*', 
+    '/top',
+    '/top/:path*', 
+    '/favorites/:path*'
+  ],
 };

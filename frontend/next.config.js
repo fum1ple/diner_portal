@@ -1,9 +1,3 @@
-import bundleAnalyzer from '@next/bundle-analyzer';
-
-const withBundleAnalyzer = bundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-});
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -36,5 +30,19 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
 };
+
+let withBundleAnalyzer = config => config;
+
+if (process.env.ANALYZE === 'true') {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const bundleAnalyzer = require('@next/bundle-analyzer');
+    withBundleAnalyzer = bundleAnalyzer({
+      enabled: true,
+    });
+  } catch (e) {
+    console.warn('Bundle analyzer not available, proceeding without it:', e.message);
+  }
+}
 
 export default withBundleAnalyzer(nextConfig);
