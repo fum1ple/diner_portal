@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Restaurant, RestaurantSearchParams } from '@/types/restaurant';
-import { authApi } from '@/lib/apiClient';
+import { restaurantsApi } from '@/lib/api';
 import RestaurantCard from './RestaurantCard';
 import NoResultsMessage from './NoResultsMessage';
 
@@ -29,7 +29,7 @@ export default function SearchResultsContainer({
       setHasSearched(true);
 
       try {
-        const response = await authApi.searchRestaurants(searchParams);
+        const response = await restaurantsApi.search(searchParams);
         if (response.error) {
           throw new Error(response.error);
         }

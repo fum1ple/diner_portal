@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Restaurant } from '@/types/restaurant';
 import { Review } from '@/types/review';
-import { authApi } from '@/lib/apiClient';
+import { restaurantsApi } from '@/lib/api';
 import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
 import ErrorMessage from '@/components/ui/feedback/ErrorMessage';
 import FirstReviewPrompt from '@/components/FirstReviewPrompt';
@@ -30,7 +30,7 @@ export default function RestaurantReviewsContainer({
       try {
         setLoading(true);
         setError(null);
-        const response = await authApi.getRestaurantReviews(restaurant.id);
+        const response = await restaurantsApi.getReviews(restaurant.id);
         
         // レビューが存在しない場合（404など）は正常な状態として扱う
         if (response.error) {
@@ -81,7 +81,7 @@ export default function RestaurantReviewsContainer({
     // レビューリストを再取得
     const fetchReviews = async () => {
       try {
-        const response = await authApi.getRestaurantReviews(restaurant.id);
+        const response = await restaurantsApi.getReviews(restaurant.id);
         
         // レビューが存在しない場合も正常として扱う
         if (response.error) {
@@ -220,7 +220,6 @@ export default function RestaurantReviewsContainer({
         {isNewlyRegistered && !showReviewForm && (
           <div className="mb-8">
             <FirstReviewPrompt 
-              restaurantId={restaurant.id} 
               restaurantName={restaurant.name}
               onWriteReview={handleFirstReviewPrompt}
               onSkip={handleSkipFirstReview}

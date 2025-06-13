@@ -1,4 +1,4 @@
-// API呼び出し用ヘルパー関数
+// 認証関連API
 import { getSession } from "next-auth/react";
 
 // Rails APIのベースURL取得
@@ -49,20 +49,5 @@ export const authenticatedFetch = async (
   }
 };
 
-// ユーザープロフィール更新
-export const updateUserProfile = async (userData: {
-  name?: string;
-  email?: string;
-}) => {
-  const response = await authenticatedFetch('/api/user/update', {
-    method: 'PUT',
-    body: JSON.stringify({ user: userData }),
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`プロフィール更新に失敗しました: ${response.status} ${errorText}`);
-  }
-  
-  return response.json();
-};
+// 認証に関するAPIは基本的にNextAuthが処理するため、
+// 現在は直接的なauth APIエンドポイントは定義していません

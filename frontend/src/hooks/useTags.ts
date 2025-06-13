@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { authApi } from "@/lib/apiClient";
+import { tagsApi } from "@/lib/api";
 import type { Tag, CreateTagRequest } from "@/types/tag";
 
 interface UseTagsReturn {
@@ -26,8 +26,8 @@ export const useTags = (): UseTagsReturn => {
       
       // シンプルに並列取得（認証API使用）
       const [areaResult, genreResult] = await Promise.all([
-        authApi.getTags('area'),
-        authApi.getTags('genre'),
+        tagsApi.getByCategory('area'),
+        tagsApi.getByCategory('genre'),
       ]);
       
       // エラーチェック
@@ -51,7 +51,7 @@ export const useTags = (): UseTagsReturn => {
       setCreating(true);
       setError(null);
 
-      const result = await authApi.createTag(data);
+      const result = await tagsApi.create(data);
 
       if (result.error) {
         throw new Error(result.error);

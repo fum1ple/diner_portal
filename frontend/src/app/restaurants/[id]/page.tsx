@@ -6,7 +6,6 @@ import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
 import ErrorMessage from '@/components/ui/feedback/ErrorMessage';
 import RestaurantDetailSidebar from '@/components/restaurants/RestaurantDetailSidebar';
 import RestaurantReviewsContainer from '@/components/restaurants/RestaurantReviewsContainer';
-import FirstReviewPrompt from '@/components/FirstReviewPrompt';
 
 interface PageProps {
   params: { id: string };

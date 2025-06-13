@@ -16,6 +16,10 @@ export interface Restaurant {
   genre_tag: Tag;
   reviews?: Review[];
   is_favorited: boolean;
+  address?: string;
+  phone_number?: string;
+  website?: string;
+  description?: string;
 }
 
 // Restaurant request/response types

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Badge, Card, CardContent, CardHeader, CardTitle, Label } from '@/components/ui';
 import { Plus, X } from 'lucide-react';
 import { Tag, CreateTagRequest } from '@/types/tag';
-import { authApi } from '@/lib/apiClient';
+import { tagsApi } from '@/lib/api';
 import InlineTagCreator from './InlineTagCreator';
 
 interface SceneTagSelectorProps {
@@ -27,7 +27,7 @@ const SceneTagSelector: React.FC<SceneTagSelectorProps> = ({
     const fetchTags = async () => {
       setIsLoadingTags(true);
       setErrorTags(null);
-      const response = await authApi.getSceneTags();
+      const response = await tagsApi.getSceneTags();
       if (response.data) {
         setSceneTags(response.data);
       } else {
@@ -54,7 +54,7 @@ const SceneTagSelector: React.FC<SceneTagSelectorProps> = ({
   const handleCreateTag = async (data: CreateTagRequest): Promise<Tag | null> => {
     setIsCreatingTag(true);
     try {
-      const response = await authApi.createTag(data);
+      const response = await tagsApi.create(data);
       if (response.data) {
         return response.data;
       } else {

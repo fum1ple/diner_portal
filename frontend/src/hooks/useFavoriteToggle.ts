@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { authApi } from '@/lib/apiClient';
+import { favoritesApi } from '@/lib/api';
 
-export function useFavoriteToggle(restaurantId: number, initialFavorited: boolean) {
+export const useFavoriteToggle = (restaurantId: number, initialFavorited: boolean) => {
   const [isFavorited, setIsFavorited] = useState(initialFavorited);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -10,12 +10,12 @@ export function useFavoriteToggle(restaurantId: number, initialFavorited: boolea
       setIsLoading(true);
       
       if (isFavorited) {
-        const response = await authApi.removeFavorite(restaurantId);
+        const response = await favoritesApi.remove(restaurantId);
         if (!response.error) {
           setIsFavorited(false);
         }
       } else {
-        const response = await authApi.addFavorite(restaurantId);
+        const response = await favoritesApi.add(restaurantId);
         if (!response.error) {
           setIsFavorited(true);
         }
@@ -32,4 +32,4 @@ export function useFavoriteToggle(restaurantId: number, initialFavorited: boolea
     toggleFavorite,
     isLoading
   };
-}
+};
