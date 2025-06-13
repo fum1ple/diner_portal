@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient, UseMutationOptions } from '@tanstack/react-query';
 import { authApi } from '@/lib/apiClient';
-import { ApiError, Review, CreateReviewRequest } from '@/types/api';
+import { ApiError } from '@/types/api';
+import { Review, CreateReviewRequest } from '@/types/review';
 
 interface UseCreateReviewHookOptions {
   onSuccess?: (data: Review) => void;

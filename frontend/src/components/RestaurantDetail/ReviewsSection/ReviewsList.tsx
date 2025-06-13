@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { MessageCircle } from 'lucide-react';
-import { Review } from '@/types/api';
+import { Review } from '@/types/review';
 import ReviewCard from '../../ReviewCard';
 import { animationClasses } from '../styles/animations';
 

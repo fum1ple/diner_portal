@@ -7,7 +7,7 @@ interface RestaurantActionsProps {
   showReviews: boolean;
   onOpenGoogleMaps: () => void;
   onToggleReviews: () => void;
-  restaurant: import('@/types/api').Restaurant;
+  restaurant: import('@/types/restaurant').Restaurant;
 }
 
 const RestaurantActions: React.FC<RestaurantActionsProps> = memo(({

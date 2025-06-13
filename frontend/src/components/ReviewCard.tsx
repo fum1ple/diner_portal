@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { Review } from '@/types/api';
+import { Review } from '@/types/review';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'; // Removed AvatarImage as not used in example
 import { Badge } from '@/components/ui/badge';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Tag, CreateTagRequest } from '@/types/api';
+import type { Tag, CreateTagRequest } from '@/types/tag';
 
 interface InlineTagCreatorProps {
   category: 'area' | 'genre';

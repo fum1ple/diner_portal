@@ -1,10 +1,12 @@
 'use client';
 import React from 'react';
 import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 import { useRestaurantDetail } from '../../../hooks/useRestaurantDetail';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 import Breadcrumb from '@/components/Breadcrumb';
+import FirstReviewPrompt from '@/components/FirstReviewPrompt';
 
 const RestaurantDetail = dynamic(() => import('@/components/RestaurantDetail'), {
   loading: () => <LoadingSpinner message="コンポーネントを読み込み中..." />,
@@ -17,8 +19,11 @@ interface PageProps {
 
 export default function RestaurantDetailPage({ params }: PageProps) {
   const { id } = params;
+  const searchParams = useSearchParams();
   const { data: restaurant, isLoading, error, refetch } = useRestaurantDetail(id);
-  // const [showReviewForm, setShowReviewForm] = useState(false);
+  
+  // 新規登録直後かどうかを判定
+  const isNewlyRegistered = searchParams.get('newly_registered') === 'true';
 
   if (isLoading) {
     return <main className="container mx-auto p-4"><LoadingSpinner message="店舗詳細を読み込み中..." /></main>;
@@ -44,6 +49,16 @@ export default function RestaurantDetailPage({ params }: PageProps) {
           />
         </div>
         <RestaurantDetail restaurant={restaurant} />
+        
+        {/* 新規登録直後の場合は初回レビュー促進プロンプトを表示 */}
+        {isNewlyRegistered && (
+          <div className="max-w-6xl mx-auto px-6">
+            <FirstReviewPrompt 
+              restaurantId={restaurant.id} 
+              restaurantName={restaurant.name}
+            />
+          </div>
+        )}
       </div>
     </main>
   );

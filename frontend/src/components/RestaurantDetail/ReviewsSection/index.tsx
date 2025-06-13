@@ -1,5 +1,5 @@
 import React, { memo, useState, useEffect } from 'react';
-import { Review } from '@/types/api';
+import { Review } from '@/types/review';
 import { glassmorphismCardDark } from '../styles/glassmorphism';
 import { ANIMATIONS } from '../styles/constants';
 import ReviewsHeader from './ReviewsHeader';

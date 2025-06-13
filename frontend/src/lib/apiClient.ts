@@ -1,15 +1,10 @@
 // シンプルなAPI呼び出しクライアント
 // 全てのAPI呼び出しはNext.js APIルート経由で行う
 
-import type {
-  ApiResponse,
-  Tag,
-  Restaurant,
-  CreateRestaurantRequest,
-  CreateTagRequest,
-  ApiCallOptions,
-  Review
-} from '@/types/api';
+import type { ApiResponse, ApiCallOptions } from '@/types/api';
+import type { Tag, CreateTagRequest } from '@/types/tag';
+import type { Restaurant, CreateRestaurantRequest } from '@/types/restaurant';
+import type { Review } from '@/types/review';
 
 // 型ガード関数
 const isTagsResponse = (data: unknown): data is Tag[] => 

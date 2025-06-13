@@ -1,5 +1,5 @@
 import React from 'react';
-import { Restaurant } from '@/types/api';
+import { Restaurant } from '@/types/restaurant';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';

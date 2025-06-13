@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Star, Loader2 } from 'lucide-react';
 import { useCreateReview } from '@/hooks/useCreateReview';
-import { CreateReviewRequest, Tag } from '@/types/api';
+import { CreateReviewRequest } from '@/types/review';
+import { Tag } from '@/types/tag';
 import { authApi } from '@/lib/apiClient';
 
 interface ReviewFormProps {
