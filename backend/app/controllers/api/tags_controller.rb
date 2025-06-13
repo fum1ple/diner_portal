@@ -1,5 +1,8 @@
 module Api
   class TagsController < ApplicationController
+    include ApiAuthentication
+
+    requires_authentication :index, :create
     def index
       # params[:category]があれば絞り込み、なければ全件返す
       tags = if params[:category].present?
@@ -34,10 +37,5 @@ module Api
       params.require(:tag).permit(:name, :category)
     end
 
-    # JWT認証が必要かどうかを判定
-    def jwt_authentication_required?
-      # index、createアクションの両方で認証が必要
-      %w[index create].include?(action_name)
-    end
   end
 end
