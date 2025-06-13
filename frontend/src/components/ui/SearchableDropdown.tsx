@@ -35,7 +35,7 @@ export default function SearchableDropdown({
   const filteredOptions =
     query === ''
       ? options
-      : options.filter((option) =>
+      : options.filter(option =>
           option.name
             .toLowerCase()
             .replace(/\s+/g, '')
@@ -44,13 +44,13 @@ export default function SearchableDropdown({
 
   return (
     <div className={className}>
-      <Combobox value={selectedOption} onChange={(option) => option && onChange(option.name)} disabled={disabled}>
+      <Combobox value={selectedOption} onChange={option => option && onChange(option.name)} disabled={disabled}>
         <div className="relative">
           <div className="relative w-full">
             <Combobox.Input
               className="w-full border-2 border-teal-500 rounded-xl bg-white/80 py-3 pl-10 pr-10 text-sm leading-5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-400"
               displayValue={(option: Option | null) => option?.name ?? ''}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={event => setQuery(event.target.value)}
               placeholder={placeholder}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -90,7 +90,7 @@ export default function SearchableDropdown({
                   {emptyMessage}
                 </div>
               ) : (
-                filteredOptions.map((option) => (
+                filteredOptions.map(option => (
                   <Combobox.Option
                     key={option.id}
                     className={({ active }) =>

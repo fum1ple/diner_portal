@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import InlineTagCreator from './forms/InlineTagCreator';
 import HeadlessDropdown from './common/HeadlessDropdown';
 import Alert from './ui/feedback/Alert';
@@ -17,7 +17,6 @@ const AddRestaurantForm = () => {
   const router = useRouter();
   const { areaTags, genreTags, loading, error, createTag, creating } = useTags();
   const searchParams = useSearchParams();
-  const router = useRouter();
   
   const [name, setName] = useState("");
   const [areaId, setAreaId] = useState("");
@@ -143,7 +142,6 @@ const AddRestaurantForm = () => {
     } finally {
       setSubmitLoading(false);
     }
-  }, [name, areaId, genreId, router]);
   }, [name, areaId, genreId, router]);
 
   if (loading) {

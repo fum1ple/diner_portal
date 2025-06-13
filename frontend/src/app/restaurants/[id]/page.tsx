@@ -6,6 +6,7 @@ import { useRestaurantDetail } from '../../../hooks/useRestaurantDetail';
 import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
 import ErrorMessage from '@/components/ui/feedback/ErrorMessage';
 import Breadcrumb from '@/components/ui/navigation/Breadcrumb';
+import FirstReviewPrompt from '@/components/FirstReviewPrompt';
 
 const RestaurantDetail = dynamic(() => import('@/components/RestaurantDetail'), {
   loading: () => <LoadingSpinner text="コンポーネントを読み込み中..." />,
