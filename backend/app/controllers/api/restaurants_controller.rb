@@ -6,7 +6,7 @@ module Api
       restaurant = Restaurant.new(restaurant_params)
       restaurant.user = current_user
       if restaurant.save
-        render json: restaurant_response(restaurant), status: :created # レストランの作成に成功した場合、レスポンスを返す
+        render json: RestaurantSerializer.new(restaurant, params: { current_user: current_user }).serialize, status: :created # レストランの作成に成功した場合、レスポンスを返す
       else
         render json: { errors: restaurant.errors.messages }, status: :unprocessable_entity # レストランの作成に失敗した場合、エラーメッセージを返す
       end
@@ -50,7 +50,7 @@ module Api
       @user_favorited_restaurant_ids = current_user&.favorite_restaurants&.pluck(:id)&.to_set || Set.new
 
       # レストランの一覧をJSON形式で返す
-      render json: restaurants.map { |restaurant| restaurant_response(restaurant) }
+      render json: RestaurantSerializer.new(restaurants, params: { current_user: current_user }).serialize
     end
 
     def show
@@ -59,7 +59,7 @@ module Api
       if restaurant
         # 単一レストランの場合は直接お気に入り状態をチェック（Setのオーバーヘッドを避ける）
         @is_favorited_by_current_user = current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
-        render json: restaurant_response(restaurant)
+        render json: RestaurantSerializer.new(restaurant, params: { current_user: current_user }).serialize
       else
         render json: { error: '店舗が見つかりません' }, status: :not_found
       end
@@ -75,73 +75,6 @@ module Api
 
     def restaurant_params
       params.require(:restaurant).permit(:name, :area_tag_id, :genre_tag_id)
-    end
-
-    # レストランのレスポンス形式を定義
-    # レストランオブジェクトを受け取り、必要な情報を含むハッシュを返す
-    def restaurant_response(restaurant)
-      response_data = {
-        id: restaurant.id,
-        name: restaurant.name,
-        area_tag_id: restaurant.area_tag_id,
-        genre_tag_id: restaurant.genre_tag_id,
-        user_id: restaurant.user_id,
-        created_at: restaurant.created_at,
-        updated_at: restaurant.updated_at,
-        average_rating: restaurant.average_rating,
-        review_count: restaurant.review_count,
-        area_tag: {
-          id: restaurant.area_tag&.id,
-          name: restaurant.area_tag&.name,
-          category: restaurant.area_tag&.category
-        },
-        genre_tag: {
-          id: restaurant.genre_tag&.id,
-          name: restaurant.genre_tag&.name,
-          category: restaurant.genre_tag&.category
-        },
-        url: "/restaurants/#{restaurant.id}"
-      }
-
-      # reviewsキーをレスポンスに追加 (showアクションの場合のみ)
-      # reviews属性が存在し、かつnilでない場合にのみキーを追加
-      if restaurant.respond_to?(:reviews) && restaurant.reviews.loaded?
-        response_data[:reviews] = restaurant.reviews.order(created_at: :desc).map do |review|
-          review_data = {
-            id: review.id,
-            comment: review.comment,
-            rating: review.rating,
-            image_url: review.image_url,
-            created_at: review.created_at,
-            user: {
-              id: review.user.id,
-              name: review.user.name
-            }
-          }
-          if review.scene_tag
-            review_data[:scene_tag] = {
-              id: review.scene_tag.id,
-              name: review.scene_tag.name
-            }
-          else
-            review_data[:scene_tag] = nil
-          end
-          review_data
-        end
-      end
-      # is_favoritedフラグを追加
-      # アクションに応じて最適化された方法でお気に入り状態を取得
-      if defined?(@user_favorited_restaurant_ids)
-        # indexアクション: 事前にロードしたお気に入りIDセットを使用（N+1クエリ回避）
-        response_data[:is_favorited] = @user_favorited_restaurant_ids.include?(restaurant.id)
-      elsif defined?(@is_favorited_by_current_user)
-        # showアクション: 事前に計算済みのお気に入り状態を使用
-        response_data[:is_favorited] = @is_favorited_by_current_user
-      else
-        # その他の場合: 従来通りの方法
-        response_data[:is_favorited] = current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
-      end
-      response_data
     end
   end
 end
