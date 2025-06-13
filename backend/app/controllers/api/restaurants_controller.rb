@@ -1,6 +1,5 @@
 module Api
   class RestaurantsController < ApplicationController
-    require 'set'
 
     def create
       #レストランの作成
@@ -48,7 +47,7 @@ module Api
       end
 
       # ユーザーのお気に入りを事前にロードしてN+1クエリを防ぐ
-      @user_favorite_restaurant_ids = current_user&.favorite_restaurants&.pluck(:id)&.to_set || Set.new
+      @user_favorited_restaurant_ids = current_user&.favorite_restaurants&.pluck(:id)&.to_set || Set.new
 
       # レストランの一覧をJSON形式で返す
       render json: restaurants.map { |restaurant| restaurant_response(restaurant) }
@@ -58,8 +57,8 @@ module Api
       # 指定IDのレストランを取得（area_tag, genre_tag, reviewsとその関連も含めて）
       restaurant = Restaurant.includes(:area_tag, :genre_tag, reviews: [:user, :scene_tag]).find_by(id: params[:id])
       if restaurant
-        # お気に入り状態を効率的に取得
-        @user_favorite_restaurant_ids = current_user&.favorite_restaurants&.where(id: restaurant.id)&.pluck(:id)&.to_set || Set.new
+        # 単一レストランの場合は直接お気に入り状態をチェック（Setのオーバーヘッドを避ける）
+        @is_favorited_by_current_user = current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
         render json: restaurant_response(restaurant)
       else
         render json: { error: '店舗が見つかりません' }, status: :not_found
@@ -131,11 +130,15 @@ module Api
         end
       end
       # is_favoritedフラグを追加
-      # N+1クエリを防ぐため、事前にロードしたお気に入りIDセットを使用
-      if defined?(@user_favorite_restaurant_ids)
-        response_data[:is_favorited] = @user_favorite_restaurant_ids.include?(restaurant.id)
+      # アクションに応じて最適化された方法でお気に入り状態を取得
+      if defined?(@user_favorited_restaurant_ids)
+        # indexアクション: 事前にロードしたお気に入りIDセットを使用（N+1クエリ回避）
+        response_data[:is_favorited] = @user_favorited_restaurant_ids.include?(restaurant.id)
+      elsif defined?(@is_favorited_by_current_user)
+        # showアクション: 事前に計算済みのお気に入り状態を使用
+        response_data[:is_favorited] = @is_favorited_by_current_user
       else
-        # showアクションなど、個別アクセスの場合は従来通り
+        # その他の場合: 従来通りの方法
         response_data[:is_favorited] = current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
       end
       response_data
