@@ -38,10 +38,6 @@ export default function NoResultsMessage({
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
           {getSearchDescription()}該当する店舗がありません
         </h3>
-        <p className="text-gray-600 mb-6">
-          TOKIEATSは皆で作る店舗データベースです。<br />
-          新しい店舗を追加して、チームに情報を共有しませんか？
-        </p>
       </div>
 
       <div className="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-lg p-6 max-w-xl mx-auto border border-teal-100">
