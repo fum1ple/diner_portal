@@ -3,13 +3,12 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import { useRestaurantDetail } from '../../../hooks/useRestaurantDetail';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import ErrorMessage from '@/components/ErrorMessage';
-import Breadcrumb from '@/components/Breadcrumb';
-import FirstReviewPrompt from '@/components/FirstReviewPrompt';
+import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
+import ErrorMessage from '@/components/ui/feedback/ErrorMessage';
+import Breadcrumb from '@/components/ui/navigation/Breadcrumb';
 
 const RestaurantDetail = dynamic(() => import('@/components/RestaurantDetail'), {
-  loading: () => <LoadingSpinner message="コンポーネントを読み込み中..." />,
+  loading: () => <LoadingSpinner text="コンポーネントを読み込み中..." />,
   ssr: false
 });
 
@@ -26,7 +25,7 @@ export default function RestaurantDetailPage({ params }: PageProps) {
   const isNewlyRegistered = searchParams.get('newly_registered') === 'true';
 
   if (isLoading) {
-    return <main className="container mx-auto p-4"><LoadingSpinner message="店舗詳細を読み込み中..." /></main>;
+    return <main className="container mx-auto p-4"><LoadingSpinner text="店舗詳細を読み込み中..." /></main>;
   }
 
   if (error) {

@@ -188,7 +188,6 @@ if (typeof window !== 'undefined') {
       [key: string]: unknown;
     };
   }
-  
   const windowWithNextAuth = window as WindowWithNextAuth;
   windowWithNextAuth.__NEXTAUTH = {
     ...(windowWithNextAuth.__NEXTAUTH || {}),

@@ -4,8 +4,8 @@ import './globals.css'
 import Image from 'next/image'
 import { AuthProvider } from './providers'
 import { Noto_Sans_JP } from 'next/font/google';
-import QueryProvider from '../components/QueryProvider';
-import HeaderContent from '../components/HeaderContent'; 
+import QueryProvider from '../components/auth/QueryProvider';
+import HeaderContent from '../components/layout/HeaderContent'; 
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '500', '700'],

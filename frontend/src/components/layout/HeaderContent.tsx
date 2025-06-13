@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import AuthButtonWrapper from './AuthButtonWrapper';
-import { useAuth } from '../hooks/useAuth';
-import AddRestaurantButton from './ui/AddRestaurantButton';
+import AuthButtonWrapper from '../auth/AuthButtonWrapper';
+import { useAuth } from '../../hooks/useAuth';
+import AddRestaurantButton from '../ui/navigation/AddRestaurantButton';
 
 const HeaderContent = () => {
   const { isAuthenticated } = useAuth();

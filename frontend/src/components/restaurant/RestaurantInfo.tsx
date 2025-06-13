@@ -1,8 +1,6 @@
 import React from 'react';
 import { Restaurant } from '@/types/restaurant';
-import { Card, CardContent, CardHeader } from './ui/card';
-import { Badge } from './ui/badge';
-import { Separator } from './ui/separator';
+import { Card, CardContent, CardHeader, Badge, Separator } from '@/components/ui';
 import { MapPin, Utensils, Star } from 'lucide-react';
 
 interface RestaurantInfoProps {

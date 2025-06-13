@@ -1,19 +1,20 @@
 'use client';
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import InlineTagCreator from './InlineTagCreator';
-import HeadlessDropdown from './HeadlessDropdown';
-import Alert from './Alert';
-import FormField from './FormField';
-import LoadingSpinner from './LoadingSpinner';
-import { StyledWrapper } from './AddRestaurantForm/styles';
+import React, { useState, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import InlineTagCreator from './forms/InlineTagCreator';
+import HeadlessDropdown from './common/HeadlessDropdown';
+import Alert from './ui/feedback/Alert';
+import FormField from './forms/FormField';
+import LoadingSpinner from './ui/feedback/LoadingSpinner';
+import { StyledWrapper } from './restaurant/AddRestaurantForm/styles';
 import { useTags } from '@/hooks/useTags';
 import { authApi } from '@/lib/apiClient';
 import type { CreateRestaurantRequest } from '@/types/restaurant';
 import type { Tag } from '@/types/tag';
 
 const AddRestaurantForm = () => {
+  const router = useRouter();
   const { areaTags, genreTags, loading, error, createTag, creating } = useTags();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -143,12 +144,13 @@ const AddRestaurantForm = () => {
       setSubmitLoading(false);
     }
   }, [name, areaId, genreId, router]);
+  }, [name, areaId, genreId, router]);
 
   if (loading) {
     return (
       <StyledWrapper>
         <div className="container">
-          <LoadingSpinner message="タグを読み込み中..." />
+          <LoadingSpinner text="タグを読み込み中..." />
         </div>
       </StyledWrapper>
     );
@@ -175,7 +177,7 @@ const AddRestaurantForm = () => {
         {success && (
           <Alert type="success">
             <i className="bi bi-check-circle me-2"></i>
-            店舗が正常に登録されました！
+            店舗が正常に登録されました！詳細ページへリダイレクトしています...
           </Alert>
         )}
 

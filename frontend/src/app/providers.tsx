@@ -13,10 +13,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           [key: string]: unknown;
         };
       }
-      
-      const win = window as WindowWithNextAuth;
-      if (win.__NEXTAUTH) {
-        win.__NEXTAUTH.debug = false;
+      const windowWithNextAuth = window as WindowWithNextAuth;
+      if (windowWithNextAuth.__NEXTAUTH) {
+        windowWithNextAuth.__NEXTAUTH.debug = false;
       }
       // localStorageからデバッグフラグを削除
       if (window.localStorage) {
