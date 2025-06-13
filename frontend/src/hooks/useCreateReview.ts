@@ -23,8 +23,10 @@ export const useCreateReview = (restaurantId: number, hookOptions?: UseCreateRev
     if (reviewData.image) {
       formData.append('review[image]', reviewData.image);
     }
-    if (reviewData.scene_tag_id) {
-      formData.append('review[scene_tag_id]', String(reviewData.scene_tag_id));
+    if (reviewData.scene_tag_ids && reviewData.scene_tag_ids.length > 0) {
+      reviewData.scene_tag_ids.forEach(tagId => {
+        formData.append('review[scene_tag_ids][]', String(tagId));
+      });
     }
 
     const res = await authApi.submitReview(String(restaurantId), formData);

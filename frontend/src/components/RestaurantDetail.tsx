@@ -35,7 +35,7 @@ const RestaurantDetail: React.FC<RestaurantDetailProps> = memo(({
   }, [googleMapsUrl]);
 
   return (
-    <div className={`bg-gradient-to-br from-cyan-50 via-teal-50 to-emerald-50 relative transition-all duration-700 ${className}`}>
+    <div className={`relative transition-all duration-700 ${className}`}>
       {/* Background Decorative Elements */}
       <BackgroundDecorations />
       

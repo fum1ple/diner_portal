@@ -16,6 +16,6 @@ export interface TagsResponse {
 export interface CreateTagRequest {
   tag: {
     name: string;
-    category: 'area' | 'genre';
+    category: 'area' | 'genre' | 'scene';
   };
 }

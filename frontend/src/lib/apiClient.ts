@@ -194,6 +194,22 @@ export const authApi = {
       body: data,
       // FormDataの場合、Content-Typeは意図的に省略し、apiCallが処理します
     }),
+
+  // レビュー取得
+  getRestaurantReviews: async (restaurantId: number): Promise<ApiResponse<Review[]>> =>
+    apiCall<Review[]>(`/restaurants/${restaurantId}/reviews`),
+
+  // お気に入り追加
+  addFavorite: async (restaurantId: number): Promise<ApiResponse<void>> =>
+    apiCall<void>(`/restaurants/${restaurantId}/favorite`, {
+      method: 'POST',
+    }),
+
+  // お気に入り削除
+  removeFavorite: async (restaurantId: number): Promise<ApiResponse<void>> =>
+    apiCall<void>(`/restaurants/${restaurantId}/favorite`, {
+      method: 'DELETE',
+    }),
 };
 
 // 後方互換性のために default export も提供

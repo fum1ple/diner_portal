@@ -1,20 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Button, 
   Textarea, 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue,
   Input,
   Label 
 } from '@/components/ui';
 import { Star, Loader2 } from 'lucide-react';
 import { useCreateReview } from '@/hooks/useCreateReview';
 import { CreateReviewRequest } from '@/types/review';
-import { Tag } from '@/types/tag';
-import { authApi } from '@/lib/apiClient';
+import SceneTagSelector from '@/components/forms/SceneTagSelector';
 
 interface ReviewFormProps {
   restaurantId: number;
@@ -43,10 +37,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
   const [comment, setComment] = useState('');
   const [hoverRating, setHoverRating] = useState(0);
   const [image, setImage] = useState<File | null>(null);
-  const [sceneTagId, setSceneTagId] = useState<string>('none');
-  const [sceneTags, setSceneTags] = useState<Tag[]>([]);
-  const [isLoadingTags, setIsLoadingTags] = useState(false);
-  const [errorTags, setErrorTags] = useState<string | null>(null);
+  const [selectedSceneTagIds, setSelectedSceneTagIds] = useState<number[]>([]);
   const [imageError, setImageError] = useState<string | null>(null);
   
   // ファイル入力のref
@@ -63,7 +54,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
       setRating(0);
       setComment('');
       setImage(null);
-      setSceneTagId('none');
+      setSelectedSceneTagIds([]);
       setImageError(null);
       
       // ファイル入力をリセット
@@ -76,22 +67,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
     }
   });
 
-  // シーンタグを取得
-  useEffect(() => {
-    const fetchTags = async () => {
-      setIsLoadingTags(true);
-      setErrorTags(null);
-      const response = await authApi.getSceneTags();
-      if (response.data) {
-        setSceneTags(response.data);
-      } else {
-        const errorMessage = response.error || 'シーンタグの読み込みに失敗しました。';
-        setErrorTags(errorMessage);
-      }
-      setIsLoadingTags(false);
-    };
-    fetchTags();
-  }, []);
 
   // 画像選択のハンドラー
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,7 +99,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
       rating,
       comment,
       image: image || undefined,
-      scene_tag_id: sceneTagId !== 'none' ? parseInt(sceneTagId, 10) : undefined,
+      scene_tag_ids: selectedSceneTagIds.length > 0 ? selectedSceneTagIds : undefined,
     };
 
     // API送信を実行
@@ -207,22 +182,11 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
 
       {/* シーンタグ選択 */}
       <div className="mb-6">
-        <Label htmlFor="scene_tag_id">シーンタグ（任意）</Label>
-        <Select value={sceneTagId} onValueChange={setSceneTagId} disabled={isLoadingTags || isPending}>
-          <SelectTrigger className="mt-1">
-            <SelectValue placeholder={isLoadingTags ? "読み込み中..." : "選択してください"} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="none">なし</SelectItem>
-            {sceneTags.map(tag => (
-              <SelectItem key={tag.id} value={String(tag.id)}>
-                {tag.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {isLoadingTags && <p className="text-sm text-gray-500 mt-1">シーンタグを読み込み中...</p>}
-        {errorTags && <p className="text-sm text-red-600 mt-1">{errorTags}</p>}
+        <SceneTagSelector
+          selectedTagIds={selectedSceneTagIds}
+          onSelectionChange={setSelectedSceneTagIds}
+          disabled={isPending}
+        />
       </div>
 
       {/* ボタン */}

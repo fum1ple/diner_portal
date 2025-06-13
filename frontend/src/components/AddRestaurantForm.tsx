@@ -129,7 +129,11 @@ const AddRestaurantForm = () => {
 
       // 登録成功後は詳細画面に遷移（新規登録フラグ付き）
       if (result.data) {
-        router.push(`/restaurants/${result.data.id}?newly_registered=true`);
+        setSuccess(true);
+        // 祝福メッセージを表示してから遷移
+        setTimeout(() => {
+          router.push(`/restaurants/${result.data.id}?newly_registered=true`);
+        }, 1500);
       } else {
         setSuccess(true);
         setName("");
@@ -173,10 +177,23 @@ const AddRestaurantForm = () => {
         <div className="heading">新規店舗登録</div>
         
         {success && (
-          <Alert type="success">
-            <i className="bi bi-check-circle me-2"></i>
-            店舗が正常に登録されました！詳細ページへリダイレクトしています...
-          </Alert>
+          <div className="mb-6 animate-fade-in-up">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-8 text-center shadow-xl">
+              <div className="text-6xl mb-4 animate-bounce">🎉</div>
+              <h3 className="text-2xl font-bold text-green-800 mb-2">
+                店舗登録完了！
+              </h3>
+              <p className="text-green-600 text-lg">
+                店舗詳細ページへ移動しています...
+              </p>
+              <div className="mt-4">
+                <div className="w-12 h-12 mx-auto">
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-200"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent absolute"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {submitError && (
@@ -211,6 +228,7 @@ const AddRestaurantForm = () => {
 
           {showNewAreaForm && (
             <InlineTagCreator
+              key="area-tag-creator"
               category="area"
               onTagCreated={handleTagCreated}
               onClose={() => setShowNewAreaForm(false)}
@@ -231,6 +249,7 @@ const AddRestaurantForm = () => {
 
           {showNewGenreForm && (
             <InlineTagCreator
+              key="genre-tag-creator"
               category="genre"
               onTagCreated={handleTagCreated}
               onClose={() => setShowNewGenreForm(false)}

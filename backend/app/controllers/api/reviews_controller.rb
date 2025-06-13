@@ -6,7 +6,8 @@ module Api
     before_action :set_restaurant, only: [:create]
 
     def create
-      review = @restaurant.reviews.new(review_params)
+      review_attributes = review_params.except(:scene_tag_ids)
+      review = @restaurant.reviews.new(review_attributes)
       review.user = current_user
 
       if params[:review] && params[:review][:image].present?
@@ -23,12 +24,31 @@ module Api
         review.image_url = "/uploads/reviews/#{filename}"
       end
 
-      if review.save
-        # Reload with associations for serializer
-        review.reload
-        render json: ReviewSerializer.new(review).serialize, status: :created
-      else
-        render json: { errors: review.errors.full_messages }, status: :unprocessable_entity
+      begin
+        ActiveRecord::Base.transaction do
+          if review.save!
+            # シーンタグの関連付けを処理
+            if review_params[:scene_tag_ids].present?
+              scene_tag_ids = review_params[:scene_tag_ids].reject(&:blank?)
+              scene_tag_ids.each do |tag_id|
+                tag = Tag.find_by(id: tag_id, category: 'scene')
+                if tag
+                  review.review_scene_tags.create!(scene_tag: tag)
+                else
+                  raise ActiveRecord::RecordInvalid.new(review.tap { |r| r.errors.add(:scene_tag_ids, "無効なシーンタグIDです: #{tag_id}") })
+                end
+              end
+            end
+
+            # Reload with associations for serializer
+            review.reload
+            render json: ReviewSerializer.new(review).serialize, status: :created
+          end
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+      rescue => e
+        render json: { errors: ['レビューの作成に失敗しました'] }, status: :unprocessable_entity
       end
     end
 
@@ -47,7 +67,7 @@ module Api
     end
 
     def review_params
-      params.require(:review).permit(:comment, :rating, :scene_tag_id) # Image is handled separately
+      params.require(:review).permit(:comment, :rating, scene_tag_ids: []) # Image is handled separately
     end
 
   end
