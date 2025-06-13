@@ -1,6 +1,7 @@
 // シンプルなAPI呼び出しクライアント
 // 全てのAPI呼び出しはNext.js APIルート経由で行う
 
+import { signOut } from 'next-auth/react';
 import type { ApiResponse, ApiCallOptions } from '@/types/api';
 import type { Tag, CreateTagRequest } from '@/types/tag';
 import type { Restaurant, CreateRestaurantRequest } from '@/types/restaurant';
@@ -62,6 +63,15 @@ const apiCall = async <T = unknown>(
       const data = responseBody ? JSON.parse(responseBody) : null;
 
       if (!response.ok) {
+        // 401エラー（認証切れ）の場合、自動的にログアウトしてログイン画面にリダイレクト
+        if (response.status === 401) {
+          await signOut({ callbackUrl: '/' });
+          return {
+            status: response.status,
+            error: 'セッションが期限切れです。再度ログインしてください。',
+          };
+        }
+        
         return {
           status: response.status,
           error: data?.error || data?.message || `HTTP ${response.status}`,
