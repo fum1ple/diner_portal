@@ -182,8 +182,15 @@ if (!process.env.NEXTAUTH_URL) {
 // デバッグログを無効化
 if (typeof window !== 'undefined') {
   // クライアント側でデバッグを無効化
-  (window as any).__NEXTAUTH = {
-    ...((window as any).__NEXTAUTH || {}),
+  interface WindowWithNextAuth extends Window {
+    __NEXTAUTH?: {
+      debug?: boolean;
+      [key: string]: unknown;
+    };
+  }
+  const windowWithNextAuth = window as WindowWithNextAuth;
+  windowWithNextAuth.__NEXTAUTH = {
+    ...(windowWithNextAuth.__NEXTAUTH || {}),
     debug: false
   };
 }
