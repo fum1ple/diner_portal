@@ -1,10 +1,5 @@
 require 'rails_helper'
 
-def auth_headers(user)
-  token = JwtService.encode(user_id: user.id)
-  { 'Authorization' => "Bearer #{token}" }
-end
-
 RSpec.describe "Api::Tags", type: :request do
   let!(:user) { User.create!(google_id: 'google123', email: 'user@example.com', name: 'User') }
   let(:headers) { auth_headers(user) }

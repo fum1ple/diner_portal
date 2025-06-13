@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Api::FavoritesController < ApplicationController
-  def jwt_authentication_required?
-    true
-  end
+  include ApiAuthentication
+
+  requires_authentication_for_all
 
   # GET /api/favorites
   def index

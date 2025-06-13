@@ -1,5 +1,8 @@
 module Api
   class RestaurantsController < ApplicationController
+    include ApiAuthentication
+
+    requires_authentication :create, :index, :show
 
     def create
       #レストランの作成
@@ -95,11 +98,6 @@ module Api
 
     private
 
-    # JWT認証が必要かどうかを判定
-    def jwt_authentication_required?
-      # create, index, showアクションでは認証が必要
-      %w[create index show].include?(action_name)
-    end
 
     def restaurant_params
       params.require(:restaurant).permit(:name, :area_tag_id, :genre_tag_id)

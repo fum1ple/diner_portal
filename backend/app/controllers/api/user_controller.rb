@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Api::UserController < ApplicationController
+  include ApiAuthentication
+
+  requires_authentication_for_all
   
   # GET /api/user/profile - ユーザー情報取得
   def profile
@@ -42,10 +45,6 @@ class Api::UserController < ApplicationController
 
   private
   
-  # このコントローラーでは認証が必要
-  def jwt_authentication_required?
-    true
-  end
 
   # 更新可能なパラメータを定義
   def user_update_params
