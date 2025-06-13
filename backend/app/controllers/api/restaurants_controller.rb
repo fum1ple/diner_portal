@@ -6,7 +6,14 @@ module Api
       restaurant = Restaurant.new(restaurant_params)
       restaurant.user = current_user
       if restaurant.save
-        render json: RestaurantSerializer.new(restaurant, params: { current_user: current_user }).serialize, status: :created # レストランの作成に成功した場合、レスポンスを返す
+        # 新規作成のレストランはまだお気に入りに登録されていないので空のSetを渡す
+        render json: RestaurantSerializer.new(
+          restaurant,
+          params: {
+            current_user: current_user,
+            user_favorited_ids: Set.new
+          }
+        ).serialize, status: :created # レストランの作成に成功した場合、レスポンスを返す
       else
         render json: { errors: restaurant.errors.messages }, status: :unprocessable_entity # レストランの作成に失敗した場合、エラーメッセージを返す
       end
@@ -46,15 +53,41 @@ module Api
         end
       end
 
-      # レストランの一覧をJSON形式で返す
-      render json: RestaurantSerializer.new(restaurants, params: { current_user: current_user }).serialize
+      # ユーザーのお気に入りを事前にロードしてN+1クエリを防ぐ
+      user_favorited_ids = if current_user
+        current_user.favorites.pluck(:restaurant_id).to_set
+      else
+        Set.new
+      end
+
+      # レストランの一覧をJSON形式で返す（お気に入り情報も渡す）
+      render json: RestaurantSerializer.new(
+        restaurants,
+        params: {
+          current_user: current_user,
+          user_favorited_ids: user_favorited_ids
+        }
+      ).serialize
     end
 
     def show
       # 指定IDのレストランを取得（area_tag, genre_tag, reviewsとその関連も含めて）
       restaurant = Restaurant.includes(:area_tag, :genre_tag, reviews: [:user, :scene_tag]).find_by(id: params[:id])
       if restaurant
-        render json: RestaurantSerializer.new(restaurant, params: { current_user: current_user }).serialize
+        # 単一レストランの場合もSerializerの実装と統一するためにSetを使用
+        user_favorited_ids = if current_user && current_user.favorites.exists?(restaurant_id: restaurant.id)
+          Set.new([restaurant.id])
+        else
+          Set.new
+        end
+
+        render json: RestaurantSerializer.new(
+          restaurant,
+          params: {
+            current_user: current_user,
+            user_favorited_ids: user_favorited_ids
+          }
+        ).serialize
       else
         render json: { error: '店舗が見つかりません' }, status: :not_found
       end
@@ -71,6 +104,5 @@ module Api
     def restaurant_params
       params.require(:restaurant).permit(:name, :area_tag_id, :genre_tag_id)
     end
-
   end
 end

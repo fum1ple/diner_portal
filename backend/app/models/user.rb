@@ -13,28 +13,6 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :google_id, uniqueness: true, allow_nil: true
 
-  # find_or_create_by_google_authはAuthServiceに移譲可能。重複を避けるため、Userモデルから削除してAuthServiceに一本化することを推奨。
-  # Google認証情報からユーザーを検索または作成
-  def self.find_or_create_by_google_auth(google_payload)
-    email = google_payload['email']
-    google_id = google_payload['sub']
-    name = google_payload['name']
-
-    user = find_by(email: email)
-
-    if user
-      # 既存ユーザーのgoogle_idを更新（初回Google認証の場合）
-      user.update(google_id: google_id) if user.google_id.blank?
-      user
-    else
-      # 新規ユーザー作成
-      create!(
-        email: email,
-        google_id: google_id,
-        name: name
-      )
-    end
-  end
 
   # JWTトークンを生成
   def generate_jwt_token
