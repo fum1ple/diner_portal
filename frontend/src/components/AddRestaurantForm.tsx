@@ -100,6 +100,10 @@ const AddRestaurantForm = () => {
 
       if (result.data && result.data.id) {
         setSuccess(true);
+        // フォームをリセット
+        setName("");
+        setAreaId("");
+        setGenreId("");
         // 成功メッセージを表示してからリダイレクト
         setTimeout(() => {
           router.push(`/restaurants/${result.data?.id}`);

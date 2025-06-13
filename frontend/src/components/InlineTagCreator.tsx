@@ -60,6 +60,27 @@ const InlineTagCreator: React.FC<InlineTagCreatorProps> = ({
 
   const categoryLabel = category === 'area' ? 'エリア' : 'ジャンル';
 
+  // フォームフィールドコンポーネント
+  const InlineTagFormField = () => (
+    <div className="space-y-2">
+      <Label htmlFor={`new-${category}-name`}>
+        {categoryLabel}名 <span className="text-destructive">*</span>
+      </Label>
+      <Input
+        type="text"
+        id={`new-${category}-name`}
+        value={name}
+        onChange={e => setName(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder={`新しい${categoryLabel}名を入力`}
+        disabled={creating}
+        maxLength={255}
+        required
+        className="w-full"
+      />
+    </div>
+  );
+
   return (
     <Card className="mb-3">
       <CardHeader className="pb-3">
@@ -77,23 +98,7 @@ const InlineTagCreator: React.FC<InlineTagCreatorProps> = ({
         )}
 
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor={`new-${category}-name`}>
-              {categoryLabel}名 <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              type="text"
-              id={`new-${category}-name`}
-              value={name}
-              onChange={e => setName(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={`新しい${categoryLabel}名を入力`}
-              disabled={creating}
-              maxLength={255}
-              required
-              className="w-full"
-            />
-          </div>
+          <InlineTagFormField />
 
           <div className="flex gap-2">
             <Button
