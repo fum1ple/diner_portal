@@ -9,14 +9,18 @@ class RestaurantSerializer < ApplicationSerializer
     "/restaurants/#{restaurant.id}"
   end
 
-  attribute :is_favorited do |restaurant, params|
-    current_user = params&.dig(:current_user)
-    current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
+  attribute :is_favorited do |restaurant|
+    # 事前に取得したお気に入りIDのSetを使用してN+1クエリを防ぐ
+    user_favorited_ids = params&.dig(:user_favorited_ids)
+    # Rails.logger.debug "Restaurant #{restaurant.id}: user_favorited_ids = #{user_favorited_ids.inspect}"
+    if user_favorited_ids
+      user_favorited_ids.include?(restaurant.id)
+    else
+      false
+    end
   end
 
-  attribute :reviews, if: proc { |restaurant| 
+  many :reviews, if: proc { |restaurant| 
     restaurant.respond_to?(:reviews) && restaurant.reviews.loaded?
-  } do |restaurant|
-    ReviewSerializer.new(restaurant.reviews.order(created_at: :desc)).serialize
-  end
+  }, serializer: ReviewSerializer
 end
