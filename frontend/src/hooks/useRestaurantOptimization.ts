@@ -1,6 +1,6 @@
 // カスタムフック: RestaurantDetail関連のパフォーマンス最適化
 import { useMemo, useCallback, useRef } from 'react';
-import { Restaurant } from '@/types/api';
+import { Restaurant } from '@/types/restaurant';
 
 export interface UseRestaurantOptimizationProps {
   restaurant: Restaurant;

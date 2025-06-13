@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Restaurant } from '@/types/api';
+import { Restaurant } from '@/types/restaurant';
 
 export const useRestaurantDetail = (id: string) => useQuery<Restaurant, Error>({
     queryKey: ['restaurant', id],

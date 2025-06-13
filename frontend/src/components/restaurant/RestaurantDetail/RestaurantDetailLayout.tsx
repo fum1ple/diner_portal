@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
-import { Restaurant, Review } from '@/types/api';
+import { Restaurant } from '@/types/restaurant';
+import { Review } from '@/types/review';
 import { LAYOUT, TRANSITIONS, ANIMATIONS } from './styles/constants';
 import { glassmorphismCard, gradientOverlay } from './styles/glassmorphism';
 import RestaurantInfo from '../RestaurantInfo';

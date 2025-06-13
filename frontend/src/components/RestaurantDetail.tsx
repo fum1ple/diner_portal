@@ -1,5 +1,5 @@
 import React, { useState, useCallback, memo } from 'react';
-import { Restaurant } from '@/types/api';
+import { Restaurant } from '@/types/restaurant';
 import RestaurantDetailLayout from './restaurant/RestaurantDetail/RestaurantDetailLayout';
 import FloatingActionButton from './restaurant/RestaurantDetail/FloatingActionButton';
 import BackgroundDecorations from './restaurant/RestaurantDetail/BackgroundDecorations';

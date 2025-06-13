@@ -1,15 +1,10 @@
 // シンプルなAPI呼び出しクライアント
 // 全てのAPI呼び出しはNext.js APIルート経由で行う
 
-import type {
-  ApiResponse,
-  Tag,
-  Restaurant,
-  CreateRestaurantRequest,
-  CreateTagRequest,
-  ApiCallOptions,
-  Review
-} from '@/types/api';
+import type { ApiResponse, ApiCallOptions } from '@/types/api';
+import type { Tag, CreateTagRequest } from '@/types/tag';
+import type { Restaurant, CreateRestaurantRequest } from '@/types/restaurant';
+import type { Review } from '@/types/review';
 
 // 型ガード関数
 const isTagsResponse = (data: unknown): data is Tag[] => 
@@ -155,6 +150,27 @@ export const authApi = {
       return {
         status: result.status,
         error: '店舗一覧のレスポンス形式が無効です',
+      };
+    }
+    
+    return result;
+  },
+
+  // 店舗検索
+  searchRestaurants: async (searchParams: { name?: string; area?: string; genre?: string }): Promise<ApiResponse<Restaurant[]>> => {
+    const query = new URLSearchParams();
+    if (searchParams.name?.trim()) query.append('name', searchParams.name.trim());
+    if (searchParams.area?.trim()) query.append('area', searchParams.area.trim());
+    if (searchParams.genre?.trim()) query.append('genre', searchParams.genre.trim());
+    
+    const endpoint = query.toString() ? `/restaurants?${query.toString()}` : '/restaurants';
+    const result = await apiCall<Restaurant[]>(endpoint);
+    
+    // データの型検証
+    if (result.data && !isRestaurantsResponse(result.data)) {
+      return {
+        status: result.status,
+        error: '検索結果のレスポンス形式が無効です',
       };
     }
     

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Restaurant } from '@/types/api';
+import { Restaurant } from '@/types/restaurant';
 import { Card, CardContent, CardHeader, Badge, Separator } from '@/components/ui';
 import { MapPin, Utensils, Star } from 'lucide-react';
 

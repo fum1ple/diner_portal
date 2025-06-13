@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { authApi } from "@/lib/apiClient";
-import type { Tag, CreateTagRequest } from "@/types/api";
+import type { Tag, CreateTagRequest } from "@/types/tag";
 
 interface UseTagsReturn {
   areaTags: Tag[];

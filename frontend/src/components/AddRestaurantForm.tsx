@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import InlineTagCreator from './forms/InlineTagCreator';
 import HeadlessDropdown from './common/HeadlessDropdown';
 import Alert from './ui/feedback/Alert';
@@ -10,11 +10,14 @@ import LoadingSpinner from './ui/feedback/LoadingSpinner';
 import { StyledWrapper } from './restaurant/AddRestaurantForm/styles';
 import { useTags } from '@/hooks/useTags';
 import { authApi } from '@/lib/apiClient';
-import type { CreateRestaurantRequest, Tag } from '@/types/api';
+import type { CreateRestaurantRequest } from '@/types/restaurant';
+import type { Tag } from '@/types/tag';
 
 const AddRestaurantForm = () => {
   const router = useRouter();
   const { areaTags, genreTags, loading, error, createTag, creating } = useTags();
+  const searchParams = useSearchParams();
+  
   const [name, setName] = useState("");
   const [areaId, setAreaId] = useState("");
   const [genreId, setGenreId] = useState("");
@@ -25,6 +28,32 @@ const AddRestaurantForm = () => {
   // インライン新規タグ作成の状態管理
   const [showNewAreaForm, setShowNewAreaForm] = useState(false);
   const [showNewGenreForm, setShowNewGenreForm] = useState(false);
+
+  // URLパラメータから初期値を設定
+  useEffect(() => {
+    const initialName = searchParams.get('name');
+    const initialArea = searchParams.get('area');
+    const initialGenre = searchParams.get('genre');
+
+    if (initialName) {
+      setName(initialName);
+    }
+
+    // エリアとジャンルの設定はタグデータが読み込まれた後に行う
+    if (areaTags.length > 0 && initialArea) {
+      const areaTag = areaTags.find(tag => tag.name === initialArea);
+      if (areaTag) {
+        setAreaId(areaTag.id.toString());
+      }
+    }
+
+    if (genreTags.length > 0 && initialGenre) {
+      const genreTag = genreTags.find(tag => tag.name === initialGenre);
+      if (genreTag) {
+        setGenreId(genreTag.id.toString());
+      }
+    }
+  }, [searchParams, areaTags, genreTags]);
 
   // 新しいタグが作成された時のハンドラー
   const handleTagCreated = useCallback((tag: Tag) => {
@@ -98,18 +127,14 @@ const AddRestaurantForm = () => {
         throw new Error(result.error);
       }
 
-      if (result.data && result.data.id) {
+      // 登録成功後は詳細画面に遷移（新規登録フラグ付き）
+      if (result.data) {
+        router.push(`/restaurants/${result.data.id}?newly_registered=true`);
+      } else {
         setSuccess(true);
-        // フォームをリセット
         setName("");
         setAreaId("");
         setGenreId("");
-        // 成功メッセージを表示してからリダイレクト
-        setTimeout(() => {
-          router.push(`/restaurants/${result.data?.id}`);
-        }, 500);
-      } else {
-        throw new Error("レストランIDが取得できませんでした");
       }
       
     } catch (e: unknown) {
