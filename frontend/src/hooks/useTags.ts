@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
-import { tagsApi } from "@/lib/api";
-import type { Tag, CreateTagRequest } from "@/types/tag";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { tagsApi } from '@/lib/api';
+import { queryKeys } from '@/lib/queryKeys';
+import type { Tag, CreateTagRequest } from '@/types/tag';
 
 interface UseTagsReturn {
   areaTags: Tag[];
@@ -13,81 +14,93 @@ interface UseTagsReturn {
 }
 
 export const useTags = (): UseTagsReturn => {
-  const [areaTags, setAreaTags] = useState<Tag[]>([]);
-  const [genreTags, setGenreTags] = useState<Tag[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [creating, setCreating] = useState(false);
+  const queryClient = useQueryClient();
 
-  const fetchTags = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // シンプルに並列取得（認証API使用）
-      const [areaResult, genreResult] = await Promise.all([
-        tagsApi.getByCategory('area'),
-        tagsApi.getByCategory('genre'),
-      ]);
-      
-      // エラーチェック
-      if (areaResult.error || genreResult.error) {
-        throw new Error(areaResult.error || genreResult.error || 'タグ取得エラー');
-      }
-      
-      // データ設定
-      setAreaTags(areaResult.data || []);
-      setGenreTags(genreResult.data || []);
-      
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "タグの取得中にエラーが発生しました");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const createTag = async (data: CreateTagRequest): Promise<Tag | null> => {
-    try {
-      setCreating(true);
-      setError(null);
-
-      const result = await tagsApi.create(data);
-
+  // エリアタグの取得
+  const areaTagsQuery = useQuery({
+    queryKey: queryKeys.tags.list('area'),
+    queryFn: async () => {
+      const result = await tagsApi.getByCategory('area');
       if (result.error) {
         throw new Error(result.error);
       }
+      return result.data || [];
+    },
+    staleTime: 15 * 60 * 1000, // タグは変更頻度が低いので15分間キャッシュ
+    gcTime: 30 * 60 * 1000, // 30分間ガベージコレクション保持
+  });
 
+  // ジャンルタグの取得
+  const genreTagsQuery = useQuery({
+    queryKey: queryKeys.tags.list('genre'),
+    queryFn: async () => {
+      const result = await tagsApi.getByCategory('genre');
+      if (result.error) {
+        throw new Error(result.error);
+      }
+      return result.data || [];
+    },
+    staleTime: 15 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  // タグ作成のmutation
+  const createTagMutation = useMutation({
+    mutationFn: async (data: CreateTagRequest) => {
+      const result = await tagsApi.create(data);
+      if (result.error) {
+        throw new Error(result.error);
+      }
       if (!result.data) {
         throw new Error('タグの作成に失敗しました');
       }
-
-      // 新しいタグを適切なリストに追加
-      if (data.tag.category === 'area') {
-        setAreaTags(prev => [...prev, result.data!]);
-      } else {
-        setGenreTags(prev => [...prev, result.data!]);
-      }
-
       return result.data;
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "タグの作成中にエラーが発生しました");
+    },
+    onSuccess: newTag => {
+      // 新しいタグを適切なキャッシュに追加
+      const category = newTag.category;
+      queryClient.setQueryData(
+        queryKeys.tags.list(category),
+        (oldTags: Tag[] | undefined) => [...(oldTags || []), newTag]
+      );
+    },
+    onError: error => {
+      console.error('Tag creation error:', error);
+    },
+  });
+
+  // リフェッチ関数
+  const refetch = async () => {
+    await Promise.all([
+      areaTagsQuery.refetch(),
+      genreTagsQuery.refetch(),
+    ]);
+  };
+
+  // タグ作成関数
+  const createTag = async (data: CreateTagRequest): Promise<Tag | null> => {
+    try {
+      const result = await createTagMutation.mutateAsync(data);
+      return result;
+    } catch (error) {
+      console.error('Create tag error:', error);
       return null;
-    } finally {
-      setCreating(false);
     }
   };
 
-  useEffect(() => {
-    fetchTags();
-  }, []);
+  // ローディング状態とエラー状態の統合
+  const loading = areaTagsQuery.isLoading || genreTagsQuery.isLoading;
+  const error = areaTagsQuery.error?.message || 
+                genreTagsQuery.error?.message || 
+                null;
 
   return {
-    areaTags,
-    genreTags,
+    areaTags: areaTagsQuery.data || [],
+    genreTags: genreTagsQuery.data || [],
     loading,
     error,
-    refetch: fetchTags,
+    refetch,
     createTag,
-    creating
+    creating: createTagMutation.isPending,
   };
 };
