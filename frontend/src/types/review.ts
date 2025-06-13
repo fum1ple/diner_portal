@@ -10,15 +10,15 @@ export interface Review {
     id: number;
     name: string;
   };
-  scene_tag?: {
+  scene_tags?: {
     id: number;
     name: string;
-  };
+  }[];
 }
 
 export interface CreateReviewRequest {
   comment: string;
   rating: number;
   image?: File;
-  scene_tag_id?: number;
+  scene_tag_ids?: number[];
 }
