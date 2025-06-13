@@ -4,7 +4,7 @@ import type { CreateTagRequest } from '@/types/tag';
 import { Card, CardContent, CardHeader, CardTitle, Input, Button, Label } from '@/components/ui';
 import { PlusCircle, Check, X, AlertTriangle } from 'lucide-react';
 interface InlineTagCreatorProps {
-  category: 'area' | 'genre';
+  category: 'area' | 'genre' | 'scene';
   onTagCreated: (tag: Tag) => void;
   onClose: () => void;
   creating: boolean;
@@ -56,28 +56,7 @@ const InlineTagCreator: React.FC<InlineTagCreatorProps> = ({
     }
   };
 
-  const categoryLabel = category === 'area' ? 'エリア' : 'ジャンル';
-
-  // フォームフィールドコンポーネント
-  const InlineTagFormField = () => (
-    <div className="space-y-2">
-      <Label htmlFor={`new-${category}-name`}>
-        {categoryLabel}名 <span className="text-destructive">*</span>
-      </Label>
-      <Input
-        type="text"
-        id={`new-${category}-name`}
-        value={name}
-        onChange={e => setName(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={`新しい${categoryLabel}名を入力`}
-        disabled={creating}
-        maxLength={255}
-        required
-        className="w-full"
-      />
-    </div>
-  );
+  const categoryLabel = category === 'area' ? 'エリア' : category === 'genre' ? 'ジャンル' : 'シーン';
 
   return (
     <Card className="mb-3">
@@ -96,7 +75,23 @@ const InlineTagCreator: React.FC<InlineTagCreatorProps> = ({
         )}
 
         <div className="space-y-4">
-          <InlineTagFormField />
+          <div className="space-y-2">
+            <Label htmlFor={`new-${category}-name`}>
+              {categoryLabel}名 <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              type="text"
+              id={`new-${category}-name`}
+              value={name}
+              onChange={e => setName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={`新しい${categoryLabel}名を入力`}
+              disabled={creating}
+              maxLength={255}
+              required
+              className="w-full"
+            />
+          </div>
 
           <div className="flex gap-2">
             <Button
