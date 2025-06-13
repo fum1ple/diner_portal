@@ -3,7 +3,7 @@ class Restaurant < ApplicationRecord
   belongs_to :area_tag, class_name: 'Tag', foreign_key: 'area_tag_id' # エリアタグはTagモデルを参照
   belongs_to :genre_tag, class_name: 'Tag', foreign_key: 'genre_tag_id' # ジャンルタグはTagモデルを参照
 
-  has_many :reviews, dependent: :destroy # レストランは複数のレビューを持つことができる
+  has_many :reviews, -> { order(created_at: :desc) }, dependent: :destroy # レストランは複数のレビューを持つことができる
   has_many :favorites, dependent: :destroy
   has_many :favoriting_users, through: :favorites, source: :user
 
