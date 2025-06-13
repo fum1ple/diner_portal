@@ -5,8 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { PlusCircle, Check, X, AlertTriangle } from 'lucide-react';
-// import { cn } from '@/lib/utils';
-
 interface InlineTagCreatorProps {
   category: 'area' | 'genre';
   onTagCreated: (tag: Tag) => void;
