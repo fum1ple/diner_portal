@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import type { Tag, CreateTagRequest } from '@/types';
+import type { Tag } from '@/types/tag';
+import type { CreateTagRequest } from '@/types/tag';
 import { Card, CardContent, CardHeader, CardTitle, Input, Button, Label } from '@/components/ui';
 import { PlusCircle, Check, X, AlertTriangle } from 'lucide-react';
 interface InlineTagCreatorProps {

@@ -69,7 +69,7 @@ export default function NoResultsMessage({
             この店舗を追加する
           </button>
           <button
-            onClick={() => window.history.back()}
+            onClick={() => router.back()}
             className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             <span>🔄</span>
