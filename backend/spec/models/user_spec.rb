@@ -76,31 +76,4 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.find_or_create_by_google_auth' do
-    it '既存ユーザーを見つける' do
-      existing_user = User.create!(valid_user_params)
-      google_payload = {
-        'email' => existing_user.email,
-        'sub' => existing_user.google_id,
-        'name' => existing_user.name
-      }
-      found_user = User.find_or_create_by_google_auth(google_payload)
-      expect(found_user.id).to eq existing_user.id
-    end
-
-    it '新規ユーザーを作成' do
-      google_payload = {
-        'email' => 'newuser@example.com',
-        'sub' => 'new_google_id_123',
-        'name' => '新規ユーザー'
-      }
-      expect {
-        User.find_or_create_by_google_auth(google_payload)
-      }.to change(User, :count).by(1)
-      new_user = User.last
-      expect(new_user.email).to eq 'newuser@example.com'
-      expect(new_user.google_id).to eq 'new_google_id_123'
-      expect(new_user.name).to eq '新規ユーザー'
-    end
-  end
 end

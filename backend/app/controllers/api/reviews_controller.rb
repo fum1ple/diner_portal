@@ -24,7 +24,9 @@ module Api
       end
 
       if review.save
-        render json: review_response(review), status: :created
+        # Reload with associations for serializer
+        review.reload
+        render json: ReviewSerializer.new(review).serialize, status: :created
       else
         render json: { errors: review.errors.full_messages }, status: :unprocessable_entity
       end
@@ -48,27 +50,5 @@ module Api
       params.require(:review).permit(:comment, :rating, :scene_tag_id) # Image is handled separately
     end
 
-    def review_response(review)
-      response = {
-        id: review.id,
-        comment: review.comment,
-        rating: review.rating,
-        image_url: review.image_url,
-        created_at: review.created_at,
-        user: {
-          id: review.user.id,
-          name: review.user.name
-        }
-      }
-      if review.scene_tag
-        response[:scene_tag] = {
-          id: review.scene_tag.id,
-          name: review.scene_tag.name
-        }
-      else
-        response[:scene_tag] = nil
-      end
-      response
-    end
   end
 end

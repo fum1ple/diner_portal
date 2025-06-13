@@ -6,7 +6,14 @@ module Api
       restaurant = Restaurant.new(restaurant_params)
       restaurant.user = current_user
       if restaurant.save
-        render json: restaurant_response(restaurant), status: :created # レストランの作成に成功した場合、レスポンスを返す
+        # 新規作成のレストランはまだお気に入りに登録されていないので空のSetを渡す
+        render json: RestaurantSerializer.new(
+          restaurant,
+          params: {
+            current_user: current_user,
+            user_favorited_ids: Set.new
+          }
+        ).serialize, status: :created # レストランの作成に成功した場合、レスポンスを返す
       else
         render json: { errors: restaurant.errors.messages }, status: :unprocessable_entity # レストランの作成に失敗した場合、エラーメッセージを返す
       end
@@ -46,15 +53,41 @@ module Api
         end
       end
 
-      # レストランの一覧をJSON形式で返す
-      render json: restaurants.map { |restaurant| restaurant_response(restaurant) }
+      # ユーザーのお気に入りを事前にロードしてN+1クエリを防ぐ
+      user_favorited_ids = if current_user
+        current_user.favorites.pluck(:restaurant_id).to_set
+      else
+        Set.new
+      end
+
+      # レストランの一覧をJSON形式で返す（お気に入り情報も渡す）
+      render json: RestaurantSerializer.new(
+        restaurants,
+        params: {
+          current_user: current_user,
+          user_favorited_ids: user_favorited_ids
+        }
+      ).serialize
     end
 
     def show
       # 指定IDのレストランを取得（area_tag, genre_tag, reviewsとその関連も含めて）
       restaurant = Restaurant.includes(:area_tag, :genre_tag, reviews: [:user, :scene_tag]).find_by(id: params[:id])
       if restaurant
-        render json: restaurant_response(restaurant)
+        # 単一レストランの場合もSerializerの実装と統一するためにSetを使用
+        user_favorited_ids = if current_user && current_user.favorites.exists?(restaurant_id: restaurant.id)
+          Set.new([restaurant.id])
+        else
+          Set.new
+        end
+
+        render json: RestaurantSerializer.new(
+          restaurant,
+          params: {
+            current_user: current_user,
+            user_favorited_ids: user_favorited_ids
+          }
+        ).serialize
       else
         render json: { error: '店舗が見つかりません' }, status: :not_found
       end
@@ -70,63 +103,6 @@ module Api
 
     def restaurant_params
       params.require(:restaurant).permit(:name, :area_tag_id, :genre_tag_id)
-    end
-
-    # レストランのレスポンス形式を定義
-    # レストランオブジェクトを受け取り、必要な情報を含むハッシュを返す
-    def restaurant_response(restaurant)
-      response_data = {
-        id: restaurant.id,
-        name: restaurant.name,
-        area_tag_id: restaurant.area_tag_id,
-        genre_tag_id: restaurant.genre_tag_id,
-        user_id: restaurant.user_id,
-        created_at: restaurant.created_at,
-        updated_at: restaurant.updated_at,
-        average_rating: restaurant.average_rating,
-        review_count: restaurant.review_count,
-        area_tag: {
-          id: restaurant.area_tag&.id,
-          name: restaurant.area_tag&.name,
-          category: restaurant.area_tag&.category
-        },
-        genre_tag: {
-          id: restaurant.genre_tag&.id,
-          name: restaurant.genre_tag&.name,
-          category: restaurant.genre_tag&.category
-        },
-        url: "/restaurants/#{restaurant.id}"
-      }
-
-      # reviewsキーをレスポンスに追加 (showアクションの場合のみ)
-      # reviews属性が存在し、かつnilでない場合にのみキーを追加
-      if restaurant.respond_to?(:reviews) && restaurant.reviews.loaded?
-        response_data[:reviews] = restaurant.reviews.order(created_at: :desc).map do |review|
-          review_data = {
-            id: review.id,
-            comment: review.comment,
-            rating: review.rating,
-            image_url: review.image_url,
-            created_at: review.created_at,
-            user: {
-              id: review.user.id,
-              name: review.user.name
-            }
-          }
-          if review.scene_tag
-            review_data[:scene_tag] = {
-              id: review.scene_tag.id,
-              name: review.scene_tag.name
-            }
-          else
-            review_data[:scene_tag] = nil
-          end
-          review_data
-        end
-      end
-      # is_favoritedフラグを追加
-      response_data[:is_favorited] = current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
-      response_data
     end
   end
 end
