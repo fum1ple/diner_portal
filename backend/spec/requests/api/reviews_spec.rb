@@ -10,7 +10,7 @@ RSpec.describe "Api::Reviews", type: :request do
       review: {
         comment: "Amazing experience!",
         rating: 5,
-        scene_tag_id: scene_tag.id
+        scene_tag_ids: [scene_tag.id]
       }
     }
   end
@@ -36,12 +36,30 @@ RSpec.describe "Api::Reviews", type: :request do
           expect(json_response['comment']).to eq("Amazing experience!")
           expect(json_response['rating']).to eq(5)
           expect(json_response['user']['id']).to eq(user.id)
-          expect(json_response['scene_tag']['id']).to eq(scene_tag.id)
+          expect(json_response['scene_tags']).to be_an(Array)
+          expect(json_response['scene_tags'].first['id']).to eq(scene_tag.id)
         end
 
-        it "creates a new Review without a scene_tag_id" do
+        it "creates a new Review with multiple scene tags" do
+          scene_tag_2 = FactoryBot.create(:tag, :scene, name: "Business Lunch")
+          attributes_multiple_tags = valid_attributes.deep_dup
+          attributes_multiple_tags[:review][:scene_tag_ids] = [scene_tag.id, scene_tag_2.id]
+
+          expect {
+            post "/api/restaurants/#{restaurant.id}/reviews", params: attributes_multiple_tags, headers: valid_headers
+          }.to change(Review, :count).by(1)
+
+          expect(response).to have_http_status(:created)
+          json_response = JSON.parse(response.body)
+          expect(json_response['scene_tags']).to be_an(Array)
+          expect(json_response['scene_tags'].length).to eq(2)
+          scene_tag_ids = json_response['scene_tags'].map { |tag| tag['id'] }
+          expect(scene_tag_ids).to contain_exactly(scene_tag.id, scene_tag_2.id)
+        end
+
+        it "creates a new Review without scene_tag_ids" do
           attributes_without_scene_tag = valid_attributes.deep_dup
-          attributes_without_scene_tag[:review].delete(:scene_tag_id)
+          attributes_without_scene_tag[:review].delete(:scene_tag_ids)
 
           expect {
             post "/api/restaurants/#{restaurant.id}/reviews", params: attributes_without_scene_tag, headers: valid_headers
@@ -50,7 +68,7 @@ RSpec.describe "Api::Reviews", type: :request do
           expect(response).to have_http_status(:created)
           json_response = JSON.parse(response.body)
           expect(json_response['comment']).to eq("Amazing experience!")
-          expect(json_response['scene_tag']).to be_nil
+          expect(json_response['scene_tags']).to eq([])
         end
 
         context "with image upload" do
@@ -112,10 +130,10 @@ RSpec.describe "Api::Reviews", type: :request do
           expect(json_response['errors']).to include("Rating must be less than or equal to 5")
         end
 
-        it "returns status 422 for invalid scene_tag_id (not a scene tag)" do
+        it "returns status 422 for invalid scene_tag_ids (not a scene tag)" do
           area_tag = FactoryBot.create(:tag, :area)
           attributes_invalid_scene_tag = valid_attributes.deep_dup
-          attributes_invalid_scene_tag[:review][:scene_tag_id] = area_tag.id
+          attributes_invalid_scene_tag[:review][:scene_tag_ids] = [area_tag.id]
 
           expect {
             post "/api/restaurants/#{restaurant.id}/reviews", params: attributes_invalid_scene_tag, headers: valid_headers
@@ -123,7 +141,7 @@ RSpec.describe "Api::Reviews", type: :request do
 
           expect(response).to have_http_status(:unprocessable_entity)
           json_response = JSON.parse(response.body)
-          expect(json_response['errors']).to include("Scene tag シーンタグを選択してください")
+          expect(json_response['errors']).to include("Scene tag ids 無効なシーンタグIDです: #{area_tag.id}")
         end
       end
 
