@@ -42,13 +42,13 @@ export default function RestaurantSearchPage() {
             }`}>
               <h1 className={`font-bold transition-all duration-700 ${
                 hasSearched 
-                  ? 'text-2xl text-teal-800 mb-1' 
-                  : 'text-3xl text-teal-700 mb-3'
+                  ? 'text-2xl text-slate-800 mb-1' 
+                  : 'text-3xl text-slate-800 mb-3'
               }`}>
                 レストラン検索
               </h1>
               {!hasSearched && (
-                <p className="text-teal-600 text-lg">
+                <p className="text-slate-600 text-lg">
                   お気に入りのレストランを見つけよう
                 </p>
               )}
@@ -71,10 +71,10 @@ export default function RestaurantSearchPage() {
           <div className="h-full flex items-start justify-center pt-16">
             <div className="max-w-4xl mx-auto px-8 w-full">
               <div className="text-center mb-8">
-                <h1 className="text-5xl font-bold text-teal-700 mb-6">
+                <h1 className="text-5xl font-bold text-slate-900 mb-6">
                   レストラン検索
                 </h1>
-                <p className="text-teal-600 text-xl">
+                <p className="text-slate-600 text-xl">
                   お気に入りのレストランを見つけよう
                 </p>
               </div>
@@ -90,10 +90,10 @@ export default function RestaurantSearchPage() {
             <div className="w-96 bg-white shadow-xl border-r border-gray-200 flex flex-col animate-slide-in-left">
               <div className="p-6 pt-4 border-b border-gray-100">
                 <div className="text-center mb-4">
-                  <h1 className="text-3xl font-bold text-teal-800 mb-2">
+                  <h1 className="text-3xl font-bold text-slate-900 mb-2">
                     レストラン検索
                   </h1>
-                  <p className="text-teal-600">
+                  <p className="text-slate-600">
                     お気に入りのレストランを見つけよう
                   </p>
                 </div>
