@@ -7,7 +7,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // NextAuthのデバッグモードを無効化
     if (typeof window !== 'undefined') {
-      const win = window as any;
+      interface WindowWithNextAuth extends Window {
+        __NEXTAUTH?: {
+          debug?: boolean;
+          [key: string]: unknown;
+        };
+      }
+      
+      const win = window as WindowWithNextAuth;
       if (win.__NEXTAUTH) {
         win.__NEXTAUTH.debug = false;
       }

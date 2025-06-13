@@ -72,7 +72,7 @@ export const ProtectedPage: React.FC<ProtectedPageProps> = ({
       
       return () => clearTimeout(redirectTimeout);
     }
-  }, [isAuthenticated, isLoading, redirectTo]); // routerを依存配列から除去
+  }, [isAuthenticated, isLoading, redirectTo, router]);
 
   // ローディング中
   if (isLoading) {

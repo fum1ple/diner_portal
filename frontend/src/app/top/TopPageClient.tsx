@@ -105,7 +105,7 @@ export default function TopPageClient() {
       subtitle: 'レストランを検索',
       position: 'top' as const,
       color: '#4db6ac',
-      action: () => window.location.href = '/restaurants'
+      action: () => window.location.href = '/restaurants/search'
     },
     {
       id: 'favorites',

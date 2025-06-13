@@ -156,6 +156,27 @@ export const authApi = {
     return result;
   },
 
+  // 店舗検索
+  searchRestaurants: async (searchParams: { name?: string; area?: string; genre?: string }): Promise<ApiResponse<Restaurant[]>> => {
+    const query = new URLSearchParams();
+    if (searchParams.name?.trim()) query.append('name', searchParams.name.trim());
+    if (searchParams.area?.trim()) query.append('area', searchParams.area.trim());
+    if (searchParams.genre?.trim()) query.append('genre', searchParams.genre.trim());
+    
+    const endpoint = query.toString() ? `/restaurants?${query.toString()}` : '/restaurants';
+    const result = await apiCall<Restaurant[]>(endpoint);
+    
+    // データの型検証
+    if (result.data && !isRestaurantsResponse(result.data)) {
+      return {
+        status: result.status,
+        error: '検索結果のレスポンス形式が無効です',
+      };
+    }
+    
+    return result;
+  },
+
   // レビュー投稿
   submitReview: async (restaurantId: string, data: FormData): Promise<ApiResponse<Review>> =>
     apiCall<Review>(`/restaurants/${restaurantId}/reviews`, {
