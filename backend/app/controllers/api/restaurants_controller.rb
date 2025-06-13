@@ -32,8 +32,8 @@ module Api
       if params[:area].present?
         area = params[:area].strip
         unless area.blank?
-          restaurants = restaurants.joins('JOIN tags AS area_tags ON restaurants.area_tag_id = area_tags.id')
-                                  .where('area_tags.name = ? AND area_tags.category = ?', area, 'area')
+          restaurants = restaurants.joins(:area_tag)
+                                  .where(area_tag: { name: area, category: 'area' })
         end
       end
 
@@ -41,10 +41,13 @@ module Api
       if params[:genre].present?
         genre = params[:genre].strip
         unless genre.blank?
-          restaurants = restaurants.joins('JOIN tags AS genre_tags ON restaurants.genre_tag_id = genre_tags.id')
-                                  .where('genre_tags.name = ? AND genre_tags.category = ?', genre, 'genre')
+          restaurants = restaurants.joins(:genre_tag)
+                                  .where(genre_tag: { name: genre, category: 'genre' })
         end
       end
+
+      # ユーザーのお気に入りを事前にロードしてN+1クエリを防ぐ
+      @user_favorited_restaurant_ids = current_user&.favorite_restaurants&.pluck(:id)&.to_set || Set.new
 
       # レストランの一覧をJSON形式で返す
       render json: RestaurantSerializer.new(restaurants, params: { current_user: current_user }).serialize
@@ -54,6 +57,8 @@ module Api
       # 指定IDのレストランを取得（area_tag, genre_tag, reviewsとその関連も含めて）
       restaurant = Restaurant.includes(:area_tag, :genre_tag, reviews: [:user, :scene_tag]).find_by(id: params[:id])
       if restaurant
+        # 単一レストランの場合は直接お気に入り状態をチェック（Setのオーバーヘッドを避ける）
+        @is_favorited_by_current_user = current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
         render json: RestaurantSerializer.new(restaurant, params: { current_user: current_user }).serialize
       else
         render json: { error: '店舗が見つかりません' }, status: :not_found
@@ -71,6 +76,5 @@ module Api
     def restaurant_params
       params.require(:restaurant).permit(:name, :area_tag_id, :genre_tag_id)
     end
-
   end
 end
