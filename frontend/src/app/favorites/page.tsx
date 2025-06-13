@@ -1,6 +1,6 @@
 import { requireServerAuth } from '@/lib/server-auth';
 import { Restaurant } from '@/types';
-import FavoriteItem from '@/components/FavoriteItem';
+import FavoriteItem from '@/components/restaurant/FavoriteItem';
 
 export default async function FavoritesPage() {
   const session = await requireServerAuth();

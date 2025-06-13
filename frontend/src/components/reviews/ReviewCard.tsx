@@ -1,8 +1,15 @@
 import React, { memo, useMemo } from 'react';
 import { Review } from '@/types/api';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'; // Removed AvatarImage as not used in example
-import { Badge } from '@/components/ui/badge';
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription,
+  Avatar,
+  AvatarFallback,
+  Badge 
+} from '@/components/ui';
 import Image from 'next/image'; // For optimized images
 
 interface ReviewCardProps {

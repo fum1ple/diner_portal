@@ -2,12 +2,12 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import InlineTagCreator from './InlineTagCreator';
-import HeadlessDropdown from './HeadlessDropdown';
-import Alert from './Alert';
-import FormField from './FormField';
-import LoadingSpinner from './LoadingSpinner';
-import { StyledWrapper } from './AddRestaurantForm/styles';
+import InlineTagCreator from './forms/InlineTagCreator';
+import HeadlessDropdown from './common/HeadlessDropdown';
+import Alert from './ui/feedback/Alert';
+import FormField from './forms/FormField';
+import LoadingSpinner from './ui/feedback/LoadingSpinner';
+import { StyledWrapper } from './restaurant/AddRestaurantForm/styles';
 import { useTags } from '@/hooks/useTags';
 import { authApi } from '@/lib/apiClient';
 import type { CreateRestaurantRequest, Tag } from '@/types/api';
@@ -123,7 +123,7 @@ const AddRestaurantForm = () => {
     return (
       <StyledWrapper>
         <div className="container">
-          <LoadingSpinner message="タグを読み込み中..." />
+          <LoadingSpinner text="タグを読み込み中..." />
         </div>
       </StyledWrapper>
     );

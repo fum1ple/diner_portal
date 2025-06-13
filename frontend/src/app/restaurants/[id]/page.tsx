@@ -2,12 +2,12 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { useRestaurantDetail } from '../../../hooks/useRestaurantDetail';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import ErrorMessage from '@/components/ErrorMessage';
-import Breadcrumb from '@/components/Breadcrumb';
+import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
+import ErrorMessage from '@/components/ui/feedback/ErrorMessage';
+import Breadcrumb from '@/components/ui/navigation/Breadcrumb';
 
 const RestaurantDetail = dynamic(() => import('@/components/RestaurantDetail'), {
-  loading: () => <LoadingSpinner message="コンポーネントを読み込み中..." />,
+  loading: () => <LoadingSpinner text="コンポーネントを読み込み中..." />,
   ssr: false
 });
 
@@ -21,7 +21,7 @@ export default function RestaurantDetailPage({ params }: PageProps) {
   // const [showReviewForm, setShowReviewForm] = useState(false);
 
   if (isLoading) {
-    return <main className="container mx-auto p-4"><LoadingSpinner message="店舗詳細を読み込み中..." /></main>;
+    return <main className="container mx-auto p-4"><LoadingSpinner text="店舗詳細を読み込み中..." /></main>;
   }
 
   if (error) {

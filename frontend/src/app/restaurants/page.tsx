@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link'; // 店舗名をクリックして詳細ページに遷移するためにLinkをインポート
-import SearchForm from '@/components/SearchForm';
+import SearchForm from '@/components/restaurant/SearchForm';
 
 // --- 型定義 ---
 // コンポーネント内で使用するデータの方を明確に定義します。

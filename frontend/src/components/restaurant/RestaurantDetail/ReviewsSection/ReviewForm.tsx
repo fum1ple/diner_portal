@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { 
+  Button, 
+  Textarea, 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue,
+  Input,
+  Label 
+} from '@/components/ui';
 import { Star, Loader2 } from 'lucide-react';
 import { useCreateReview } from '@/hooks/useCreateReview';
 import { CreateReviewRequest, Tag } from '@/types/api';

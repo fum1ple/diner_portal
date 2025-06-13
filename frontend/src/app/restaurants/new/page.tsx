@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import dynamic from 'next/dynamic';
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from "@/components/ui/navigation/Breadcrumb";
 
 const AddRestaurantForm = dynamic(() => import("@/components/AddRestaurantForm"), {
   loading: () => <div className="flex justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>,

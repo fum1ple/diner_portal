@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { Review } from '@/types/api';
-import ReviewCard from '../../ReviewCard';
+import ReviewCard from '../../../reviews/ReviewCard';
 import { animationClasses } from '../styles/animations';
 
 interface ReviewsListProps {

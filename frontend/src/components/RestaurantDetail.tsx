@@ -1,9 +1,9 @@
 import React, { useState, useCallback, memo } from 'react';
 import { Restaurant } from '@/types/api';
-import RestaurantDetailLayout from './RestaurantDetail/RestaurantDetailLayout';
-import FloatingActionButton from './RestaurantDetail/FloatingActionButton';
-import BackgroundDecorations from './RestaurantDetail/BackgroundDecorations';
-import ComponentStyles from './RestaurantDetail/styles/ComponentStyles';
+import RestaurantDetailLayout from './restaurant/RestaurantDetail/RestaurantDetailLayout';
+import FloatingActionButton from './restaurant/RestaurantDetail/FloatingActionButton';
+import BackgroundDecorations from './restaurant/RestaurantDetail/BackgroundDecorations';
+import ComponentStyles from './restaurant/RestaurantDetail/styles/ComponentStyles';
 import { useRestaurantOptimization } from '@/hooks/useRestaurantOptimization';
 
 interface RestaurantDetailProps {
