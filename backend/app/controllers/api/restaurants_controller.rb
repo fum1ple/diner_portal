@@ -72,7 +72,7 @@ module Api
 
     def show
       # 指定IDのレストランを取得（area_tag, genre_tag, reviewsとその関連も含めて）
-      restaurant = Restaurant.includes(:area_tag, :genre_tag, reviews: [:user, :scene_tag]).find_by(id: params[:id])
+      restaurant = Restaurant.includes(:area_tag, :genre_tag, reviews: [:user, :scene_tags]).find_by(id: params[:id])
       if restaurant
         # 単一レストランの場合もSerializerの実装と統一するためにSetを使用
         user_favorited_ids = if current_user && current_user.favorites.exists?(restaurant_id: restaurant.id)

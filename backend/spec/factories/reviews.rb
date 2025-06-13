@@ -6,15 +6,23 @@ FactoryBot.define do
     association :restaurant
     image_url { nil } # Default to no image, can be added in traits or specific tests
 
-    trait :with_scene_tag do
-      # Creates a tag with category 'scene' and associates it
-      association :scene_tag, factory: :tag, category: 'scene'
+    trait :with_scene_tags do
+      # Creates scene tags after the review is created
+      after(:create) do |review|
+        scene_tag = create(:tag, category: 'scene')
+        review.scene_tags << scene_tag
+      end
     end
 
-    trait :with_specific_scene_tag do
-      # Allows passing a specific scene tag
-      # Example: create(:review, :with_specific_scene_tag, scene_tag: my_scene_tag)
-      association :scene_tag, factory: :tag # Will default to random category unless specified
+    trait :with_specific_scene_tags do
+      # Allows passing specific scene tags
+      transient do
+        scene_tags_list { [] }
+      end
+      
+      after(:create) do |review, evaluator|
+        review.scene_tags = evaluator.scene_tags_list if evaluator.scene_tags_list.any?
+      end
     end
 
     # Trait for review with an image placeholder

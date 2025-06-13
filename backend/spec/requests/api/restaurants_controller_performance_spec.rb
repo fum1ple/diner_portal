@@ -24,13 +24,13 @@ RSpec.describe 'Api::RestaurantsController パフォーマンス', type: :reques
       3.times do |j|
         review_user = create(:user, email: "user#{i}#{j}@tokium.jp")
         scene_tag = create(:tag, category: 'scene', name: "Scene #{j}")
-        create(:review, 
+        review = create(:review, 
           restaurant: restaurant, 
           user: review_user, 
-          scene_tag: scene_tag,
           comment: "Great food #{j}",
           rating: [3, 4, 5][j]
         )
+        review.scene_tags << scene_tag
       end
       
       # 偶数番目のレストランをお気に入りに追加

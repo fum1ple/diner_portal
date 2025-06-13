@@ -42,7 +42,7 @@ RSpec.describe "Api::Restaurants", type: :request do
 
     context "when the restaurant has reviews" do
       let!(:review1) { FactoryBot.create(:review, restaurant: restaurant, user: user, created_at: 1.day.ago) }
-      let!(:review2) { FactoryBot.create(:review, :with_scene_tag, scene_tag: scene_tag_for_review, restaurant: restaurant, user: user, created_at: Time.current) }
+      let!(:review2) { FactoryBot.create(:review, :with_specific_scene_tags, scene_tags_list: [scene_tag_for_review], restaurant: restaurant, user: user, created_at: Time.current) }
 
       before do
         get "/api/restaurants/#{restaurant.id}", headers: auth_headers
@@ -63,7 +63,7 @@ RSpec.describe "Api::Restaurants", type: :request do
         expect(review_ids_in_response).to eq([review2.id, review1.id])
       end
 
-      it "includes correct review structure with user and scene_tag" do
+      it "includes correct review structure with user and scene_tags" do
         json_response = JSON.parse(response.body)
         first_review_in_response = json_response['reviews'].find { |r| r['id'] == review2.id } # Newest review (review2)
 
@@ -74,13 +74,15 @@ RSpec.describe "Api::Restaurants", type: :request do
         expect(first_review_in_response['user']['id']).to eq(user.id)
         expect(first_review_in_response['user']['name']).to eq(user.name)
 
-        expect(first_review_in_response['scene_tag']).to be_present
-        expect(first_review_in_response['scene_tag']['id']).to eq(scene_tag_for_review.id)
-        expect(first_review_in_response['scene_tag']['name']).to eq(scene_tag_for_review.name)
+        expect(first_review_in_response['scene_tags']).to be_present
+        expect(first_review_in_response['scene_tags']).to be_an(Array)
+        expect(first_review_in_response['scene_tags'].length).to eq(1)
+        expect(first_review_in_response['scene_tags'][0]['id']).to eq(scene_tag_for_review.id)
+        expect(first_review_in_response['scene_tags'][0]['name']).to eq(scene_tag_for_review.name)
 
-        # Check review without scene tag
+        # Check review without scene tags
         second_review_in_response = json_response['reviews'].find { |r| r['id'] == review1.id }
-        expect(second_review_in_response['scene_tag']).to be_nil
+        expect(second_review_in_response['scene_tags']).to be_an(Array).and be_empty
       end
     end
 
