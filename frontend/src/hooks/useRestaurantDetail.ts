@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 import { Restaurant } from '@/types/restaurant';
 
 export const useRestaurantDetail = (id: string) => useQuery<Restaurant, Error>({
-    queryKey: ['restaurant', id],
+    queryKey: queryKeys.restaurants.detail(id),
     queryFn: async () => {
       const response = await fetch(`/api/restaurants/${id}`);
       

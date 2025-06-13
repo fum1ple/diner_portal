@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient, UseMutationOptions } from '@tanstack/react-query';
-import { authApi } from '@/lib/apiClient';
+import { restaurantsApi } from '@/lib/api';
+import { queryKeys } from '@/lib/queryKeys';
 import { ApiError } from '@/types/api';
 import { Review, CreateReviewRequest } from '@/types/review';
 
@@ -29,7 +30,7 @@ export const useCreateReview = (restaurantId: number, hookOptions?: UseCreateRev
       });
     }
 
-    const res = await authApi.submitReview(String(restaurantId), formData);
+    const res = await restaurantsApi.submitReview(String(restaurantId), formData);
 
     if (res.error || !res.data) {
       // res.errors が存在する場合、それを ApiError の errors プロパティに割り当てる
@@ -46,9 +47,9 @@ export const useCreateReview = (restaurantId: number, hookOptions?: UseCreateRev
   const mutationOptions: UseMutationOptions<Review, ApiError, CreateReviewRequest, unknown> = {
     mutationFn,
     onSuccess: data => {
-      queryClient.invalidateQueries({ queryKey: ['restaurant', String(restaurantId)] });
-      queryClient.invalidateQueries({ queryKey: ['reviews', String(restaurantId)] });
-      queryClient.invalidateQueries({ queryKey: ['restaurants'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.restaurants.detail(restaurantId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.reviews.list(restaurantId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.restaurants.lists() });
 
       if (hookOptions?.onSuccess) {
         hookOptions.onSuccess(data);

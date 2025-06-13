@@ -9,7 +9,7 @@ import FormField from './forms/FormField';
 import LoadingSpinner from './ui/feedback/LoadingSpinner';
 import { StyledWrapper } from './restaurant/AddRestaurantForm/styles';
 import { useTags } from '@/hooks/useTags';
-import { authApi } from '@/lib/apiClient';
+import { restaurantsApi } from '@/lib/api';
 import type { CreateRestaurantRequest } from '@/types/restaurant';
 import type { Tag } from '@/types/tag';
 
@@ -121,18 +121,18 @@ const AddRestaurantForm = () => {
         }
       };
 
-      const result = await authApi.createRestaurant(requestData);
+      const result = await restaurantsApi.create(requestData);
 
       if (result.error) {
         throw new Error(result.error);
       }
 
       // 登録成功後は詳細画面に遷移（新規登録フラグ付き）
-      if (result.data) {
+      if (result.data?.id) {
         setSuccess(true);
         // 祝福メッセージを表示してから遷移
         setTimeout(() => {
-          router.push(`/restaurants/${result.data.id}?newly_registered=true`);
+          router.push(`/restaurants/${result.data!.id}?newly_registered=true`);
         }, 1500);
       } else {
         setSuccess(true);

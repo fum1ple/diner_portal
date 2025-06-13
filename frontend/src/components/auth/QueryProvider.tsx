@@ -14,10 +14,32 @@ export default function QueryProvider({ children }: QueryProviderProps) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000, // 1分間データをフレッシュとして扱う
-            gcTime: 5 * 60 * 1000, // 5分間キャッシュを保持
-            retry: 1,
-            refetchOnWindowFocus: false,
+            staleTime: 5 * 60 * 1000, // 5分間データをフレッシュとして扱う
+            gcTime: 10 * 60 * 1000, // 10分間キャッシュを保持
+            retry: (failureCount, error) => {
+              // 404エラーの場合はリトライしない
+              if (error && typeof error === 'object' && 'status' in error && error.status === 404) {
+                return false;
+              }
+              // 401エラー（認証エラー）の場合もリトライしない
+              if (error && typeof error === 'object' && 'status' in error && error.status === 401) {
+                return false;
+              }
+              return failureCount < 3;
+            },
+            refetchOnWindowFocus: false, // ウィンドウフォーカス時の自動リフェッチを無効化
+          },
+          mutations: {
+            retry: (failureCount, error) => {
+              // ミューテーションでは認証エラーやバリデーションエラーはリトライしない
+              if (error && typeof error === 'object' && 'status' in error) {
+                const status = error.status as number;
+                if (status >= 400 && status < 500) {
+                  return false;
+                }
+              }
+              return failureCount < 2;
+            },
           },
         },
       }),

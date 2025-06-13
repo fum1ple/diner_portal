@@ -1,6 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { Tag } from '@/types/tag';
-import type { RestaurantSearchParams, RestaurantSearchState } from '@/types/restaurant';
+import { useState, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { restaurantsApi } from '@/lib/api';
+import { queryKeys } from '@/lib/queryKeys';
+import { useTags } from './useTags';
+import type { RestaurantSearchParams } from '@/types/restaurant';
 
 export const useRestaurantSearch = () => {
   // 検索フォームの状態
@@ -10,95 +13,66 @@ export const useRestaurantSearch = () => {
     genre: ''
   });
 
-  // タグデータの状態
-  const [areaTags, setAreaTags] = useState<Tag[]>([]);
-  const [genreTags, setGenreTags] = useState<Tag[]>([]);
+  // 検索を実行するかどうかの状態
+  const [shouldSearch, setShouldSearch] = useState(true);
 
-  // 検索結果の状態
-  const [searchState, setSearchState] = useState<RestaurantSearchState>({
-    restaurants: [],
-    loading: true,
-    error: null
-  });
+  // タグデータの取得（useTagsを再利用）
+  const { areaTags, genreTags, loading: tagsLoading } = useTags();
 
-  // タグ情報の取得
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const [areaRes, genreRes] = await Promise.all([
-          fetch('/api/tags?category=area'),
-          fetch('/api/tags?category=genre'),
-        ]);
+  // 検索クエリの作成
+  const searchParams: RestaurantSearchParams = {
+    ...(filters.name && { name: filters.name }),
+    ...(filters.area && { area: filters.area }),
+    ...(filters.genre && { genre: filters.genre }),
+  };
 
-        if (!areaRes.ok || !genreRes.ok) {
-          throw new Error('タグ情報の取得に失敗しました。');
-        }
-
-        const areaData = await areaRes.json();
-        const genreData = await genreRes.json();
-
-        setAreaTags(areaData);
-        setGenreTags(genreData);
-      } catch (error) {
-        setSearchState(prev => ({
-          ...prev,
-          error: error instanceof Error ? error.message : '予期せぬエラーが発生しました。'
-        }));
+  // 検索結果の取得
+  const restaurantsQuery = useQuery({
+    queryKey: queryKeys.restaurants.list(searchParams as Record<string, unknown>),
+    queryFn: async () => {
+      const result = await restaurantsApi.search(searchParams);
+      if (result.error) {
+        throw new Error(result.error);
       }
-    };
-    fetchTags();
-  }, []);
-
-  // 店舗検索の実行
-  const fetchRestaurants = useCallback(async (searchParams?: RestaurantSearchParams) => {
-    setSearchState(prev => ({ ...prev, loading: true, error: null }));
-    
-    try {
-      const query = new URLSearchParams();
-      if (searchParams?.name) query.append('name', searchParams.name);
-      if (searchParams?.area) query.append('area', searchParams.area);
-      if (searchParams?.genre) query.append('genre', searchParams.genre);
-      
-      const res = await fetch(`/api/restaurants?${query.toString()}`);
-      if (!res.ok) throw new Error('店舗情報の取得に失敗しました。');
-      
-      const data = await res.json();
-      setSearchState(prev => ({
-        ...prev,
-        restaurants: data,
-        loading: false
-      }));
-    } catch (error) {
-      setSearchState(prev => ({
-        ...prev,
-        error: error instanceof Error ? error.message : '予期せぬエラーが発生しました。',
-        restaurants: [],
-        loading: false
-      }));
-    }
-  }, []);
-
-  // 初回データ取得
-  useEffect(() => {
-    fetchRestaurants();
-  }, [fetchRestaurants]);
+      return result.data || [];
+    },
+    enabled: shouldSearch, // shouldSearchがtrueの時のみクエリを実行
+    staleTime: 2 * 60 * 1000, // 検索結果は2分間キャッシュ
+    gcTime: 5 * 60 * 1000, // 5分間ガベージコレクション保持
+  });
 
   // 検索実行
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    fetchRestaurants(filters);
-  }, [filters, fetchRestaurants]);
+    setShouldSearch(true);
+    // クエリキーが変わることで自動的に新しい検索が実行される
+  }, []);
 
   // 検索条件クリア
   const handleClear = useCallback(() => {
     setFilters({ name: '', area: '', genre: '' });
-    fetchRestaurants();
-  }, [fetchRestaurants]);
+    setShouldSearch(true);
+    // 空の条件で検索が実行される
+  }, []);
 
   // フィルター更新関数
   const updateFilter = useCallback((field: keyof typeof filters, value: string) => {
     setFilters(prev => ({ ...prev, [field]: value }));
+    // フィルター変更時は自動検索しない（ユーザーが検索ボタンを押すまで待つ）
+    setShouldSearch(false);
   }, []);
+
+  // 手動リフェッチ
+  const refetch = useCallback(() => {
+    setShouldSearch(true);
+    return restaurantsQuery.refetch();
+  }, [restaurantsQuery]);
+
+  // ローディング状態の統合
+  const loading = tagsLoading || restaurantsQuery.isLoading;
+  
+  // エラー状態の統合
+  const error = restaurantsQuery.error?.message || null;
 
   return {
     // 検索フォーム関連
@@ -106,14 +80,19 @@ export const useRestaurantSearch = () => {
     updateFilter,
     handleSearch,
     handleClear,
+    refetch,
     
     // タグデータ
     areaTags,
     genreTags,
     
     // 検索結果
-    restaurants: searchState.restaurants,
-    loading: searchState.loading,
-    error: searchState.error
+    restaurants: restaurantsQuery.data || [],
+    loading,
+    error,
+    
+    // React Query状態
+    isRefetching: restaurantsQuery.isRefetching,
+    isFetching: restaurantsQuery.isFetching,
   };
 };

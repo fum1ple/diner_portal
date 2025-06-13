@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Restaurant } from '@/types/restaurant';
+import type { Restaurant } from '@/types/restaurant';
 import { useFavoriteToggle } from '@/hooks/useFavoriteToggle';
 
 interface RestaurantDetailSidebarProps {

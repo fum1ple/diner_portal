@@ -1,35 +1,115 @@
-import { useState } from 'react';
-import { authApi } from '@/lib/apiClient';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { favoritesApi } from '@/lib/api';
+import { queryKeys } from '@/lib/queryKeys';
 
-export function useFavoriteToggle(restaurantId: number, initialFavorited: boolean) {
-  const [isFavorited, setIsFavorited] = useState(initialFavorited);
-  const [isLoading, setIsLoading] = useState(false);
+interface FavoriteToggleOptions {
+  onSuccess?: (isFavorited: boolean) => void;
+  onError?: (error: unknown, isFavorited: boolean) => void;
+}
 
-  const toggleFavorite = async () => {
-    try {
-      setIsLoading(true);
-      
-      if (isFavorited) {
-        const response = await authApi.removeFavorite(restaurantId);
-        if (!response.error) {
-          setIsFavorited(false);
-        }
+export const useFavoriteToggle = (
+  restaurantId: number, 
+  initialFavorited: boolean,
+  options?: FavoriteToggleOptions
+) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (shouldFavorite: boolean) => {
+      if (shouldFavorite) {
+        return favoritesApi.add(restaurantId);
       } else {
-        const response = await authApi.addFavorite(restaurantId);
-        if (!response.error) {
-          setIsFavorited(true);
-        }
+        return favoritesApi.remove(restaurantId);
       }
-    } catch (error) {
+    },
+    onMutate: async (shouldFavorite: boolean) => {
+      // 楽観的更新のためにクエリをキャンセル
+      await queryClient.cancelQueries({ 
+        queryKey: queryKeys.restaurants.detail(restaurantId) 
+      });
+      await queryClient.cancelQueries({ 
+        queryKey: queryKeys.favorites.lists() 
+      });
+
+      // 現在のデータを取得（ロールバック用）
+      const previousRestaurant = queryClient.getQueryData(
+        queryKeys.restaurants.detail(restaurantId)
+      );
+      const previousFavorites = queryClient.getQueryData(
+        queryKeys.favorites.lists()
+      );
+
+      // 楽観的更新：レストラン詳細のお気に入り状態を更新
+      queryClient.setQueryData(
+        queryKeys.restaurants.detail(restaurantId),
+        (old: unknown) => {
+          if (old && typeof old === 'object' && 'is_favorited' in old) {
+            return { ...old, is_favorited: shouldFavorite };
+          }
+          return old;
+        }
+      );
+
+      return { previousRestaurant, previousFavorites };
+    },
+    onError: (error, shouldFavorite, context) => {
+      // エラー時にロールバック
+      if (context?.previousRestaurant) {
+        queryClient.setQueryData(
+          queryKeys.restaurants.detail(restaurantId),
+          context.previousRestaurant
+        );
+      }
+      if (context?.previousFavorites) {
+        queryClient.setQueryData(
+          queryKeys.favorites.lists(),
+          context.previousFavorites
+        );
+      }
+
       console.error('Favorite toggle error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+      options?.onError?.(error, shouldFavorite);
+    },
+    onSuccess: (data, shouldFavorite) => {
+      if (data.error) {
+        // API側でエラーが返された場合
+        console.error('Favorite API error:', data.error);
+        options?.onError?.(new Error(data.error), shouldFavorite);
+        return;
+      }
+
+      options?.onSuccess?.(shouldFavorite);
+    },
+    onSettled: () => {
+      // 成功・失敗に関わらず関連クエリを無効化して最新状態を取得
+      queryClient.invalidateQueries({ 
+        queryKey: queryKeys.restaurants.detail(restaurantId) 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: queryKeys.favorites.lists() 
+      });
+    },
+  });
+
+  const toggleFavorite = () => {
+    const currentRestaurantData = queryClient.getQueryData(
+      queryKeys.restaurants.detail(restaurantId)
+    ) as { is_favorited?: boolean } | undefined;
+    
+    const isFavorited = currentRestaurantData?.is_favorited ?? initialFavorited;
+    mutation.mutate(!isFavorited);
   };
+
+  // 現在のお気に入り状態を取得
+  const restaurantData = queryClient.getQueryData(
+    queryKeys.restaurants.detail(restaurantId)
+  ) as { is_favorited?: boolean } | undefined;
+  
+  const isFavorited = restaurantData?.is_favorited ?? initialFavorited;
 
   return {
     isFavorited,
     toggleFavorite,
-    isLoading
+    isLoading: mutation.isPending,
   };
-}
+};

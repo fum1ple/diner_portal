@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Restaurant } from '@/types/restaurant';
-import { Review } from '@/types/review';
-import { authApi } from '@/lib/apiClient';
+import { useRestaurantReviews } from '@/hooks/useRestaurantReviews';
 import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
 import ErrorMessage from '@/components/ui/feedback/ErrorMessage';
 import FirstReviewPrompt from '@/components/FirstReviewPrompt';
@@ -19,43 +18,18 @@ export default function RestaurantReviewsContainer({
   restaurant, 
   isNewlyRegistered 
 }: RestaurantReviewsContainerProps) {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await authApi.getRestaurantReviews(restaurant.id);
-        
-        // レビューが存在しない場合（404など）は正常な状態として扱う
-        if (response.error) {
-          // 404やレビューなしの場合は空配列を設定してエラーは表示しない
-          if (response.status === 404 || 
-              response.error.includes('not found') || 
-              response.error.includes('レビューが見つかりません')) {
-            setReviews([]);
-            return;
-          }
-          // その他の真のエラーの場合のみエラーを設定
-          throw new Error(response.error);
-        }
-        
-        setReviews(response.data || []);
-      } catch {
-        // レビューが存在しない場合は空配列を設定してエラーは表示しない
-        setReviews([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // React Queryを使用してレビューを取得
+  const { 
+    data: reviews = [], 
+    isLoading: loading, 
+    error: queryError,
+    refetch 
+  } = useRestaurantReviews(restaurant.id);
 
-    fetchReviews();
-  }, [restaurant.id]);
+  const error = queryError?.message || null;
 
   const handleWriteReview = () => {
     setShowReviewForm(true);
@@ -78,30 +52,8 @@ export default function RestaurantReviewsContainer({
       setShowSuccessMessage(false);
     }, 3000);
     
-    // レビューリストを再取得
-    const fetchReviews = async () => {
-      try {
-        const response = await authApi.getRestaurantReviews(restaurant.id);
-        
-        // レビューが存在しない場合も正常として扱う
-        if (response.error) {
-          if (response.status === 404 || 
-              response.error.includes('not found') || 
-              response.error.includes('レビューが見つかりません')) {
-            setReviews([]);
-            return;
-          }
-          // 真のエラーの場合はログ出力のみ（UIには表示しない）
-          console.error('Reviews refresh error:', response.error);
-          return;
-        }
-        
-        setReviews(response.data || []);
-      } catch (err) {
-        console.error('Reviews refresh error:', err);
-      }
-    };
-    fetchReviews();
+    // React Queryでレビューリストを再取得
+    refetch();
   };
 
   const handleCancelReview = () => {
@@ -220,7 +172,6 @@ export default function RestaurantReviewsContainer({
         {isNewlyRegistered && !showReviewForm && (
           <div className="mb-8">
             <FirstReviewPrompt 
-              restaurantId={restaurant.id} 
               restaurantName={restaurant.name}
               onWriteReview={handleFirstReviewPrompt}
               onSkip={handleSkipFirstReview}

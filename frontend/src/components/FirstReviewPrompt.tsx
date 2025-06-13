@@ -3,14 +3,12 @@
 import React, { useState, useEffect } from 'react';
 
 interface FirstReviewPromptProps {
-  restaurantId: number;
   restaurantName: string;
   onWriteReview?: () => void;
   onSkip?: () => void;
 }
 
 const FirstReviewPrompt: React.FC<FirstReviewPromptProps> = ({ 
-  restaurantId, 
   restaurantName, 
   onWriteReview,
   onSkip 
