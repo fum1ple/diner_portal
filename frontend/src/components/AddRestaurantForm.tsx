@@ -103,7 +103,7 @@ const AddRestaurantForm = () => {
         // 成功メッセージを表示してからリダイレクト
         setTimeout(() => {
           router.push(`/restaurants/${result.data?.id}`);
-        }, 1000);
+        }, 500);
       } else {
         throw new Error("レストランIDが取得できませんでした");
       }
