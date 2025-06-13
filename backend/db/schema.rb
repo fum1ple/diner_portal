@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_11_000000) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_13_112609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,10 +57,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_11_000000) do
     t.index ["user_id"], name: "index_restaurants_on_user_id"
   end
 
+  create_table "review_scene_tags", force: :cascade do |t|
+    t.bigint "review_id", null: false
+    t.bigint "scene_tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["review_id", "scene_tag_id"], name: "index_review_scene_tags_on_review_id_and_scene_tag_id", unique: true
+    t.index ["review_id"], name: "index_review_scene_tags_on_review_id"
+    t.index ["scene_tag_id"], name: "index_review_scene_tags_on_scene_tag_id"
+  end
+
   create_table "reviews", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "restaurant_id", null: false
-    t.bigint "scene_tag_id"
     t.text "comment", null: false
     t.integer "rating", null: false
     t.string "image_url"
@@ -71,7 +80,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_11_000000) do
     t.index ["restaurant_id", "created_at"], name: "index_reviews_on_restaurant_id_and_created_at"
     t.index ["restaurant_id", "rating"], name: "index_reviews_on_restaurant_id_and_rating"
     t.index ["restaurant_id"], name: "index_reviews_on_restaurant_id"
-    t.index ["scene_tag_id"], name: "index_reviews_on_scene_tag_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
@@ -100,7 +108,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_11_000000) do
   add_foreign_key "restaurants", "tags", column: "area_tag_id"
   add_foreign_key "restaurants", "tags", column: "genre_tag_id"
   add_foreign_key "restaurants", "users"
+  add_foreign_key "review_scene_tags", "reviews"
+  add_foreign_key "review_scene_tags", "tags", column: "scene_tag_id"
   add_foreign_key "reviews", "restaurants"
-  add_foreign_key "reviews", "tags", column: "scene_tag_id"
   add_foreign_key "reviews", "users"
 end
