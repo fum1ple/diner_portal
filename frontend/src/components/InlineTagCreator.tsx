@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import type { Tag, CreateTagRequest } from '@/types/api';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { PlusCircle, Check, X, AlertTriangle } from 'lucide-react';
+// import { cn } from '@/lib/utils';
 
 interface InlineTagCreatorProps {
   category: 'area' | 'genre';
@@ -57,69 +63,75 @@ const InlineTagCreator: React.FC<InlineTagCreatorProps> = ({
   const categoryLabel = category === 'area' ? 'エリア' : 'ジャンル';
 
   return (
-    <div className="border rounded p-3 mb-3 bg-light">
-      <h6 className="mb-3">
-        <i className="bi bi-plus-circle me-2"></i>
-        新しい{categoryLabel}を追加
-      </h6>
-      
-      {error && (
-        <div className="alert alert-danger alert-sm mb-2">
-          <i className="bi bi-exclamation-triangle me-2"></i>
-          {error}
-        </div>
-      )}
+    <Card className="mb-3">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2">
+          <PlusCircle className="h-4 w-4" />
+          新しい{categoryLabel}を追加
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {error && (
+          <div className="mb-3 p-3 rounded-md bg-destructive/10 text-destructive flex items-start gap-2">
+            <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+            <span className="text-sm">{error}</span>
+          </div>
+        )}
 
-      <div>
-        <div className="mb-3">
-          <label htmlFor={`new-${category}-name`} className="form-label">
-            {categoryLabel}名 <span className="text-danger">*</span>
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id={`new-${category}-name`}
-            value={name}
-            onChange={e => setName(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={`新しい${categoryLabel}名を入力`}
-            disabled={creating}
-            maxLength={255}
-            required
-          />
-        </div>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor={`new-${category}-name`}>
+              {categoryLabel}名 <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              type="text"
+              id={`new-${category}-name`}
+              value={name}
+              onChange={e => setName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={`新しい${categoryLabel}名を入力`}
+              disabled={creating}
+              maxLength={255}
+              required
+              className="w-full"
+            />
+          </div>
 
-        <div className="d-flex gap-2">
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            onClick={handleSubmit}
-            disabled={creating || !name.trim()}
-          >
-            {creating ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" />
-                作成中...
-              </>
-            ) : (
-              <>
-                <i className="bi bi-check-lg me-2"></i>
-                作成
-              </>
-            )}
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary btn-sm"
-            onClick={onClose}
-            disabled={creating}
-          >
-            <i className="bi bi-x-lg me-2"></i>
-            キャンセル
-          </button>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              onClick={handleSubmit}
+              disabled={creating || !name.trim()}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              {creating ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  作成中...
+                </>
+              ) : (
+                <>
+                  <Check className="h-4 w-4" />
+                  作成
+                </>
+              )}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={creating}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <X className="h-4 w-4" />
+              キャンセル
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

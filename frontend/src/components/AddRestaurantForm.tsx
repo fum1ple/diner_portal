@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import InlineTagCreator from './InlineTagCreator';
 import HeadlessDropdown from './HeadlessDropdown';
 import Alert from './Alert';
@@ -12,6 +13,7 @@ import { authApi } from '@/lib/apiClient';
 import type { CreateRestaurantRequest, Tag } from '@/types/api';
 
 const AddRestaurantForm = () => {
+  const router = useRouter();
   const { areaTags, genreTags, loading, error, createTag, creating } = useTags();
   const [name, setName] = useState("");
   const [areaId, setAreaId] = useState("");
@@ -96,17 +98,22 @@ const AddRestaurantForm = () => {
         throw new Error(result.error);
       }
 
-      setSuccess(true);
-      setName("");
-      setAreaId("");
-      setGenreId("");
+      if (result.data && result.data.id) {
+        setSuccess(true);
+        // 成功メッセージを表示してからリダイレクト
+        setTimeout(() => {
+          router.push(`/restaurants/${result.data?.id}`);
+        }, 1000);
+      } else {
+        throw new Error("レストランIDが取得できませんでした");
+      }
       
     } catch (e: unknown) {
       setSubmitError(e instanceof Error ? e.message : "登録中にエラーが発生しました");
     } finally {
       setSubmitLoading(false);
     }
-  }, [name, areaId, genreId]);
+  }, [name, areaId, genreId, router]);
 
   if (loading) {
     return (
@@ -139,7 +146,7 @@ const AddRestaurantForm = () => {
         {success && (
           <Alert type="success">
             <i className="bi bi-check-circle me-2"></i>
-            店舗が正常に登録されました！
+            店舗が正常に登録されました！詳細ページへリダイレクトしています...
           </Alert>
         )}
 
