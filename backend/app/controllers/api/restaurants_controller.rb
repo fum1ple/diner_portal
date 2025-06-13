@@ -1,5 +1,6 @@
 module Api
   class RestaurantsController < ApplicationController
+    require 'set'
 
     def create
       #レストランの作成
@@ -32,8 +33,8 @@ module Api
       if params[:area].present?
         area = params[:area].strip
         unless area.blank?
-          restaurants = restaurants.joins('JOIN tags AS area_tags ON restaurants.area_tag_id = area_tags.id')
-                                  .where('area_tags.name = ? AND area_tags.category = ?', area, 'area')
+          restaurants = restaurants.joins(:area_tag)
+                                  .where(area_tag: { name: area, category: 'area' })
         end
       end
 
@@ -41,10 +42,13 @@ module Api
       if params[:genre].present?
         genre = params[:genre].strip
         unless genre.blank?
-          restaurants = restaurants.joins('JOIN tags AS genre_tags ON restaurants.genre_tag_id = genre_tags.id')
-                                  .where('genre_tags.name = ? AND genre_tags.category = ?', genre, 'genre')
+          restaurants = restaurants.joins(:genre_tag)
+                                  .where(genre_tag: { name: genre, category: 'genre' })
         end
       end
+
+      # ユーザーのお気に入りを事前にロードしてN+1クエリを防ぐ
+      @user_favorite_restaurant_ids = current_user&.favorite_restaurants&.pluck(:id)&.to_set || Set.new
 
       # レストランの一覧をJSON形式で返す
       render json: restaurants.map { |restaurant| restaurant_response(restaurant) }
@@ -54,6 +58,8 @@ module Api
       # 指定IDのレストランを取得（area_tag, genre_tag, reviewsとその関連も含めて）
       restaurant = Restaurant.includes(:area_tag, :genre_tag, reviews: [:user, :scene_tag]).find_by(id: params[:id])
       if restaurant
+        # お気に入り状態を効率的に取得
+        @user_favorite_restaurant_ids = current_user&.favorite_restaurants&.where(id: restaurant.id)&.pluck(:id)&.to_set || Set.new
         render json: restaurant_response(restaurant)
       else
         render json: { error: '店舗が見つかりません' }, status: :not_found
@@ -125,7 +131,13 @@ module Api
         end
       end
       # is_favoritedフラグを追加
-      response_data[:is_favorited] = current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
+      # N+1クエリを防ぐため、事前にロードしたお気に入りIDセットを使用
+      if defined?(@user_favorite_restaurant_ids)
+        response_data[:is_favorited] = @user_favorite_restaurant_ids.include?(restaurant.id)
+      else
+        # showアクションなど、個別アクセスの場合は従来通り
+        response_data[:is_favorited] = current_user&.favorites&.exists?(restaurant_id: restaurant.id) || false
+      end
       response_data
     end
   end
