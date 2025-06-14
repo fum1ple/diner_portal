@@ -6,8 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Diner Portal is a restaurant information management system with:
 - **Backend**: Rails API (Ruby 3.2.8, Rails 7.1.5+) running on port 3000
+  - Alba serializer for JSON responses
+  - JWT authentication with Google OAuth 2.0
+  - Favorites system for user-restaurant relationships
 - **Frontend**: Next.js 14 with App Router (Node.js 20+) running on port 4000
-- **Database**: PostgreSQL 15-alpine
+  - Sophisticated environment configuration with validation
+  - Advanced state management with Context API and useReducer
+- **Database**: PostgreSQL 15-alpine (port 5432)
 - **Development**: Docker Compose-based environment
 
 ## Critical Commands
@@ -59,7 +64,7 @@ bundle exec rspec spec/requests/api/restaurants_controller_spec.rb -e "returns r
 
 ## Critical Constraints
 
-1. **RSpec Version**: LOCKED at version 7.0 - Never change this
+1. **RSpec Version**: LOCKED at version 7.1.1 - Never change this
 2. **Package Manager**: Frontend MUST use Yarn (npm forbidden)
 3. **Authentication Domain**: Only `tokium.jp` domain allowed
 4. **Node Version**: Must be v20 or higher
@@ -83,22 +88,26 @@ bundle exec rspec spec/requests/api/restaurants_controller_spec.rb -e "returns r
 - Frontend uses NextAuth.js v4 with custom JWT session handling
 
 ### API Structure
-- RESTful design: `/api/restaurants`, `/api/reviews`, `/api/tags`
-- All responses in JSON format
+- RESTful design: `/api/restaurants`, `/api/reviews`, `/api/tags`, `/api/favorites`
+- All responses in JSON format with Alba serializer
 - Authentication via `Authorization: Bearer <token>` header
 - CORS configured for frontend origin
 
 ### Frontend State Management
 - TanStack Query for server state
-- Context API for local state (e.g., RestaurantDetailContext)
+- Context API with useReducer for complex local state (RestaurantDetailContext with action creators and selectors)
 - Custom hooks pattern: `useAuth`, `useRestaurantDetail`, `useCreateReview`
+- Environment configuration system with validation (`env-config.ts`)
 
 ### Database Schema
 Key models and relationships:
 - User has_many Reviews
+- User has_many Favorites (User ↔ Restaurant many-to-many relationship)
 - Restaurant has_many Reviews
 - Restaurant has `average_rating` and `review_count` (denormalized for performance)
-- Tags (polymorphic: area_tags, genre_tags, scene_tags)
+- Tags: Single table with `category` column ('area', 'genre', 'scene')
+  - Restaurant belongs_to area_tag and genre_tag
+  - Review has_many scene_tags through review_scene_tags (many-to-many)
 
 ## Development Workflow
 
