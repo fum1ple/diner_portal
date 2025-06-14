@@ -28,6 +28,7 @@ export default function QueryProvider({ children }: QueryProviderProps) {
               return failureCount < 3;
             },
             refetchOnWindowFocus: false, // ウィンドウフォーカス時の自動リフェッチを無効化
+            refetchOnReconnect: true, // ネットワーク再接続時はリフェッチ（社内ネットワーク用）
           },
           mutations: {
             retry: (failureCount, error) => {

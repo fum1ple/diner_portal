@@ -26,8 +26,8 @@ export const useTags = (): UseTagsReturn => {
       }
       return result.data || [];
     },
-    staleTime: 15 * 60 * 1000, // タグは変更頻度が低いので15分間キャッシュ
-    gcTime: 30 * 60 * 1000, // 30分間ガベージコレクション保持
+    staleTime: 30 * 60 * 1000, // タグは変更頻度が低いので30分間キャッシュ
+    gcTime: 60 * 60 * 1000, // 1時間ガベージコレクション保持
   });
 
   // ジャンルタグの取得
@@ -40,8 +40,8 @@ export const useTags = (): UseTagsReturn => {
       }
       return result.data || [];
     },
-    staleTime: 15 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
+    staleTime: 30 * 60 * 1000, // タグは変更頻度が低いので30分間キャッシュ
+    gcTime: 60 * 60 * 1000, // 1時間ガベージコレクション保持
   });
 
   // タグ作成のmutation
