@@ -12,16 +12,19 @@ Rails.application.routes.draw do
 
   namespace :api do
     # 認証関連のルート
-    post 'auth/google', to: 'auth#google'
-    post 'auth/refresh', to: 'auth#refresh'
-    post 'auth/logout', to: 'auth#logout'
+    # 関連ファイルはapp/controllers/api/auth_controller.rbにあります。
+    post 'auth/google', to: 'auth#google' # Google認証
+    post 'auth/refresh', to: 'auth#refresh' # トークンのリフレッシュ
+    post 'auth/logout', to: 'auth#logout' # ログアウト
 
     # 認証が必要なユーザー関連のルート
-    get 'user/profile', to: 'user#profile'
-    put 'user/update', to: 'user#update'
-
-    # レストランに関する機能のうち、only以降のアクションのみを許可
-    resources :restaurants, only: [:create, :index, :show] do
+    # 関連ファイルはapp/controllers/api/user_controller.rbにあります。
+    get 'user/profile', to: 'user#profile' # ユーザープロフィールの取得
+    put 'user/update', to: 'user#update' # ユーザープロフィールの更新
+ 
+    # レストラン関連のルート
+    # 関連ファイルはapp/controllers/api/restaurants_controller.rbにあります。
+    resources :restaurants, only: [:create, :index, :show] do 
       resource :favorite, only: [:create, :destroy], controller: 'favorites'
       resources :reviews, only: [:create]
     end
@@ -29,9 +32,5 @@ Rails.application.routes.draw do
     # タグに関する機能のうち、indexとcreateアクションを許可
     resources :tags, only: [:index, :create]
 
-    resources :restaurants, only: [] do
-      resource :favorite, only: [:create, :destroy], controller: 'favorites'
-    end
-    resources :favorites, only: [:index]
   end
 end
