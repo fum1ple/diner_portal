@@ -6,7 +6,12 @@ module Api
     requires_authentication :create
 
     before_action :require_authentication!, only: [:create] # Ensures current_user is set
-    before_action :set_restaurant, only: [:create]
+    before_action :set_restaurant, only: [:create, :index]
+
+    def index
+      reviews = @restaurant.reviews.includes(:user, :scene_tags)
+      render json: ReviewSerializer.new(reviews).serialize
+    end
 
     def create
       image_file = params[:review]&.[](:image)
