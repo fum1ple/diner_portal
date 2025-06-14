@@ -7,7 +7,7 @@ import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
 import ErrorMessage from '@/components/ui/feedback/ErrorMessage';
 import FirstReviewPrompt from '@/components/FirstReviewPrompt';
 import ReviewForm from '@/components/restaurant/RestaurantDetail/ReviewsSection/ReviewForm';
-import ReviewCard from '@/components/ReviewCard';
+import ReviewCard from '@/components/reviews/ReviewCard';
 
 interface RestaurantReviewsContainerProps {
   restaurant: Restaurant;
@@ -115,26 +115,6 @@ export default function RestaurantReviewsContainer({
               {reviews.length} 件のレビュー
             </div>
           )}
-          
-          {/* {reviews.length === 0 && !isNewlyRegistered && (
-            <div className="bg-gradient-to-r from-orange-100 to-amber-100 border border-orange-200 rounded-xl p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">🌟</span>
-                  <div>
-                    <div className="font-semibold text-orange-800">このお店の第一号レビュアーになりませんか？</div>
-                    <div className="text-sm text-orange-600">あなたの体験がチームの参考になります</div>
-                  </div>
-                </div>
-                <button
-                  onClick={handleWriteReview}
-                  className="px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors duration-200 text-sm"
-                >
-                  書いてみる
-                </button>
-              </div>
-            </div>
-          )} */}
         </div>
 
         {/* レビューフォーム */}
@@ -199,7 +179,7 @@ export default function RestaurantReviewsContainer({
           </div>
         )}
 
-        {!loading && !error && reviews.length === 0 && !showReviewForm && !isNewlyRegistered && (
+        {!showReviewForm && (!reviews || reviews.length === 0) && (
           <div className="py-8 lg:py-12">
             {/* メインプロモーション */}
             <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-2xl lg:rounded-3xl shadow-2xl p-6 lg:p-12 border-2 border-orange-200/50 mb-6 lg:mb-8 relative overflow-hidden">
@@ -262,59 +242,6 @@ export default function RestaurantReviewsContainer({
                     <div className="text-sm font-semibold text-orange-800">初回特典</div>
                     <div className="text-xs text-orange-600 mt-1">最初のレビュアーに！</div>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* サブプロモーション */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl lg:rounded-2xl shadow-lg p-6 lg:p-8 border border-gray-200/50">
-              <div className="text-center">
-                <h4 className="text-lg font-semibold text-slate-700 mb-4">
-                  💭 レビューって何を書けばいいの？
-                </h4>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 text-left">
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <span className="text-teal-500 mt-1">✓</span>
-                      <div>
-                        <span className="font-medium text-slate-700">味や雰囲気</span>
-                        <div className="text-sm text-slate-500">どんな料理？お店の感じは？</div>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-teal-500 mt-1">✓</span>
-                      <div>
-                        <span className="font-medium text-slate-700">おすすめポイント</span>
-                        <div className="text-sm text-slate-500">何が良かった？特徴は？</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <span className="text-teal-500 mt-1">✓</span>
-                      <div>
-                        <span className="font-medium text-slate-700">利用シーン</span>
-                        <div className="text-sm text-slate-500">ランチ？飲み会？デート？</div>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-teal-500 mt-1">✓</span>
-                      <div>
-                        <span className="font-medium text-slate-700">注意点</span>
-                        <div className="text-sm text-slate-500">混雑具合や予約の必要性など</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <button
-                    onClick={handleWriteReview}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg"
-                  >
-                    <span>📝</span>
-                    今すぐ書いてみる
-                  </button>
                 </div>
               </div>
             </div>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Restaurant } from '@/types/restaurant';
+import StarRating from '@/components/forms/StarRating';
 
 interface RestaurantCardProps {
   restaurant: Restaurant;
@@ -33,12 +34,15 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
           <div className="flex items-center gap-2">
             {restaurant.average_rating > 0 ? (
               <>
-                <div className="flex items-center">
-                  <span className="text-yellow-500">★</span>
-                  <span className="text-sm font-medium text-slate-900 ml-1">
-                    {restaurant.average_rating.toFixed(1)}
-                  </span>
-                </div>
+                <StarRating 
+                  value={restaurant.average_rating} 
+                  readOnly={true} 
+                  size="sm"
+                  className="flex-shrink-0"
+                />
+                <span className="text-sm font-medium text-slate-900">
+                  {typeof restaurant.average_rating === 'number' ? restaurant.average_rating.toFixed(1) : '0.0'}
+                </span>
                 <span className="text-xs text-slate-500">
                   ({restaurant.review_count}件)
                 </span>

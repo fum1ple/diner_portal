@@ -7,7 +7,7 @@ class Review < ApplicationRecord
   has_many :scene_tags, through: :review_scene_tags, source: :scene_tag
 
   validates :comment, presence: true, length: { maximum: 1000 }
-  validates :rating, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 5 }
+  validates :rating, presence: true, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 5 }
   validates :user_id, presence: true
   validates :restaurant_id, presence: true
 

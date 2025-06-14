@@ -48,10 +48,9 @@ RSpec.describe Review, type: :model do
       expect(review.errors[:rating]).to include('must be less than or equal to 5')
     end
 
-    it 'is invalid with a non-integer rating' do
+    it 'is valid with a decimal rating' do
       review = FactoryBot.build(:review, rating: 3.5, user: user, restaurant: restaurant)
-      expect(review).not_to be_valid
-      expect(review.errors[:rating]).to include('must be an integer')
+      expect(review).to be_valid
     end
 
     it 'is invalid without a user' do
