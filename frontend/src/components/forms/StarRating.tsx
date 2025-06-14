@@ -26,15 +26,33 @@ const StarRating: React.FC<StarRatingProps> = ({
   };
 
 
-  const handleStarClick = (rating: number) => {
+  const handleStarClick = (starIndex: number, event: React.MouseEvent<HTMLButtonElement>) => {
     if (!readOnly && onChange) {
-      onChange(rating);
+      const rect = event.currentTarget.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const starWidth = rect.width;
+      const percentage = clickX / starWidth;
+      
+      // 0.5刻みで評価を設定（クリック位置に応じて整数か0.5を選択）
+      const baseRating = starIndex - 1;
+      const newRating = percentage <= 0.5 ? baseRating + 0.5 : starIndex;
+      
+      onChange(Math.max(0.5, Math.min(5.0, newRating)));
     }
   };
 
-  const handleStarHover = (rating: number) => {
+  const handleStarHover = (starIndex: number, event: React.MouseEvent<HTMLButtonElement>) => {
     if (!readOnly) {
-      setHoveredRating(rating);
+      const rect = event.currentTarget.getBoundingClientRect();
+      const hoverX = event.clientX - rect.left;
+      const starWidth = rect.width;
+      const percentage = hoverX / starWidth;
+      
+      // ホバー時も0.5刻みで表示
+      const baseRating = starIndex - 1;
+      const hoverRating = percentage <= 0.5 ? baseRating + 0.5 : starIndex;
+      
+      setHoveredRating(Math.max(0.5, Math.min(5.0, hoverRating)));
     }
   };
 
@@ -47,7 +65,6 @@ const StarRating: React.FC<StarRatingProps> = ({
   const renderStar = (starIndex: number) => {
     const effectiveRating = readOnly ? value : (hoveredRating || value);
     const baseClass = `${getSizeClass()} transition-colors duration-150`;
-    const decimal = effectiveRating % 1;
     
     if (starIndex <= Math.floor(effectiveRating)) {
       // 完全に塗りつぶされた星
@@ -56,14 +73,15 @@ const StarRating: React.FC<StarRatingProps> = ({
           ★
         </span>
       );
-    } else if (starIndex === Math.floor(effectiveRating) + 1 && decimal >= 0.5) {
-      // 半星表示（0.5以上の小数点がある場合）
+    } else if (starIndex === Math.ceil(effectiveRating) && effectiveRating % 1 !== 0) {
+      // 部分的に塗りつぶされた星（小数点に応じた割合で塗りつぶし）
+      const percentage = (effectiveRating % 1) * 100;
       return (
         <span className={`${baseClass} relative inline-block`}>
           <span className="text-gray-300">★</span>
           <span 
             className="absolute inset-0 text-yellow-400 overflow-hidden"
-            style={{ width: '50%' }}
+            style={{ width: `${percentage}%` }}
           >
             ★
           </span>
@@ -88,8 +106,8 @@ const StarRating: React.FC<StarRatingProps> = ({
         <button
           key={star}
           type="button"
-          onClick={() => handleStarClick(star)}
-          onMouseEnter={() => handleStarHover(star)}
+          onClick={e => handleStarClick(star, e)}
+          onMouseMove={e => handleStarHover(star, e)}
           className={`${
             readOnly 
               ? 'cursor-default' 

@@ -66,7 +66,7 @@ export default function RestaurantDetailSidebar({ restaurant }: RestaurantDetail
                   <div className="flex items-center">
                     <span className="text-yellow-500 text-lg">★</span>
                     <span className="text-lg font-semibold text-slate-900 ml-1">
-                      {restaurant.average_rating.toFixed(1)}
+                      {typeof restaurant.average_rating === 'number' ? restaurant.average_rating.toFixed(1) : '0.0'}
                     </span>
                   </div>
                 </div>

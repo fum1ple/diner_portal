@@ -41,7 +41,7 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
                   className="flex-shrink-0"
                 />
                 <span className="text-sm font-medium text-slate-900">
-                  {restaurant.average_rating.toFixed(1)}
+                  {typeof restaurant.average_rating === 'number' ? restaurant.average_rating.toFixed(1) : '0.0'}
                 </span>
                 <span className="text-xs text-slate-500">
                   ({restaurant.review_count}件)

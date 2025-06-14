@@ -5,10 +5,11 @@ import {
   Input,
   Label 
 } from '@/components/ui';
-import { Star, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useCreateReview } from '@/hooks/useCreateReview';
 import { CreateReviewRequest } from '@/types/review';
 import SceneTagSelector from '@/components/forms/SceneTagSelector';
+import StarRating from '@/components/forms/StarRating';
 
 interface ReviewFormProps {
   restaurantId: number;
@@ -35,7 +36,6 @@ const validateImage = (file: File): { isValid: boolean; error?: string } => {
 const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, onCancel }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [hoverRating, setHoverRating] = useState(0);
   const [image, setImage] = useState<File | null>(null);
   const [selectedSceneTagIds, setSelectedSceneTagIds] = useState<number[]>([]);
   const [imageError, setImageError] = useState<string | null>(null);
@@ -124,21 +124,36 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
       
       {/* 星評価 */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">評価</label>
-        <div className="flex items-center">
-          {[1, 2, 3, 4, 5].map(star => (
-            <Star
-              key={star}
-              className={`w-6 h-6 cursor-pointer transition-colors ${
-                (hoverRating || rating) >= star
-                  ? 'text-yellow-400 fill-yellow-400'
-                  : 'text-gray-300 dark:text-gray-500 fill-gray-300 dark:fill-gray-500'
-              } ${isPending ? 'cursor-not-allowed opacity-50' : ''}`}
-              onClick={() => !isPending && setRating(star)}
-              onMouseEnter={() => !isPending && setHoverRating(star)}
-              onMouseLeave={() => !isPending && setHoverRating(0)}
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">評価</label>
+        <div className="flex items-center gap-4">
+          <StarRating 
+            value={rating} 
+            onChange={setRating}
+            readOnly={isPending}
+            size="md"
+            className="flex-shrink-0"
+          />
+          <div className="flex items-center gap-2">
+            <Input
+              type="number"
+              value={rating || ''}
+              onChange={e => {
+                const value = parseFloat(e.target.value);
+                if (!isNaN(value) && value >= 1 && value <= 5) {
+                  setRating(Math.round(value * 10) / 10); // 小数点第1位まで
+                } else if (e.target.value === '') {
+                  setRating(0);
+                }
+              }}
+              min="1"
+              max="5"
+              step="0.1"
+              placeholder="1.0-5.0"
+              className="w-23 text-sm"
+              disabled={isPending}
             />
-          ))}
+            <span className="text-sm text-gray-500">/ 5.0</span>
+          </div>
         </div>
       </div>
 
@@ -187,6 +202,47 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ restaurantId, onReviewSubmit, o
           onSelectionChange={setSelectedSceneTagIds}
           disabled={isPending}
         />
+      </div>
+
+      {/* レビュー投稿ガイド */}
+      <div className="mb-6 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50">
+        <h4 className="text-lg font-semibold text-slate-700 mb-4">
+          💭 レビューって何を書けばいいの？
+        </h4>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 text-left">
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <span className="text-teal-500 mt-1">✓</span>
+              <div>
+                <span className="font-medium text-slate-700">味や雰囲気</span>
+                <div className="text-sm text-slate-500">どんな料理？お店の感じは？</div>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="text-teal-500 mt-1">✓</span>
+              <div>
+                <span className="font-medium text-slate-700">おすすめポイント</span>
+                <div className="text-sm text-slate-500">何が良かった？特徴は？</div>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <span className="text-teal-500 mt-1">✓</span>
+              <div>
+                <span className="font-medium text-slate-700">利用シーン</span>
+                <div className="text-sm text-slate-500">ランチ？飲み会？デート？</div>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="text-teal-500 mt-1">✓</span>
+              <div>
+                <span className="font-medium text-slate-700">注意点</span>
+                <div className="text-sm text-slate-500">混雑具合や予約の必要性など</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ボタン */}

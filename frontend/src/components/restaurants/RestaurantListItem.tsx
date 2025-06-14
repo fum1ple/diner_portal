@@ -23,7 +23,7 @@ const RestaurantListItem: React.FC<RestaurantListItemProps> = ({ restaurant }) =
     </div>
     {typeof restaurant.average_rating === 'number' && (
       <div className="text-yellow-500 font-bold text-lg whitespace-nowrap">
-        ★ {restaurant.average_rating.toFixed(1)}
+        ★ {typeof restaurant.average_rating === 'number' ? restaurant.average_rating.toFixed(1) : '0.0'}
       </div>
     )}
   </li>
