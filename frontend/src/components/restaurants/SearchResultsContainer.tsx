@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Restaurant, RestaurantSearchParams } from '@/types/restaurant';
+import { useQuery } from '@tanstack/react-query';
+import { RestaurantSearchParams } from '@/types/restaurant';
 import { restaurantsApi } from '@/lib/api';
+import { queryKeys } from '@/lib/queryKeys';
 import RestaurantCard from './RestaurantCard';
 import NoResultsMessage from './NoResultsMessage';
 
@@ -15,35 +16,27 @@ export default function SearchResultsContainer({
   searchParams, 
   isVisible 
 }: SearchResultsContainerProps) {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
+  const hasSearched = !!searchParams && isVisible;
 
-  useEffect(() => {
-    if (!searchParams || !isVisible) return;
-
-    const performSearch = async () => {
-      setLoading(true);
-      setError(null);
-      setHasSearched(true);
-
-      try {
-        const response = await restaurantsApi.search(searchParams);
-        if (response.error) {
-          throw new Error(response.error);
-        }
-        setRestaurants(response.data || []);
-      } catch (err) {
-        setError('検索中にエラーが発生しました');
-        console.error('Search error:', err);
-      } finally {
-        setLoading(false);
+  const { 
+    data: restaurants = [], 
+    isLoading: loading, 
+    error 
+  } = useQuery({
+    queryKey: queryKeys.restaurants.list(searchParams as Record<string, unknown>),
+    queryFn: async () => {
+      if (!searchParams) return [];
+      
+      const response = await restaurantsApi.search(searchParams);
+      if (response.error) {
+        throw new Error(response.error);
       }
-    };
-
-    performSearch();
-  }, [searchParams, isVisible]);
+      return response.data || [];
+    },
+    enabled: hasSearched, // 検索パラメータがあり、表示状態の時のみ実行
+    staleTime: 2 * 60 * 1000, // 2分間キャッシュ
+    gcTime: 5 * 60 * 1000, // 5分間保持
+  });
 
   if (!isVisible) return null;
 
@@ -77,7 +70,9 @@ export default function SearchResultsContainer({
 
         {error && (
           <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6">
-            <p className="text-red-700 font-medium">{error}</p>
+            <p className="text-red-700 font-medium">
+              {error.message || '検索中にエラーが発生しました'}
+            </p>
           </div>
         )}
 
